@@ -5,6 +5,7 @@ node_modules/
 .idea/
 # Expo
 .expo/
+.tamagui
 dist/
 web-build/
 
