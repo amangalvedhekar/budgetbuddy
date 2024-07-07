@@ -8,7 +8,7 @@ node_modules/
 .tamagui
 dist/
 web-build/
-
+coverage/
 # Native
 *.orig.*
 *.jks

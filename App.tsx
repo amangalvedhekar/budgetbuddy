@@ -1,24 +1,19 @@
-import { StatusBar } from 'expo-status-bar';
-import {NavigationContainer} from "@react-navigation/native";
-import {Card, Paragraph, TamaguiProvider, XStack, YStack} from "tamagui";
+import {TamaguiProvider} from "tamagui";
 import {config} from "./tamagui.config";
-import {useEffect} from "react";
-import {SafeAreaProvider} from "react-native-safe-area-context";
-
+import {useColorScheme} from "react-native";
+import {NavigationContainer} from "@react-navigation/native";
+import {SignedOutScreens} from "./src/navigation/stacks/SignedOutStack";
+import {StatusBar} from "expo-status-bar";
 
 export default function App() {
+  const scheme = useColorScheme();
+
   return (
-    <SafeAreaProvider>
-    <TamaguiProvider config={config} defaultTheme={'dark'}>
-      <Card elevate padded flex={1}>
-        <Card.Header>
-          <Paragraph>
-            header for card
-          </Paragraph>
-        </Card.Header>
-      </Card>
-      <StatusBar style="dark" />
+    <TamaguiProvider config={config} defaultTheme={scheme!}>
+      <NavigationContainer>
+        <SignedOutScreens/>
+      </NavigationContainer>
+      <StatusBar style="auto"/>
     </TamaguiProvider>
-    </SafeAreaProvider>
   );
 }
