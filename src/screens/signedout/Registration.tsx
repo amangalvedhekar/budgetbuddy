@@ -65,10 +65,9 @@ export const Registration = () => {
     } catch (error: unknown) {
 
       if (Array.isArray((error as ErrorType)?.details)) {
-        if ((error as ErrorType)?.details[0].path.includes('password')) {
+        if ((error as ErrorType)?.details[0]?.path.includes('password')) {
           setFormState((formState) => ({...formState, password: {...formState.password, isInvalid: true}}));
         } else {
-          console.log('coming')
           setFormState((formState) => ({...formState, email: {...formState.email, isInvalid: true}}));
         }
       } else{
