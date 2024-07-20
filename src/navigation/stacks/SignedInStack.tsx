@@ -1,21 +1,17 @@
-import {createStackNavigator} from "@react-navigation/stack";
 import {useFocusEffect, useNavigation} from "@react-navigation/native";
 import {useCallback} from "react";
 import {Button, Card, H4, YStack} from "tamagui";
 import {useAuth} from "../../hooks";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import {Home} from "@tamagui/lucide-icons";
+import {Account, Home, History, Insights} from "../../icons";
 
 const SignedInStack = createBottomTabNavigator();
 const TestScreen = () => {
-  const {navigate, setOptions} = useNavigation();
   const {ab, logout} = useAuth();
-  const onBackPress = useCallback(() => {
-    logout()
+  const onBackPress = useCallback(async () => {
+    await logout();
   },[]);
-  useFocusEffect(useCallback(() => {
-    setOptions({headerTitle: 'User Name here'});
-  },[]))
+
   return  (
     <YStack justifyContent="flex-start" flex={1} padding="$4">
       <Card
@@ -43,10 +39,26 @@ const TestScreen = () => {
 export const SignedInScreens = () => {
   return (
     <SignedInStack.Navigator>
-      <SignedInStack.Screen name="welcome" component={TestScreen} options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <></>, tabBarLabel: 'Home'}}/>
-      <SignedInStack.Screen name="account" component={TestScreen} options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <></>, tabBarLabel: 'Account'}}/>
-      <SignedInStack.Screen name="History" component={TestScreen} options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <></>, tabBarLabel: 'History'}}/>
-      <SignedInStack.Screen name="Insight" component={TestScreen} options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <></>, tabBarLabel: 'Insight'}}/>
+      <SignedInStack.Screen
+        name="welcome"
+        component={TestScreen}
+        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Home />, }}
+      />
+      <SignedInStack.Screen
+        name="account"
+        component={TestScreen}
+        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Account/>, }}
+      />
+      <SignedInStack.Screen
+        name="History"
+        component={TestScreen}
+        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <History />, }}
+      />
+      <SignedInStack.Screen
+        name="Insights"
+        component={TestScreen}
+        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Insights />, }}
+      />
     </SignedInStack.Navigator>
   );
 }

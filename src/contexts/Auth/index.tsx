@@ -21,7 +21,6 @@ const AuthProvider = ({children}: AuthContextType) => {
       try {
        const x = await getCurrentUser();
        setAb(x);
-       console.log(x, 'what is it');
       } catch (e) {
         setAb(null);
         console.error(e);
@@ -32,6 +31,7 @@ const AuthProvider = ({children}: AuthContextType) => {
     useCallback(
       async ({username, password}: SignUpInput) => {
         try {
+          console.log(username, 'user name')
           const user = await signUp({username, password});
           // return user;
         } catch (e) {

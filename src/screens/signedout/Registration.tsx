@@ -60,8 +60,8 @@ export const Registration = () => {
       setFormState((prevState) => ({...prevState, isFormSubmitted: true}));
       await validationSchema.validateAsync({email: formState.email.value, password: formState.password.value});
 
-      await register({username: formState.email.value, password: formState.password.value});
-      navigate('Code', {username: formState.email.value});
+      await register({username: formState.email.value?.toLowerCase(), password: formState.password.value});
+      navigate('Code', {username: formState.email.value.toLowerCase()});
     } catch (error: unknown) {
 
       if (Array.isArray((error as ErrorType)?.details)) {

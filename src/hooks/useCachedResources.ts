@@ -8,7 +8,9 @@ export const useCachedResources = () => {
     (async () => {
       try {
         await preventAutoHideAsync();
-
+        /*
+        * setup custom fonts here and then release splash screen
+        * */
         await hideAsync();
       } catch (e) {
 console.error(e);

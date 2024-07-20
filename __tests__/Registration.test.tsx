@@ -84,19 +84,21 @@ describe('Registration', () => {
     });
 
     it('should navigate to confirmation account if registration is successful', async () => {
-      (Auth as jest.Mocked<any>).signUp = jest.fn().mockResolvedValue({});
+      const mockedSignUp = jest.fn();
+      (Auth as jest.Mocked<any>).signUp = mockedSignUp.mockResolvedValue({});
       render(<AuthProvider>
         <TamaguiProvider config={config}>
           <Registration />
         </TamaguiProvider>
       </AuthProvider>);
       const emailInput = await screen.findByPlaceholderText('Email');
-      fireEvent.changeText(emailInput, 'abc@yopm.com');
+      fireEvent.changeText(emailInput, 'Abc@yopm.com');
       const passwordInput = await screen.findByPlaceholderText('Password');
       fireEvent.changeText(passwordInput, 'Password1!');
       const registerBtn = await screen.findByText('Register');
       fireEvent.press(registerBtn);
       await waitFor(() => {
+        expect(mockedSignUp).toHaveBeenCalledWith({username: 'abc@yopm.com', password: 'Password1!'});
         expect(mockedNavigate).toHaveBeenCalledWith('Code', {username: 'abc@yopm.com'});
       })
     });
