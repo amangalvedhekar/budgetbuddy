@@ -1,4 +1,4 @@
-import {useFocusEffect, useNavigation} from "@react-navigation/native";
+import {useFocusEffect, useNavigation, useTheme} from "@react-navigation/native";
 import {useCallback} from "react";
 import {Button, Card, H4, YStack} from "tamagui";
 import {useAuth} from "../../hooks";
@@ -37,27 +37,28 @@ const TestScreen = () => {
   )
 }
 export const SignedInScreens = () => {
+  const {colors} = useTheme();
   return (
     <SignedInStack.Navigator>
       <SignedInStack.Screen
         name="welcome"
         component={TestScreen}
-        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Home />, }}
+        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Home fill={colors.text}/>, }}
       />
       <SignedInStack.Screen
         name="account"
         component={TestScreen}
-        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Account/>, }}
+        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Account fill={colors.text}/>, }}
       />
       <SignedInStack.Screen
         name="History"
         component={TestScreen}
-        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <History />, }}
+        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <History fill={colors.text}/>, }}
       />
       <SignedInStack.Screen
         name="Insights"
         component={TestScreen}
-        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Insights />, }}
+        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Insights fill={colors.text}/>, }}
       />
     </SignedInStack.Navigator>
   );

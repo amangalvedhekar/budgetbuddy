@@ -3,7 +3,7 @@ import {useAuth} from "../../hooks";
 import {SignedInScreens} from "./SignedInStack";
 import {SignedOutScreens} from "./SignedOutStack";
 
-export const RootNavigation = ({scheme}) => {
+export const RootNavigation = ({scheme}: any) => {
   const {ab} = useAuth();
   return (
     <>
