@@ -6,3 +6,6 @@
 - AWS Cognito
 - Jest
 - React Native Testing Library
+- AWS CDK
+- Typescript
+- EAS

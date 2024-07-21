@@ -1,64 +1,36 @@
-import {useFocusEffect, useNavigation, useTheme} from "@react-navigation/native";
+import {useTheme} from "@react-navigation/native";
 import {useCallback} from "react";
 import {Button, Card, H4, YStack} from "tamagui";
 import {useAuth} from "../../hooks";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import {Account, Home, History, Insights} from "../../icons";
+import {Account, Home as HomeIcon, History, Insights} from "../../icons";
+import {Home} from "../../screens/signedIn/Home";
 
 const SignedInStack = createBottomTabNavigator();
-const TestScreen = () => {
-  const {ab, logout} = useAuth();
-  const onBackPress = useCallback(async () => {
-    await logout();
-  },[]);
 
-  return  (
-    <YStack justifyContent="flex-start" flex={1} padding="$4">
-      <Card
-        elevate
-        padded
-        borderRadius="$8"
-        animation="bouncy"
-        scale={0.5}
-        hoverStyle={{ scale: 0.925 }}
-        pressStyle={{ scale: 0.875 }}
-      >
-        <Card.Header>
-          <H4 size="$6" fontWeight="bold" textAlign="center">
-            Welcome user - {ab?.signInDetails?.loginId}
-          </H4>
-        </Card.Header>
-        <Button onPress={onBackPress}>
-          Logout
-        </Button>
-      </Card>
-
-    </YStack>
-  )
-}
 export const SignedInScreens = () => {
   const {colors} = useTheme();
   return (
     <SignedInStack.Navigator>
       <SignedInStack.Screen
-        name="welcome"
-        component={TestScreen}
-        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Home fill={colors.text}/>, }}
-      />
-      <SignedInStack.Screen
-        name="account"
-        component={TestScreen}
-        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Account fill={colors.text}/>, }}
+        name="Home"
+        component={Home}
+        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <HomeIcon fill={colors.text}/>, }}
       />
       <SignedInStack.Screen
         name="History"
-        component={TestScreen}
+        component={Home}
         options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <History fill={colors.text}/>, }}
       />
       <SignedInStack.Screen
         name="Insights"
-        component={TestScreen}
+        component={Home}
         options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Insights fill={colors.text}/>, }}
+      />
+      <SignedInStack.Screen
+        name="account"
+        component={Home}
+        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Account fill={colors.text}/>, }}
       />
     </SignedInStack.Navigator>
   );
