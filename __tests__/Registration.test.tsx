@@ -5,7 +5,6 @@ import {TamaguiProvider} from "tamagui";
 import {config} from "../tamagui.config";
 import * as Auth from 'aws-amplify/auth';
 const mockedNavigate = jest.fn();
-const mockedGetCurrentUser = jest.fn();
 
 jest.mock('@react-navigation/native', () => ({
   useNavigation: () => ({
@@ -16,8 +15,7 @@ jest.mock('aws-amplify/auth');
 
 describe('Registration', () => {
   beforeEach(() => {
-    // mockedGetCurrentUser.mockResolvedValue({});
-    (Auth as jest.Mocked<any>).getCurrentUser = jest.fn().mockResolvedValue({});
+    (Auth as jest.Mocked<typeof Auth>).getCurrentUser = jest.fn().mockResolvedValue({});
   })
   describe('Validation', () => {
     it('should render',  async () => {

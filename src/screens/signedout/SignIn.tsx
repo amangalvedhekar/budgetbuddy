@@ -34,7 +34,6 @@ export function SignIn() {
       await validationSchema.validateAsync({email: formState.email.value, password: formState.password.value});
 
       await logIn({username: formState.email.value, password: formState.password.value});
-      // navigate('welcome');
     } catch (error: unknown) {
 
       if (Array.isArray((error as ErrorType)?.details)) {
@@ -114,6 +113,7 @@ export function SignIn() {
             {/*>*/}
             {/*  Use Face Id*/}
             {/*</Button>*/}
+            <Paragraph size="$7" paddingVertical="$2" onPress={() => navigate('Register')}>New to BudgetBuddy? Register</Paragraph>
           </Card.Footer>
         </Card>
 

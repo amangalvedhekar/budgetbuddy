@@ -6,13 +6,14 @@ import {
   ScrollView,
   Separator,
   YStack,
-  H4, SizableText
+  H4, SizableText, XStack, Progress
 } from "tamagui";
 import {useNavigation} from "@react-navigation/native";
 import {useCallback, useState} from "react";
 import {useAuth} from "../../hooks";
 import Joi from "joi";
 import {ActivityIndicator} from "react-native";
+import {Check, Cross} from "../../icons";
 
 export type Field = {
   value: string,
@@ -78,6 +79,11 @@ export const Registration = () => {
       setFormState((prevState) => ({...prevState, isFormSubmitted: false}));
     }
   }, [formState]);
+
+  const onPress = useCallback(() => {
+    navigate('SignIn')
+  },[])
+
   return (
     <ScrollView>
       <YStack padding="$4">
@@ -121,6 +127,37 @@ export const Registration = () => {
 
           {formState.password.isInvalid ? <SizableText color="red" size="$5">Password entered is invalid</SizableText>: <></>}
           {formState.serverError.isInvalid ? <SizableText color="red" size="$5">Email/Password incorrect. Try again!</SizableText>: <></>}
+
+          <XStack gap="$2" paddingVertical="$2">
+            <Check color="green"/>
+            <Paragraph size="$5" paddingVertical="$1" color="green">
+              Must contain letter
+            </Paragraph>
+          </XStack>
+          <XStack gap="$2" paddingVertical="$2">
+            <Cross color="red"/>
+            <Paragraph size="$5" paddingVertical="$1" color="red">
+              Must contain digit
+            </Paragraph>
+          </XStack>
+          <XStack  gap="$2" paddingVertical="$2">
+            <Check color="green"/>
+            <Paragraph size="$5" paddingVertical="$1" color="green">
+              Must contain special character
+            </Paragraph>
+          </XStack>
+         <XStack gap="$2" paddingVertical="$2">
+           <Cross color="red"/>
+           <Paragraph size="$5" paddingVertical="$1" color="red">
+             Must contain uppercase
+           </Paragraph>
+         </XStack>
+          <XStack gap="$2" paddingVertical="$2">
+            <Check color="green"/>
+            <Paragraph size="$5" paddingVertical="$1" color="green">
+              Must contain 8 characters
+            </Paragraph>
+          </XStack>
           <Button
             borderRadius="$8"
             size="$6"
@@ -131,10 +168,15 @@ export const Registration = () => {
           </Button>
           <Separator/>
           <Card.Footer padded>
-            <Paragraph size="$6" onPress={() => navigate('SignIn')} color="purple">Already member? Sign In</Paragraph>
+            <Paragraph
+              size="$7"
+              paddingVertical="$2"
+              onPress={onPress}
+            >
+              Already member? Sign In
+            </Paragraph>
           </Card.Footer>
         </Card>
-
       </YStack>
     </ScrollView>
   )
