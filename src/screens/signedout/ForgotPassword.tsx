@@ -1,12 +1,38 @@
-import {Button, Card, H2, Input, Paragraph, ScrollView, YStack} from "tamagui";
+import {Button, Card, H2, Input, Paragraph, ScrollView, SizableText, YStack} from "tamagui";
 import {useNavigation} from "@react-navigation/native";
-import {useCallback} from "react";
-
+import {useCallback, useState} from "react";
+import Joi from "joi";
+const emailValidation = Joi.object({
+  email: Joi.string().required().email({tlds: false}),
+});
+const defaultValue = {
+  value: '',
+  isInvalid: false,
+};
 export const ForgotPassword = () => {
   const {navigate} = useNavigation();
-  const handleOnPress = useCallback(() => {
-    navigate('Code', {username: 'qaw@www.com'});
-  },[]);
+  const [email, setEmail] = useState(defaultValue);
+  const handleOnPress = useCallback(async () => {
+    try {
+      await emailValidation.validateAsync({email: email.value});
+      navigate('Code', {username: email.value});
+    } catch (e) {
+      console.log(e, 'inside error block');
+      setEmail((prevState) => ({
+        ...prevState,
+        isInvalid: true,
+      }));
+    }
+
+  },[email]);
+
+  const handleChangeText = useCallback((e: string) => {
+    setEmail((prevState) => ({
+      ...prevState,
+      isInvalid: false,
+      value: e,
+    }));
+  }, []);
 
   return (
     <ScrollView>
@@ -33,7 +59,11 @@ export const ForgotPassword = () => {
             inputMode="email"
             autoComplete="email"
             textContentType="username"
+            value={email.value}
+            {...(email.isInvalid ? {borderColor:"red"}: {})}
+            onChangeText={handleChangeText}
           />
+          {email.isInvalid ? <SizableText color="red" size="$5">Email entered is invalid</SizableText> : <></>}
           <Card.Footer>
             <Button
               flex={1}

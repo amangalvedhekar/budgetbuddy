@@ -10,7 +10,7 @@ jest.mock('aws-amplify/auth');
 describe('Registration', () => {
   beforeEach(() => {
     (Auth as jest.Mocked<typeof Auth>).getCurrentUser = jest.fn().mockResolvedValue({});
-  })
+  });
   describe('Validation', () => {
     it('should render', async () => {
       renderWithProviders(<Registration/>);
