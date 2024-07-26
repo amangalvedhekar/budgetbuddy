@@ -1,4 +1,4 @@
-import {Button, Card, H3, Input, XStack, YStack} from "tamagui";
+import {Button, Card, H3, Input, YStack} from "tamagui";
 import {useCallback, useState} from "react";
 import {useAuth} from "../../hooks";
 import {RouteProp, useNavigation} from "@react-navigation/native";

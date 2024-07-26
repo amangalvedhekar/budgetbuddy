@@ -6,7 +6,9 @@ import {
   ScrollView,
   Separator,
   YStack,
-  H4, SizableText, XStack, Progress
+  H4,
+  SizableText,
+  XStack
 } from "tamagui";
 import {useNavigation} from "@react-navigation/native";
 import {useCallback, useState} from "react";
@@ -31,11 +33,21 @@ export type ErrorRecord = {
 export type ErrorType = {
   details: Array<ErrorRecord>;
 }
+export type Fields = 'email' | 'password';
 
 const validationSchema = Joi.object({
   email: Joi.string().required().email({tlds: false}),
   password: Joi.string().min(8).required().pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/),
-})
+});
+
+const validationConditions = [
+  'Must contain lowercase',
+  'Must contain digit',
+  'Must contain special character',
+  'Must contain uppercase',
+  'Must contain minimum 8 characters'
+];
+
 export const Registration = () => {
 
   const {navigate} = useNavigation();
@@ -82,7 +94,22 @@ export const Registration = () => {
 
   const onPress = useCallback(() => {
     navigate('SignIn')
-  },[])
+  },[]);
+
+  const onTextChange = useCallback((a: Fields) => (e: string) =>{
+    setFormState((previousFormState) => ({
+      ...previousFormState,
+      serverError: {
+        ...previousFormState.serverError,
+        isInvalid: false,
+      },
+      [a]: {
+        ...previousFormState[a],
+        value: e,
+        isInvalid: false,
+    }
+    }));
+  },[]);
 
   return (
     <ScrollView>
@@ -110,7 +137,7 @@ export const Registration = () => {
             textContentType="username"
             value={formState.email.value}
             {...(formState.email.isInvalid ? {borderColor:"red"}: {})}
-            onChangeText={(e) => setFormState((formState) => ({...formState, serverError: {...formState.serverError, isInvalid: false},email: {...formState.email, value: e, isInvalid: false}}))}
+            onChangeText={onTextChange('email')}
           />
           {formState.email.isInvalid ? <SizableText color="red" size="$5">Email entered is invalid</SizableText> : <></>}
           <Input
@@ -122,42 +149,44 @@ export const Registration = () => {
             // textContentType="newPassword"
             // autoComplete="new-password"
             value={formState.password.value}
-            onChangeText={(e) => setFormState((formState) => ({...formState, serverError: {...formState.serverError, isInvalid: false},password: {...formState.password, value: e, isInvalid: false}}))}
+            onChangeText={onTextChange('password')}
           />
 
           {formState.password.isInvalid ? <SizableText color="red" size="$5">Password entered is invalid</SizableText>: <></>}
           {formState.serverError.isInvalid ? <SizableText color="red" size="$5">Email/Password incorrect. Try again!</SizableText>: <></>}
 
-          <XStack gap="$2" paddingVertical="$2">
-            <Check color="green"/>
-            <Paragraph size="$5" paddingVertical="$1" color="green">
-              Must contain letter
-            </Paragraph>
-          </XStack>
-          <XStack gap="$2" paddingVertical="$2">
-            <Cross color="red"/>
-            <Paragraph size="$5" paddingVertical="$1" color="red">
-              Must contain digit
-            </Paragraph>
-          </XStack>
-          <XStack  gap="$2" paddingVertical="$2">
-            <Check color="green"/>
-            <Paragraph size="$5" paddingVertical="$1" color="green">
-              Must contain special character
-            </Paragraph>
-          </XStack>
-         <XStack gap="$2" paddingVertical="$2">
-           <Cross color="red"/>
-           <Paragraph size="$5" paddingVertical="$1" color="red">
-             Must contain uppercase
-           </Paragraph>
-         </XStack>
-          <XStack gap="$2" paddingVertical="$2">
-            <Check color="green"/>
-            <Paragraph size="$5" paddingVertical="$1" color="green">
-              Must contain 8 characters
-            </Paragraph>
-          </XStack>
+          {formState.password.value !== '' && <YStack>
+            <XStack gap="$2" paddingVertical="$2">
+              <Check color="green"/>
+              <Paragraph size="$5" paddingVertical="$1" color="green">
+                Must contain letter
+              </Paragraph>
+            </XStack>
+            <XStack gap="$2" paddingVertical="$2">
+              <Cross color="red"/>
+              <Paragraph size="$5" paddingVertical="$1" color="red">
+                Must contain digit
+              </Paragraph>
+            </XStack>
+            <XStack  gap="$2" paddingVertical="$2">
+              <Check color="green"/>
+              <Paragraph size="$5" paddingVertical="$1" color="green">
+                Must contain special character
+              </Paragraph>
+            </XStack>
+            <XStack gap="$2" paddingVertical="$2">
+              <Cross color="red"/>
+              <Paragraph size="$5" paddingVertical="$1" color="red">
+                Must contain uppercase
+              </Paragraph>
+            </XStack>
+            <XStack gap="$2" paddingVertical="$2">
+              <Check color="green"/>
+              <Paragraph size="$5" paddingVertical="$1" color="green">
+                Must contain 8 characters
+              </Paragraph>
+            </XStack>
+          </YStack>}
           <Button
             borderRadius="$8"
             size="$6"
@@ -179,5 +208,5 @@ export const Registration = () => {
         </Card>
       </YStack>
     </ScrollView>
-  )
+  );
 }

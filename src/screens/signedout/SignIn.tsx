@@ -81,7 +81,7 @@ export function SignIn() {
             onChangeText={(e) => setFormState((formState) => ({...formState, serverError: {...formState.serverError, isInvalid: false},email: {...formState.email, value: e, isInvalid: false}}))}
           />
           {formState.email.isInvalid ? <SizableText color="red" size="$5">Email entered is invalid</SizableText> : <></>}
-          <Paragraph size="$6" onPress={() => navigate('SignIn')} textAlign="right">Forgot Password?</Paragraph>
+          <Paragraph size="$6" onPress={() => navigate('ForgotPassword')} textAlign="right">Forgot Password?</Paragraph>
           <Input
             placeholder="Password"
             marginVertical="$3"
