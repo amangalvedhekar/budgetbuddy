@@ -9,7 +9,11 @@ import {
   SignInInput,
   getCurrentUser,
   signOut,
-  AuthUser
+  AuthUser,
+  resetPassword,
+  confirmResetPassword,
+  ResetPasswordInput,
+  ConfirmResetPasswordInput,
 } from 'aws-amplify/auth'
 
 const AuthContext = createContext<AuthProviderProps | null>(null);
@@ -31,7 +35,6 @@ const AuthProvider = ({children}: AuthContextType) => {
     useCallback(
       async ({username, password}: SignUpInput) => {
         try {
-          console.log(username, 'user name')
           const user = await signUp({username, password});
           // return user;
         } catch (e) {
@@ -67,7 +70,23 @@ const AuthProvider = ({children}: AuthContextType) => {
     } catch (e) {
       console.log(e, 'hmm cant loogut')
     }
-  }, [])
+  }, []);
+
+  const passwordResetRequest = useCallback(async ({username}: ResetPasswordInput) => {
+   try {
+     await  resetPassword({username});
+   } catch (e) {
+
+   }
+  },[]);
+
+  const passwordResetConfirmation = useCallback(async ({username, confirmationCode, newPassword}: ConfirmResetPasswordInput) => {
+    try {
+      await confirmResetPassword({username, confirmationCode, newPassword})
+    } catch (e) {
+
+    }
+  },[]);
 
   return <AuthContext.Provider
     value={{
@@ -76,6 +95,8 @@ const AuthProvider = ({children}: AuthContextType) => {
       logIn,
       ab,
       logout,
+      passwordResetConfirmation,
+      passwordResetRequest
     }}
   >
     {ab === undefined ? <></>: children}

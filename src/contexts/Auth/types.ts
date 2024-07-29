@@ -1,5 +1,5 @@
 import  {ReactNode} from "react";
-import {AuthUser, ConfirmSignUpInput, SignInInput, SignUpInput} from "aws-amplify/auth";
+import {AuthUser, ConfirmSignUpInput, SignInInput, SignUpInput, ConfirmResetPasswordInput, ResetPasswordInput} from "aws-amplify/auth";
 
 export type AuthContextType = {
   children: ReactNode;
@@ -10,4 +10,6 @@ export interface AuthProviderProps  {
   logIn: (args: SignInInput) => Promise<void>;
   logout: () => Promise<void>;
   ab: AuthUser | null | undefined;
+  passwordResetRequest: (args: ResetPasswordInput) => Promise<void>;
+  passwordResetConfirmation: (args: ConfirmResetPasswordInput) => Promise<void>;
 }
