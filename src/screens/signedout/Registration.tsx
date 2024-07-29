@@ -41,10 +41,10 @@ const validationSchema = Joi.object({
 });
 
 const validationConditions = [
-  {message: 'Must contain lowercase', name: 'caseSensitiveLowerCaseRequirement', isEntered: false, pattern: /(?=[a-z])/},
+  {message: 'Must contain lowercase', name: 'caseSensitiveLowerCaseRequirement', isEntered: false, pattern: /[a-z]/},
   {message: 'Must contain digit', isEntered: false, name: 'minimumDigitRequirement', pattern: /(?=.*[0-9])/},
   {message:  'Must contain special character', name: 'specialCharacterRequirement', isEntered: false, pattern: /(?=.*[#^@$!%*?&-+._~=-])/},
-  {message:'Must contain uppercase', name: 'caseSensitiveUpperCaseRequirement', isEntered: false, pattern: /(?=[a-z])/},
+  {message:'Must contain uppercase', name: 'caseSensitiveUpperCaseRequirement', isEntered: false, pattern: /[A-Z]/},
   {message: 'Must contain minimum 8 characters', name: 'minimumLengthRequirement', isEntered: false, pattern:  /^.{8,256}$/},
 ];
 
@@ -119,7 +119,7 @@ export const Registration = () => {
           isEntered: true,
         });
       }
-      return ({...condition});
+      return ({...condition, isEntered: false});
     });
 
     setPasswordRequirement(liveValidatedRequirement);
@@ -161,8 +161,8 @@ export const Registration = () => {
             size="$6"
             secureTextEntry={true}
             {...(formState.password.isInvalid ? {borderColor:"red"}: {})}
-            // textContentType="newPassword"
-            // autoComplete="new-password"
+            textContentType="newPassword"
+            autoComplete="new-password"
             value={formState.password.value}
             onChangeText={onTextChange('password')}
           />

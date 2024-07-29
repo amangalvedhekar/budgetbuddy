@@ -1,5 +1,5 @@
 import {fireEvent, render, screen, waitFor,} from "@testing-library/react-native";
-import {Registration} from "../src/screens/signedout/Registration";
+import {Registration} from "../src/screens";
 import * as Auth from 'aws-amplify/auth';
 import {renderWithProviders} from "./renderWithProvidersForScreen";
 
@@ -57,7 +57,7 @@ describe('Registration', () => {
         }});
       const signIn = await screen.findByText('Already member? Sign In');
       fireEvent.press(signIn);
-      expect(mockedNavigate).toHaveBeenCalledWith('SignIn');
+      expect(mockedNavigate).toHaveBeenCalledWith('SignIn',{showPasswordResetBanner: false});
     });
 
     it('should navigate to confirmation account if registration is successful', async () => {
@@ -77,7 +77,7 @@ describe('Registration', () => {
         expect(mockedSignUp)
           .toHaveBeenCalledWith(signupParams);
         expect(mockedNavigate)
-          .toHaveBeenCalledWith('Code', {username: 'abc@yopm.com'});
+          .toHaveBeenCalledWith('Code', {username: 'abc@yopm.com', codeTrigger: 'confirmAccount'});
       })
     });
   });
