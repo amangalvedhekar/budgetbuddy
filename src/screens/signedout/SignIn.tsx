@@ -5,11 +5,12 @@ import {useCallback, useState} from "react";
 import {ActivityIndicator} from "react-native";
 import {ErrorType, FormState} from "./Registration";
 import Joi from "joi";
+import {SignInProps} from "../../navigation/types";
 const validationSchema = Joi.object({
   email: Joi.string().required().email({tlds: false}),
   password: Joi.string().min(8).required().pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/),
 })
-export function SignIn() {
+export function SignIn({route}: SignInProps) {
   const {navigate} = useNavigation();
   const {logIn} = useAuth();
   const [formState, setFormState] = useState<FormState>({
@@ -55,6 +56,20 @@ export function SignIn() {
   return (
     <ScrollView>
       <YStack padding="$4">
+        {route.params.showPasswordResetBanner ? <Card  elevate
+                                                       marginVertical="$3"
+                                                       borderRadius="$8"
+                                                       animation="bouncy"
+                                                       scale={0.9}
+                                                       backgroundColor="green"
+                                                       hoverStyle={{scale: 0.975}}
+                                                       pressStyle={{scale: 0.975}}>
+          <Card.Header>
+            <H4 size="$7" fontWeight="bold" >
+              Password reset successfully. Try Sign In using new password
+            </H4>
+          </Card.Header>
+        </Card>: <></>}
         <Card
           elevate
           padded
