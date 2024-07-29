@@ -41,11 +41,11 @@ const validationSchema = Joi.object({
 });
 
 const validationConditions = [
-  'Must contain lowercase',
-  'Must contain digit',
-  'Must contain special character',
-  'Must contain uppercase',
-  'Must contain minimum 8 characters'
+  {message: 'Must contain lowercase', name: 'caseSensitiveLowerCaseRequirement', isEntered: false, pattern: /(?=[a-z])/},
+  {message: 'Must contain digit', isEntered: false, name: 'minimumDigitRequirement', pattern: /(?=.*[0-9])/},
+  {message:  'Must contain special character', name: 'specialCharacterRequirement', isEntered: false, pattern: /(?=.*[#^@$!%*?&-+._~=-])/},
+  {message:'Must contain uppercase', name: 'caseSensitiveUpperCaseRequirement', isEntered: false, pattern: /(?=[a-z])/},
+  {message: 'Must contain minimum 8 characters', name: 'minimumLengthRequirement', isEntered: false, pattern:  /^.{8,256}$/},
 ];
 
 export const Registration = () => {
@@ -67,14 +67,15 @@ export const Registration = () => {
     },
     isFormSubmitted: false,
   });
-  const onBackPress = useCallback(async () => {
+  const [passwordRequirement, setPasswordRequirement] = useState(validationConditions);
+  const onRegister = useCallback(async () => {
     try {
 
       setFormState((prevState) => ({...prevState, isFormSubmitted: true}));
       await validationSchema.validateAsync({email: formState.email.value, password: formState.password.value});
 
       await register({username: formState.email.value?.toLowerCase(), password: formState.password.value});
-      navigate('Code', {username: formState.email.value.toLowerCase()});
+      navigate('Code', {username: formState.email.value.toLowerCase(), codeTrigger: 'confirmAccount'});
     } catch (error: unknown) {
 
       if (Array.isArray((error as ErrorType)?.details)) {
@@ -93,22 +94,36 @@ export const Registration = () => {
   }, [formState]);
 
   const onPress = useCallback(() => {
-    navigate('SignIn')
+    navigate('SignIn',{showPasswordResetBanner: false});
   },[]);
 
-  const onTextChange = useCallback((a: Fields) => (e: string) =>{
+  const onTextChange = useCallback((field: Fields) => (e: string) =>{
+
     setFormState((previousFormState) => ({
       ...previousFormState,
       serverError: {
         ...previousFormState.serverError,
         isInvalid: false,
       },
-      [a]: {
-        ...previousFormState[a],
+      [field]: {
+        ...previousFormState[field],
         value: e,
         isInvalid: false,
     }
     }));
+
+    const liveValidatedRequirement = passwordRequirement.map(condition => {
+      if(condition.pattern.test(e)){
+        return ({
+          ...condition,
+          isEntered: true,
+        });
+      }
+      return ({...condition});
+    });
+
+    setPasswordRequirement(liveValidatedRequirement);
+
   },[]);
 
   return (
@@ -156,42 +171,21 @@ export const Registration = () => {
           {formState.serverError.isInvalid ? <SizableText color="red" size="$5">Email/Password incorrect. Try again!</SizableText>: <></>}
 
           {formState.password.value !== '' && <YStack>
-            <XStack gap="$2" paddingVertical="$2">
-              <Check color="green"/>
-              <Paragraph size="$5" paddingVertical="$1" color="green">
-                Must contain letter
-              </Paragraph>
-            </XStack>
-            <XStack gap="$2" paddingVertical="$2">
-              <Cross color="red"/>
-              <Paragraph size="$5" paddingVertical="$1" color="red">
-                Must contain digit
-              </Paragraph>
-            </XStack>
-            <XStack  gap="$2" paddingVertical="$2">
-              <Check color="green"/>
-              <Paragraph size="$5" paddingVertical="$1" color="green">
-                Must contain special character
-              </Paragraph>
-            </XStack>
-            <XStack gap="$2" paddingVertical="$2">
-              <Cross color="red"/>
-              <Paragraph size="$5" paddingVertical="$1" color="red">
-                Must contain uppercase
-              </Paragraph>
-            </XStack>
-            <XStack gap="$2" paddingVertical="$2">
-              <Check color="green"/>
-              <Paragraph size="$5" paddingVertical="$1" color="green">
-                Must contain 8 characters
-              </Paragraph>
-            </XStack>
+            {passwordRequirement.map(condition => (
+              <XStack gap="$2" paddingVertical="$2" key={condition.name}>
+                {condition.isEntered ?<Check color="green"/> : <Cross color="red" /> }
+                <Paragraph size="$5" paddingVertical="$1" color={condition.isEntered ? 'green' : 'red'}>
+                  {condition.message}
+                </Paragraph>
+              </XStack>
+            ))}
+
           </YStack>}
           <Button
             borderRadius="$8"
             size="$6"
             marginVertical="$3"
-            onPress={onBackPress}
+            onPress={onRegister}
           >
             {formState.isFormSubmitted ?<ActivityIndicator size="small" color="purple"/>: 'Register'}
           </Button>

@@ -1,22 +1,31 @@
 import {Button, Card, H3, Input, YStack} from "tamagui";
 import {useCallback, useState} from "react";
 import {useAuth} from "../../hooks";
-import {RouteProp, useNavigation} from "@react-navigation/native";
-import {RootStackParams} from "../../navigation/types";
+import {useNavigation} from "@react-navigation/native";
+import {CodeProps} from "../../navigation/types";
 
-export const ConfirmationCode = ({route}: { route: RouteProp<RootStackParams> }) => {
-  const {confirmUser} = useAuth();
+export const ConfirmationCode = ({route}: CodeProps) => {
+  const {confirmUser, passwordResetConfirmation} = useAuth();
   const [confirmationCode, setConfirmationCode] = useState<string>('');
+  const [newPassword, setNewPassword] = useState('');
   const {navigate} = useNavigation();
   const confirmAccount = useCallback(async (): Promise<void> => {
     try {
-      await confirmUser({username: route.params?.username ?? '', confirmationCode});
-      navigate('Welcome');
-    } catch (e) {
-    }
-  }, [confirmationCode])
-  return (
+      if(route.params.codeTrigger === 'confirmAccount') {
+        await confirmUser({username: route.params.username ?? '', confirmationCode});
+        navigate('SignIn', {showPasswordResetBanner: false});
+      } else {
+        await passwordResetConfirmation({username: route.params.username, confirmationCode, newPassword});
+        navigate('SignIn', {showPasswordResetBanner: true});
+      }
 
+
+    } catch (e) {
+      console.log('whats wrong', e)
+    }
+  }, [confirmationCode, newPassword]);
+
+  return (
     <YStack padding="$4">
       <Card
         elevate
@@ -40,7 +49,7 @@ export const ConfirmationCode = ({route}: { route: RouteProp<RootStackParams> })
           autoComplete="email"
           textContentType="username"
           disabled={route.params?.username !== ''}
-          opacity={route.params?.username !== '' ?0.6:1}
+          opacity={route.params?.username !== '' ? 0.6 : 1}
           value={route.params?.username}
         />
         <Input
@@ -51,8 +60,16 @@ export const ConfirmationCode = ({route}: { route: RouteProp<RootStackParams> })
           autoComplete="one-time-code"
           textContentType="username"
           keyboardType="number-pad"
-          onChangeText={(e) => setConfirmationCode(e)}
+          onChangeText={setConfirmationCode}
         />
+        {route.params.codeTrigger === 'passwordReset' ?  <Input
+          size="$6"
+          margin="$2"
+          placeholder="new password"
+          autoComplete="new-password"
+          textContentType="newPassword"
+          onChangeText={setNewPassword}
+        />:<></>}
         <Card.Footer>
           <Button
             flex={1}

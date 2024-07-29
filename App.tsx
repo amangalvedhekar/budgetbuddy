@@ -3,9 +3,10 @@ import {config} from "./tamagui.config";
 import {useColorScheme} from "react-native";
 import {StatusBar} from "expo-status-bar";
 import {AuthProvider} from "./src/contexts/";
-import {useCachedResources} from "./src/hooks/useCachedResources";
+import {useCachedResources} from "./src/hooks";
 import {Amplify} from "aws-amplify";
 import {RootNavigation} from "./src/navigation/stacks";
+
 Amplify.configure({
   Auth: {
     Cognito: {

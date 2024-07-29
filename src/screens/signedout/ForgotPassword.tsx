@@ -2,6 +2,7 @@ import {Button, Card, H2, Input, Paragraph, ScrollView, SizableText, YStack} fro
 import {useNavigation} from "@react-navigation/native";
 import {useCallback, useState} from "react";
 import Joi from "joi";
+import {useAuth} from "../../hooks";
 const emailValidation = Joi.object({
   email: Joi.string().required().email({tlds: false}),
 });
@@ -10,12 +11,14 @@ const defaultValue = {
   isInvalid: false,
 };
 export const ForgotPassword = () => {
+  const {passwordResetRequest} = useAuth();
   const {navigate} = useNavigation();
   const [email, setEmail] = useState(defaultValue);
   const handleOnPress = useCallback(async () => {
     try {
       await emailValidation.validateAsync({email: email.value});
-      navigate('Code', {username: email.value});
+      await passwordResetRequest({username: email.value});
+      navigate('Code', {username: email.value, codeTrigger: 'passwordReset'});
     } catch (e) {
       console.log(e, 'inside error block');
       setEmail((prevState) => ({

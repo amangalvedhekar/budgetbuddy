@@ -1,10 +1,9 @@
 import {useTheme} from "@react-navigation/native";
 import {useCallback} from "react";
-import {Button, Card, H4, YStack} from "tamagui";
 import {useAuth} from "../../hooks";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import {Account, Home as HomeIcon, History, Insights} from "../../icons";
-import {Home} from "../../screens/signedIn/Home";
+import {Home} from "../../screens";
 
 const SignedInStack = createBottomTabNavigator();
 
