@@ -6,10 +6,12 @@ import {ActivityIndicator} from "react-native";
 import {ErrorType, FormState} from "./Registration";
 import Joi from "joi";
 import {SignInProps} from "../../navigation/types";
+
 const validationSchema = Joi.object({
   email: Joi.string().required().email({tlds: false}),
   password: Joi.string().min(8).required().pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/),
 })
+
 export function SignIn({route}: SignInProps) {
   const {navigate} = useNavigation();
   const {logIn} = useAuth();
@@ -44,7 +46,7 @@ export function SignIn({route}: SignInProps) {
           console.log('coming')
           setFormState((formState) => ({...formState, email: {...formState.email, isInvalid: true}}));
         }
-      } else{
+      } else {
         console.log(JSON.stringify(error), 'hmm')
         setFormState((formState) => ({...formState, serverError: {...formState.email, isInvalid: true}}));
       }
@@ -56,20 +58,22 @@ export function SignIn({route}: SignInProps) {
   return (
     <ScrollView>
       <YStack padding="$4">
-        {route.params.showPasswordResetBanner ? <Card  elevate
-                                                       marginVertical="$3"
-                                                       borderRadius="$8"
-                                                       animation="bouncy"
-                                                       scale={0.9}
-                                                       backgroundColor="green"
-                                                       hoverStyle={{scale: 0.975}}
-                                                       pressStyle={{scale: 0.975}}>
-          <Card.Header>
-            <H4 size="$7" fontWeight="bold" >
-              Password reset successfully. Try Sign In using new password
-            </H4>
-          </Card.Header>
-        </Card>: <></>}
+        {route.params.showPasswordResetBanner
+          ? <Card
+            elevate
+            marginVertical="$3"
+            borderRadius="$8"
+            animation="bouncy"
+            scale={0.9}
+            backgroundColor="green"
+            hoverStyle={{scale: 0.975}}
+            pressStyle={{scale: 0.975}}>
+            <Card.Header>
+              <H4 size="$7" fontWeight="bold">
+                Password reset successfully. Try Sign In using new password
+              </H4>
+            </Card.Header>
+          </Card> : <></>}
         <Card
           elevate
           padded
@@ -92,32 +96,41 @@ export function SignIn({route}: SignInProps) {
             autoComplete="email"
             textContentType="username"
             value={formState.email.value}
-            {...(formState.email.isInvalid ? {borderColor:"red"}: {})}
-            onChangeText={(e) => setFormState((formState) => ({...formState, serverError: {...formState.serverError, isInvalid: false},email: {...formState.email, value: e, isInvalid: false}}))}
+            {...(formState.email.isInvalid ? {borderColor: "red"} : {})}
+            onChangeText={(e) => setFormState((formState) => ({
+              ...formState,
+              serverError: {...formState.serverError, isInvalid: false},
+              email: {...formState.email, value: e, isInvalid: false}
+            }))}
           />
-          {formState.email.isInvalid ? <SizableText color="red" size="$5">Email entered is invalid</SizableText> : <></>}
+          {formState.email.isInvalid ?
+            <SizableText color="red" size="$5">Email entered is invalid</SizableText> : <></>}
           <Paragraph size="$6" onPress={() => navigate('ForgotPassword')} textAlign="right">Forgot Password?</Paragraph>
           <Input
             placeholder="Password"
             marginVertical="$3"
             size="$6"
             secureTextEntry={true}
-            {...(formState.password.isInvalid ? {borderColor:"red"}: {})}
-            // textContentType="newPassword"
-            // autoComplete="new-password"
+            {...(formState.password.isInvalid ? {borderColor: "red"} : {})}
             value={formState.password.value}
-            onChangeText={(e) => setFormState((formState) => ({...formState, serverError: {...formState.serverError, isInvalid: false},password: {...formState.password, value: e, isInvalid: false}}))}
+            onChangeText={(e) => setFormState((formState) => ({
+              ...formState,
+              serverError: {...formState.serverError, isInvalid: false},
+              password: {...formState.password, value: e, isInvalid: false}
+            }))}
           />
 
-          {formState.password.isInvalid ? <SizableText color="red" size="$5">Password entered is invalid</SizableText>: <></>}
-          {formState.serverError.isInvalid ? <SizableText color="red" size="$5">Email/Password incorrect. Try again!</SizableText>: <></>}
+          {formState.password.isInvalid ?
+            <SizableText color="red" size="$5">Password entered is invalid</SizableText> : <></>}
+          {formState.serverError.isInvalid ?
+            <SizableText color="red" size="$5">Email/Password incorrect. Try again!</SizableText> : <></>}
           <Button
             borderRadius="$8"
             size="$6"
             marginVertical="$3"
             onPress={onBackPress}
           >
-            {formState.isFormSubmitted ?<ActivityIndicator size="small" color="purple"/>: 'Sign In'}
+            {formState.isFormSubmitted ? <ActivityIndicator size="small" color="purple"/> : 'Sign In'}
           </Button>
           <Card.Footer>
             {/*<Button*/}
@@ -128,7 +141,8 @@ export function SignIn({route}: SignInProps) {
             {/*>*/}
             {/*  Use Face Id*/}
             {/*</Button>*/}
-            <Paragraph size="$7" paddingVertical="$2" onPress={() => navigate('Register')}>New to BudgetBuddy? Register</Paragraph>
+            <Paragraph size="$7" paddingVertical="$2" onPress={() => navigate('Register')}>New to BudgetBuddy?
+              Register</Paragraph>
           </Card.Footer>
         </Card>
 
