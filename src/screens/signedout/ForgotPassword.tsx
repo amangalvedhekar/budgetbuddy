@@ -20,7 +20,6 @@ export const ForgotPassword = () => {
       await passwordResetRequest({username: email.value});
       navigate('Code', {username: email.value, codeTrigger: 'passwordReset'});
     } catch (e) {
-      console.log(e, 'inside error block');
       setEmail((prevState) => ({
         ...prevState,
         isInvalid: true,
