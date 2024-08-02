@@ -1,9 +1,7 @@
 import {useTheme} from "@react-navigation/native";
-import {useCallback} from "react";
-import {useAuth} from "../../hooks";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import {Account, Home as HomeIcon, History, Insights} from "../../icons";
-import {Home} from "../../screens";
+import {Account as AccountIcon, Home as HomeIcon, History, Insights} from "../../icons";
+import {Home, Account} from "../../screens";
 
 const SignedInStack = createBottomTabNavigator();
 
@@ -27,9 +25,9 @@ export const SignedInScreens = () => {
         options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Insights fill={colors.text}/>, }}
       />
       <SignedInStack.Screen
-        name="account"
-        component={Home}
-        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Account fill={colors.text}/>, }}
+        name="Account"
+        component={Account}
+        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <AccountIcon fill={colors.text}/>, }}
       />
     </SignedInStack.Navigator>
   );
