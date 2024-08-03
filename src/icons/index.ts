@@ -4,3 +4,4 @@ export * from './History';
 export * from './Insights';
 export * from './Check';
 export * from './Cross';
+export * from './Plus';

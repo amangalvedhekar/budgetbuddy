@@ -6,6 +6,8 @@ import {AuthProvider} from "./src/contexts/";
 import {useCachedResources} from "./src/hooks";
 import {Amplify} from "aws-amplify";
 import {RootNavigation} from "./src/navigation/stacks";
+import {BottomSheetModalProvider} from "@gorhom/bottom-sheet";
+import {GestureHandlerRootView} from "react-native-gesture-handler";
 
 Amplify.configure({
   Auth: {
@@ -25,11 +27,15 @@ export default function App() {
     return <></>;
   }
   return (
+    <GestureHandlerRootView style={{flex:1}}>
     <AuthProvider>
     <TamaguiProvider config={config} defaultTheme={scheme!}>
+      <BottomSheetModalProvider>
      <RootNavigation  scheme={scheme} />
       <StatusBar style="auto"/>
+      </BottomSheetModalProvider>
     </TamaguiProvider>
     </AuthProvider>
+    </GestureHandlerRootView>
   );
 }
