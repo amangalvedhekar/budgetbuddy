@@ -5,3 +5,5 @@ export * from './Insights';
 export * from './Check';
 export * from './Cross';
 export * from './Plus';
+export * from './ChevronDown';
+export * from './Filter';
