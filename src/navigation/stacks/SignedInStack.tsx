@@ -1,7 +1,14 @@
 import {useTheme} from "@react-navigation/native";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import {Account as AccountIcon, Home as HomeIcon, History, Insights} from "../../icons";
-import {Home, Account} from "../../screens";
+import {
+  Account as AccountIcon,
+  Home as HomeIcon,
+  History as HistoryIcon,
+  Insights as InsightIcon,
+  Plus,
+  Filter
+} from "../../icons";
+import {Home, Account, History, Insight, Add} from "../../screens";
 
 const SignedInStack = createBottomTabNavigator();
 
@@ -16,18 +23,34 @@ export const SignedInScreens = () => {
       />
       <SignedInStack.Screen
         name="History"
-        component={Home}
-        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <History fill={colors.text}/>, }}
+        component={History}
+        options={
+        {
+          tabBarLabelStyle: {
+            fontWeight: '600',
+            fontSize: 16},
+          tabBarIcon: ({focused}) => <HistoryIcon fill={focused ? colors.primary: colors.text}/>,
+          headerRight: () => <Filter fill={colors.text} />, headerRightContainerStyle: {paddingRight: 16}}}
       />
+
+        <SignedInStack.Screen
+          name="Add"
+          component={Add}
+          options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
+            tabBarIcon: ({focused}) => <Plus fill={focused ? colors.primary: colors.text}/> }}
+        />
+
       <SignedInStack.Screen
         name="Insights"
-        component={Home}
-        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <Insights fill={colors.text}/>, }}
+        component={Insight}
+        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
+          tabBarIcon: ({focused}) => <InsightIcon fill={focused ? colors.primary: colors.text}/>, }}
       />
       <SignedInStack.Screen
         name="Account"
         component={Account}
-        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <AccountIcon fill={colors.text}/>, }}
+        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
+          tabBarIcon: ({focused}) => <AccountIcon fill={focused ? colors.primary: colors.text}/>, }}
       />
     </SignedInStack.Navigator>
   );

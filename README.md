@@ -9,3 +9,14 @@
 - AWS CDK
 - Typescript
 - EAS
+
+```typescript
+const transaction = {
+  createdDate: Date,
+  modifiedDate: Date,
+  transactionType: '',
+  amount: '',
+  currency: '',
+  description: '',
+};
+```

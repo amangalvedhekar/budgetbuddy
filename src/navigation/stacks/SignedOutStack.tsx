@@ -5,7 +5,7 @@ import {
   ConfirmationCode,
   ForgotPassword,
   SignIn
-} from "../../screens/signedout";
+} from "../../screens";
 
 const SignedOutStack = createStackNavigator<RootStackParams>();
 

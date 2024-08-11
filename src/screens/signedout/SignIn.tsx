@@ -58,7 +58,7 @@ export function SignIn({route}: SignInProps) {
   return (
     <ScrollView>
       <YStack padding="$4">
-        {route.params.showPasswordResetBanner
+        {route.params?.showPasswordResetBanner
           ? <Card
             elevate
             marginVertical="$3"
