@@ -15,7 +15,7 @@ const SignedInStack = createBottomTabNavigator();
 export const SignedInScreens = () => {
   const {colors} = useTheme();
   return (
-    <SignedInStack.Navigator>
+    <SignedInStack.Navigator screenOptions={{headerTitleAlign: 'center'}}>
       <SignedInStack.Screen
         name="Home"
         component={Home}

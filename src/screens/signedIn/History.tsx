@@ -72,7 +72,7 @@ const transactionList = [
   },
 ];
 // ToDo - Add types
-const RenderItem = ({item}: any) => (
+const RenderItem = ({item, onPress}: any) => (
   <Card elevate
         margin="$2"
         borderRadius="$8"
@@ -81,6 +81,7 @@ const RenderItem = ({item}: any) => (
         scale={0.9}
         hoverStyle={{scale: 0.975}}
         pressStyle={{scale: 0.975}}
+        onPress={onPress}
   >
     <Card.Header>
       <XStack justifyContent="space-between" flex={1} flexWrap="wrap">
@@ -98,13 +99,13 @@ export const History = ({navigation}: any) => {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   // variables
-  const snapPoints = useMemo(() => ['35%', '35%'], []);
+  const snapPoints = useMemo(() => ['45%', '45%'], []);
 
   // callbacks
   const handlePresentModalPress = useCallback(() => {
     console.log('coming here')
     bottomSheetModalRef.current?.present();
-  }, [bottomSheetModalRef]);
+  }, []);
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
   }, []);
@@ -123,7 +124,7 @@ export const History = ({navigation}: any) => {
     navigation.setOptions({
       headerRight: () => <Filter fill={colors.text} onPress={handlePresentModalPress}/>
     });
-  }, [navigation])
+  }, [navigation, bottomSheetModalRef]);
   return (
     <>
       <Card
@@ -144,13 +145,33 @@ export const History = ({navigation}: any) => {
           </XStack>
         </Card.Header>
       </Card>
-      <FlatList data={transactionList} renderItem={RenderItem}/>
+      <FlatList data={transactionList} renderItem={({item}) => <RenderItem item={item} onPress={handlePresentModalPress}/>}/>
       <BottomSheetModal ref={bottomSheetModalRef} index={1}
                         backdropComponent={renderBackdrop}
                         snapPoints={snapPoints}
                         onChange={handleSheetChanges}
                         backgroundStyle={{backgroundColor: useTheme()?.background?.get()}}>
-        <H2 textAlign="center">Filter</H2>
+       <H2 textAlign="center">Details</H2>
+        <XStack justifyContent="space-between" alignItems="center">
+          <H4 textWrap="wrap">
+            Date
+          </H4>
+          <Paragraph size="$8">August 11, 2024</Paragraph>
+        </XStack>
+        <Separator minBlockSize="$2"/>
+        <XStack justifyContent="space-between">
+          <H4 textWrap="wrap">
+            Added by
+          </H4>
+          <Paragraph size="$8">amangalvedhekar@icloud.com</Paragraph>
+        </XStack>
+        <Separator minBlockSize="$2"/>
+        <XStack justifyContent="space-between">
+          <H4 textWrap="wrap">
+           Type
+          </H4>
+          <Paragraph size="$8">Dividend</Paragraph>
+        </XStack>
       </BottomSheetModal>
     </>
   );
