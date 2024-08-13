@@ -19,7 +19,7 @@ export const SignedInScreens = () => {
       <SignedInStack.Screen
         name="Home"
         component={Home}
-        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: () => <HomeIcon fill={colors.text}/>, }}
+        options={{tabBarLabelStyle: {fontWeight: '600', fontSize: 16},tabBarIcon: ({focused}) => <HomeIcon fill={focused ? colors.primary: colors.text}/>, }}
       />
       <SignedInStack.Screen
         name="History"

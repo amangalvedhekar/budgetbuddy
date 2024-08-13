@@ -1,7 +1,7 @@
 import {FlatList} from "react-native";
 import {useTheme as navigationTheme} from "@react-navigation/native";
-import {Card, H2, H4, Paragraph, Separator, useTheme, XStack} from "tamagui";
-import {ChevronDown} from "../../icons";
+import {Card, H2, H4, Paragraph, Separator, useTheme, XStack, YStack} from "tamagui";
+
 import {JSX, useCallback, useEffect, useMemo, useRef} from "react";
 import {BottomSheetBackdrop, BottomSheetModal} from "@gorhom/bottom-sheet";
 import {
@@ -152,6 +152,7 @@ export const History = ({navigation}: any) => {
                         onChange={handleSheetChanges}
                         backgroundStyle={{backgroundColor: useTheme()?.background?.get()}}>
        <H2 textAlign="center">Details</H2>
+        <YStack marginHorizontal="$2">
         <XStack justifyContent="space-between" alignItems="center">
           <H4 textWrap="wrap">
             Date
@@ -163,7 +164,7 @@ export const History = ({navigation}: any) => {
           <H4 textWrap="wrap">
             Added by
           </H4>
-          <Paragraph size="$8">amangalvedhekar@icloud.com</Paragraph>
+          <Paragraph size="$8" textWrap="wrap">amangalvedhekar@icloud.com</Paragraph>
         </XStack>
         <Separator minBlockSize="$2"/>
         <XStack justifyContent="space-between">
@@ -172,6 +173,7 @@ export const History = ({navigation}: any) => {
           </H4>
           <Paragraph size="$8">Dividend</Paragraph>
         </XStack>
+        </YStack>
       </BottomSheetModal>
     </>
   );
