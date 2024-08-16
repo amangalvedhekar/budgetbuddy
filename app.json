@@ -24,6 +24,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1c2c72f9-b2a1-4851-9703-caf6687333ec"
+      }
+    },
+    "owner": "anirudhm"
   }
 }

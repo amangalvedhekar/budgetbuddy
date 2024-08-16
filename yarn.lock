@@ -156,7 +156,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-amplify/react-native@npm:^1.1.1":
+"@aws-amplify/react-native@npm:1.1.4":
   version: 1.1.4
   resolution: "@aws-amplify/react-native@npm:1.1.4"
   dependencies:
@@ -7052,7 +7052,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "budgetbuddy@workspace:."
   dependencies:
-    "@aws-amplify/react-native": "npm:^1.1.1"
+    "@aws-amplify/react-native": "npm:1.1.4"
     "@babel/core": "npm:^7.20.0"
     "@gorhom/bottom-sheet": "npm:^4"
     "@react-native-async-storage/async-storage": "npm:^1.23.1"
@@ -7070,8 +7070,8 @@ __metadata:
     "@types/react": "npm:~18.2.45"
     aws-amplify: "npm:^6.3.8"
     burnt: "npm:^0.12.2"
-    expo: "npm:~51.0.18"
-    expo-dev-client: "npm:~4.0.19"
+    expo: "npm:51.0.24"
+    expo-dev-client: "npm:4.0.21"
     expo-splash-screen: "npm:~0.27.5"
     expo-status-bar: "npm:~1.12.1"
     expo-system-ui: "npm:~3.0.7"
@@ -8730,7 +8730,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-dev-client@npm:~4.0.19":
+"expo-dev-client@npm:4.0.21":
   version: 4.0.21
   resolution: "expo-dev-client@npm:4.0.21"
   dependencies:
@@ -8892,7 +8892,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:~51.0.18":
+"expo@npm:51.0.24":
   version: 51.0.24
   resolution: "expo@npm:51.0.24"
   dependencies:

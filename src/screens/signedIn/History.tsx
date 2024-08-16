@@ -8,69 +8,8 @@ import {
   BottomSheetDefaultBackdropProps
 } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types";
 import {Filter} from "../../icons";
+import {useTransactions} from "../../hooks";
 
-const transactionList = [
-  {
-    amount: 1234.330,
-    description: 'Insanely big description, cant belive it is this long but it is this long and it just keeps growing',
-    type: 'Expense',
-  },
-  {
-    amount: 200988804.3,
-    description: 'Dividend from VDY',
-    type: 'Income',
-  },
-  {
-    amount: 20.3,
-    description: 'Dividend from VDY',
-    type: 'Income',
-  },
-  {
-    amount: 20.3,
-    description: 'Dividend from VDY',
-    type: 'Income',
-  },
-  {
-    amount: 20.3,
-    description: 'Dividend from VDY',
-    type: 'Income',
-  },
-  {
-    amount: 20.44,
-    description: 'Subscription - Apple One',
-    type: 'Expense',
-  },
-  {
-    amount: 20.44,
-    description: 'Subscription - Sportsnet',
-    type: 'Expense',
-  },
-  {
-    amount: 20.44,
-    description: 'Subscription - Apple One',
-    type: 'Expense',
-  },
-  {
-    amount: 20.44,
-    description: 'Very long description name, how will this look',
-    type: 'Expense',
-  },
-  {
-    amount: 20.44,
-    description: 'Very long description name, how will this look',
-    type: 'Expense',
-  },
-  {
-    amount: 20.44,
-    description: 'Very long description name, how will this look',
-    type: 'Expense',
-  },
-  {
-    amount: 365089.88,
-    description: 'Very long description name, how will this look',
-    type: 'Expense',
-  },
-];
 // ToDo - Add types
 const RenderItem = ({item, onPress}: any) => (
   <Card elevate
@@ -95,6 +34,7 @@ const RenderItem = ({item, onPress}: any) => (
   </Card>
 );
 export const History = ({navigation}: any) => {
+  const {transactions} = useTransactions();
   // ref
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -145,34 +85,36 @@ export const History = ({navigation}: any) => {
           </XStack>
         </Card.Header>
       </Card>
-      <FlatList data={transactionList} renderItem={({item}) => <RenderItem item={item} onPress={handlePresentModalPress}/>}/>
-      <BottomSheetModal ref={bottomSheetModalRef} index={1}
-                        backdropComponent={renderBackdrop}
-                        snapPoints={snapPoints}
-                        onChange={handleSheetChanges}
-                        backgroundStyle={{backgroundColor: useTheme()?.background?.get()}}>
-       <H2 textAlign="center">Details</H2>
+      <FlatList data={transactions}
+                renderItem={({item}) => <RenderItem item={item} onPress={handlePresentModalPress}/>}/>
+      <BottomSheetModal
+        ref={bottomSheetModalRef} index={1}
+        backdropComponent={renderBackdrop}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}
+        backgroundStyle={{backgroundColor: useTheme()?.background?.get()}}>
+        <H2 textAlign="center">Details</H2>
         <YStack marginHorizontal="$2">
-        <XStack justifyContent="space-between" alignItems="center">
-          <H4 textWrap="wrap">
-            Date
-          </H4>
-          <Paragraph size="$8">August 11, 2024</Paragraph>
-        </XStack>
-        <Separator minBlockSize="$2"/>
-        <XStack justifyContent="space-between">
-          <H4 textWrap="wrap">
-            Added by
-          </H4>
-          <Paragraph size="$8" textWrap="wrap">amangalvedhekar@icloud.com</Paragraph>
-        </XStack>
-        <Separator minBlockSize="$2"/>
-        <XStack justifyContent="space-between">
-          <H4 textWrap="wrap">
-           Type
-          </H4>
-          <Paragraph size="$8">Dividend</Paragraph>
-        </XStack>
+          <XStack justifyContent="space-between" alignItems="center">
+            <H4 textWrap="wrap">
+              Date
+            </H4>
+            <Paragraph size="$8">August 11, 2024</Paragraph>
+          </XStack>
+          <Separator minBlockSize="$2"/>
+          <XStack justifyContent="space-between">
+            <H4 textWrap="wrap">
+              Added by
+            </H4>
+            <Paragraph size="$8" textWrap="wrap">amangalvedhekar@icloud.com</Paragraph>
+          </XStack>
+          <Separator minBlockSize="$2"/>
+          <XStack justifyContent="space-between">
+            <H4 textWrap="wrap">
+              Type
+            </H4>
+            <Paragraph size="$8">Dividend</Paragraph>
+          </XStack>
         </YStack>
       </BottomSheetModal>
     </>
