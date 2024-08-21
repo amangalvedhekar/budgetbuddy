@@ -117,6 +117,7 @@ export const History = ({navigation}: any) => {
           </XStack>
         </YStack>
       </BottomSheetModal>
+
     </>
   );
 }

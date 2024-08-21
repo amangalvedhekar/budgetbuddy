@@ -1,7 +1,21 @@
-import {Button, Card, H1, H4, Input, Label, RadioGroup, Separator, useTheme, XStack, YStack} from "tamagui";
+import {
+  Button,
+  Card,
+  H1,
+  H4,
+  Input,
+  Label,
+  RadioGroup,
+  ScrollView,
+  Separator,
+  Text,
+  useTheme,
+  XStack,
+  YStack
+} from "tamagui";
 import {ChevronDown, Cross, Plus} from "../../icons";
 import {JSX, useCallback, useMemo, useRef, useState} from "react";
-import {BottomSheetBackdrop, BottomSheetModal} from "@gorhom/bottom-sheet";
+import {BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView} from "@gorhom/bottom-sheet";
 import {
   BottomSheetDefaultBackdropProps
 } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types";
@@ -9,20 +23,26 @@ import {Keyboard, KeyboardAvoidingView, TextInput} from "react-native";
 import {useTransactions} from "../../hooks";
 import {Transaction} from "../../contexts/Transactions/types";
 import {useFocusEffect} from "@react-navigation/native";
+
 const defaultInitialTransaction: Transaction = {
   description: '',
   amount: 0,
   type: 'Income',
+  category: 'Pay Cheque'
 }
+
+const income = ['Dividend', 'Bonus', 'Pay Cheque'];
+const expense = ['Grocery', 'Internet', 'Rent', 'Uber', 'DoorDash', 'Medicines', 'Insurance', 'Subscriptions', 'Others', 'Grooming', 'Restaurant'];
 export const Add = () => {
   // ref
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
+  const anotherSheet = useRef<BottomSheetModal>(null);
   // variables
   const snapPoints = useMemo(() => ['45%', '45%'], []);
+  const anotherSnapPoints = useMemo(() => ['65%', '65%'], []);
 
   // callbacks
-  const handlePresentModalPress = useCallback((e: any| undefined) => {
+  const handlePresentModalPress = useCallback((e: any | undefined) => {
     setTransaction((prev) => ({...prev, amount: e?.nativeEvent?.text}))
     bottomSheetModalRef.current?.present();
   }, []);
@@ -46,7 +66,7 @@ export const Add = () => {
   const amountRef = useRef<TextInput>(null);
   useFocusEffect(useCallback(() => {
     setShowBanner(false);
-  },[]));
+  }, []));
   return (
     <KeyboardAvoidingView>
       {showBanner ? <Card
@@ -96,11 +116,22 @@ export const Add = () => {
           iconAfter={() => <ChevronDown color={useTheme().color?.get()}/>}
           onPress={() => {
             Keyboard.dismiss();
-            // @ts-expect-error
-            handlePresentModalPress();
+            bottomSheetModalRef.current?.present();
           }}
         >
           {transaction.type}
+        </Button>
+        <Button
+          borderRadius="$8"
+          size="$6"
+          margin="$2"
+          iconAfter={() => <ChevronDown color={useTheme().color?.get()}/>}
+          onPress={() => {
+            Keyboard.dismiss();
+            bottomSheetModalRef.current?.present();
+          }}
+        >
+         {transaction.category}
         </Button>
         <Button
           borderRadius="$8"
@@ -132,18 +163,19 @@ export const Add = () => {
             defaultValue="Expense"
             value={transaction.type}
             onPress={() => {
-            bottomSheetModalRef?.current?.dismiss();
-          }}
+              bottomSheetModalRef?.current?.dismiss();
+            }}
 
           >
             <XStack alignItems="center" margin="$2">
               <RadioGroup.Item value="Expense" size="$6" margin="$2" onPress={() => {
                 bottomSheetModalRef?.current?.dismiss();
                 setTransaction((prev) => ({...prev, type: 'Expense'}));
+                anotherSheet?.current?.present('Expense');
               }}>
                 <RadioGroup.Indicator/>
               </RadioGroup.Item>
-              <Label size="$6" >
+              <Label size="$6">
                 Expense
               </Label>
             </XStack>
@@ -152,6 +184,7 @@ export const Add = () => {
               <RadioGroup.Item value="Income" size="$6" margin="$2" onPress={() => {
                 bottomSheetModalRef?.current?.dismiss();
                 setTransaction((prev) => ({...prev, type: 'Income'}));
+                anotherSheet?.current?.present('Income');
               }}>
                 <RadioGroup.Indicator/>
               </RadioGroup.Item>
@@ -160,6 +193,47 @@ export const Add = () => {
               </Label>
             </XStack>
           </RadioGroup>
+        </BottomSheetModal>
+        <BottomSheetModal
+          ref={anotherSheet}
+          index={1}
+          backdropComponent={renderBackdrop}
+          snapPoints={anotherSnapPoints}
+          backgroundStyle={{backgroundColor: useTheme()?.background?.get()}}>
+
+          {(data) =>
+            <BottomSheetScrollView>
+              <XStack justifyContent="center">
+                <H4>
+                  {data?.data} - Categories
+                </H4>
+              </XStack>
+              <RadioGroup
+                value={transaction.category}
+                onPress={() => {
+                  anotherSheet?.current?.dismiss();
+                }}
+
+              >
+                {
+                  [...(data?.data === 'Income' ? income : expense)].map(item => (
+                    <XStack alignItems="center" margin="$2" key={item}>
+                      <RadioGroup.Item value={item} size="$6" margin="$2" onPress={() => {
+                        bottomSheetModalRef?.current?.dismiss();
+                        setTransaction((prev) => ({...prev, category: item}));
+                        anotherSheet?.current?.close();
+                      }}
+                      >
+                        <RadioGroup.Indicator/>
+                      </RadioGroup.Item>
+                      <Label size="$6">
+                        {item}
+                      </Label>
+                    </XStack>))
+                }
+              </RadioGroup>
+            </BottomSheetScrollView>
+          }
         </BottomSheetModal>
       </YStack>
     </KeyboardAvoidingView>

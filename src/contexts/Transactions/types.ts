@@ -12,7 +12,7 @@ export type Transaction = {
   description: string;
   amount: number;
   type: TransactionType;
-
+  category: string;
 }
 
 export type TransactionProviderProps = {
