@@ -2,12 +2,12 @@ import {FlatList} from "react-native";
 import {useTheme as navigationTheme} from "@react-navigation/native";
 import {Card, H2, H4, Paragraph, Separator, useTheme, XStack, YStack} from "tamagui";
 
-import {JSX, useCallback, useEffect, useMemo, useRef} from "react";
+import {JSX, useCallback, useMemo, useRef} from "react";
 import {BottomSheetBackdrop, BottomSheetModal} from "@gorhom/bottom-sheet";
 import {
   BottomSheetDefaultBackdropProps
 } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types";
-import {Filter} from "../../icons";
+
 import {useTransactions} from "../../hooks";
 
 // ToDo - Add types
@@ -60,11 +60,7 @@ export const History = ({navigation}: any) => {
     []
   );
   const {colors} = navigationTheme();
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => <Filter fill={colors.text} onPress={handlePresentModalPress}/>
-    });
-  }, [navigation, bottomSheetModalRef]);
+
   return (
     <>
       <Card

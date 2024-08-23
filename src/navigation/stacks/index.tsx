@@ -18,7 +18,6 @@ export const RootNavigation = ({scheme}: any) => {
           }
           <DefaultStack.Screen name="Categories" component={Home} options={{presentation: 'modal', headerShown:true, headerLeft: () => <></>}}/>
         </DefaultStack.Navigator>
-        {/*{ab != null ? <SignedInScreens />: <SignedOutScreens />}*/}
       </NavigationContainer>
     </>
   );

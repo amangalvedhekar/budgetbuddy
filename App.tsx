@@ -30,14 +30,12 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{flex:1}}>
     <AuthProvider>
-      <TransactionProvider>
     <TamaguiProvider config={config} defaultTheme={scheme!}>
       <BottomSheetModalProvider>
      <RootNavigation  scheme={scheme} />
       <StatusBar style="auto"/>
       </BottomSheetModalProvider>
     </TamaguiProvider>
-      </TransactionProvider>
     </AuthProvider>
     </GestureHandlerRootView>
   );

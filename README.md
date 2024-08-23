@@ -15,6 +15,7 @@ const transaction = {
   createdDate: Date,
   modifiedDate: Date,
   transactionType: '',
+  categoryType: '',
   amount: '',
   currency: '',
   description: '',

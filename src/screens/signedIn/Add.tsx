@@ -128,7 +128,7 @@ export const Add = () => {
           iconAfter={() => <ChevronDown color={useTheme().color?.get()}/>}
           onPress={() => {
             Keyboard.dismiss();
-            bottomSheetModalRef.current?.present();
+            anotherSheet?.current?.present();
           }}
         >
          {transaction.category}
