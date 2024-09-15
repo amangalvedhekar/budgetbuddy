@@ -23,6 +23,7 @@ import {Keyboard, KeyboardAvoidingView, TextInput} from "react-native";
 import {useTransactions} from "../../hooks";
 import {Transaction} from "../../contexts/Transactions/types";
 import {useFocusEffect} from "@react-navigation/native";
+import {useSQLiteContext} from "expo-sqlite";
 
 const defaultInitialTransaction: Transaction = {
   description: '',
@@ -40,7 +41,12 @@ export const Add = () => {
   // variables
   const snapPoints = useMemo(() => ['45%', '45%'], []);
   const anotherSnapPoints = useMemo(() => ['65%', '65%'], []);
-
+  const db = useSQLiteContext();
+  console.log(db, 'hmm')
+  // (async () => {
+  //   const lol = await getAllAsync('SELECT * FROM Categories')
+  //   console.log(lol, 'hmm')
+  // })();
   // callbacks
   const handlePresentModalPress = useCallback((e: any | undefined) => {
     setTransaction((prev) => ({...prev, amount: e?.nativeEvent?.text}))
