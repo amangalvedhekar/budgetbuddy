@@ -41,12 +41,6 @@ export const Add = () => {
   // variables
   const snapPoints = useMemo(() => ['45%', '45%'], []);
   const anotherSnapPoints = useMemo(() => ['65%', '65%'], []);
-  const db = useSQLiteContext();
-  console.log(db, 'hmm')
-  // (async () => {
-  //   const lol = await getAllAsync('SELECT * FROM Categories')
-  //   console.log(lol, 'hmm')
-  // })();
   // callbacks
   const handlePresentModalPress = useCallback((e: any | undefined) => {
     setTransaction((prev) => ({...prev, amount: e?.nativeEvent?.text}))

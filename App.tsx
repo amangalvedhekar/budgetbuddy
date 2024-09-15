@@ -16,7 +16,10 @@ import {documentDirectory, downloadAsync, getInfoAsync, makeDirectoryAsync} from
 import {Asset} from "expo-asset";
 import {useEffect, useState} from "react";
 import migrations from './drizzle/migrations';
-import {SQLiteProvider} from "expo-sqlite/next";
+import {Categories, TransactionTypes} from "./schema";
+import {isNotNull} from "drizzle-orm";
+import {transactionTypes} from "./src/utils";
+import {categories} from "./src/utils/categories";
 
 Amplify.configure({
   Auth: {
@@ -41,7 +44,6 @@ const loadDb = async () => {
       { intermediates: true }
     );
     await downloadAsync(dbUri, dbFilePath);
-    // migrate(dbUri)
   }
 }
 export default function App() {
@@ -49,15 +51,24 @@ export default function App() {
   const [isDbLoaded, setIsDbLoaded] = useState(false);
   const db = drizzle(expo);
   useDrizzleStudio(expo);
-  const x = useMigrations(db, migrations);
+  useMigrations(db, migrations);
   const scheme = useColorScheme();
   useEffect(() => {
     (async () => {
       try {
         await loadDb();
+        const transactionTypeLists = await db.select().from(TransactionTypes).where(isNotNull(TransactionTypes.transactionName));
+        const categoryLists = await db.select().from(Categories).where(isNotNull(Categories.categoryName));
+        if(Array.isArray(transactionTypeLists) && transactionTypeLists.length === 0) {
+          await db.insert(TransactionTypes).values(transactionTypes);
+        }
+        if(Array.isArray(categoryLists) && categoryLists.length === 0) {
+          await db.insert(Categories).values(categories)
+        }
+
         setIsDbLoaded(true);
       } catch (e) {
-        console.log(e, 'hmmmmmm')
+
       }
 
     })();
@@ -72,9 +83,7 @@ export default function App() {
     <AuthProvider>
     <TamaguiProvider config={config} defaultTheme={scheme!}>
       <BottomSheetModalProvider>
-        <SQLiteProvider databaseName="mySQLiteDB.db" >
      <RootNavigation  scheme={scheme} />
-        </SQLiteProvider>
       <StatusBar style="auto"/>
       </BottomSheetModalProvider>
     </TamaguiProvider>
