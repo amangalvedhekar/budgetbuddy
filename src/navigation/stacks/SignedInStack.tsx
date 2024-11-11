@@ -10,6 +10,7 @@ import {
 } from "../../icons";
 import {Home, Account, History, Insight, Add} from "../../screens";
 import {TransactionProvider} from "../../contexts";
+import {AccountStackScreens} from "./AccountStack";
 
 const SignedInStack = createBottomTabNavigator();
 
@@ -58,10 +59,11 @@ export const SignedInScreens = () => {
         />
         <SignedInStack.Screen
           name="Account"
-          component={Account}
+          component={AccountStackScreens}
           options={{
             tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
             tabBarIcon: ({focused}) => <AccountIcon fill={focused ? colors.primary : colors.text}/>,
+
           }}
         />
       </SignedInStack.Navigator>

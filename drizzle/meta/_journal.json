@@ -8,6 +8,20 @@
       "when": 1725395667079,
       "tag": "0000_true_lake",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1730849149835,
+      "tag": "0001_dizzy_alex_power",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1730849390714,
+      "tag": "0002_secret_robbie_robertson",
+      "breakpoints": true
     }
   ]
 }

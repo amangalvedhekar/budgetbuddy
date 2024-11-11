@@ -1,6 +1,6 @@
 import {TamaguiProvider} from "tamagui";
 import {config} from "./tamagui.config";
-import {useColorScheme} from "react-native";
+import {useColorScheme, Text} from "react-native";
 import {StatusBar} from "expo-status-bar";
 import {AuthProvider} from "./src/contexts/";
 import {useCachedResources} from "./src/hooks";
@@ -20,6 +20,7 @@ import {Categories, TransactionTypes} from "./schema";
 import {isNotNull} from "drizzle-orm";
 import {transactionTypes} from "./src/utils";
 import {categories} from "./src/utils/categories";
+import {useDb} from "./src/hooks/useDb";
 
 Amplify.configure({
   Auth: {
@@ -31,63 +32,43 @@ Amplify.configure({
     },
   }
 })
-const loadDb = async () => {
-  const dbName = "mySQLiteDB.db";
-  const dbAsset = require("./assets/budgetBuddy.db");
-  const dbUri = Asset.fromModule(dbAsset).uri;
-  const dbFilePath = `${documentDirectory}SQLite/${dbName}`;
 
-  const fileInfo = await getInfoAsync(dbFilePath);
-  if (!fileInfo.exists) {
-    await makeDirectoryAsync(
-      `${documentDirectory}SQLite`,
-      { intermediates: true }
-    );
-    await downloadAsync(dbUri, dbFilePath);
-  }
-}
 export default function App() {
-  const expo = openDatabaseSync("mySQLiteDB.db");
-  const [isDbLoaded, setIsDbLoaded] = useState(false);
-  const db = drizzle(expo);
-  useDrizzleStudio(expo);
-  useMigrations(db, migrations);
   const scheme = useColorScheme();
-  useEffect(() => {
-    (async () => {
-      try {
-        await loadDb();
-        const transactionTypeLists = await db.select().from(TransactionTypes).where(isNotNull(TransactionTypes.transactionName));
-        const categoryLists = await db.select().from(Categories).where(isNotNull(Categories.categoryName));
-        if(Array.isArray(transactionTypeLists) && transactionTypeLists.length === 0) {
-          await db.insert(TransactionTypes).values(transactionTypes);
-        }
-        if(Array.isArray(categoryLists) && categoryLists.length === 0) {
-          await db.insert(Categories).values(categories)
-        }
-
-        setIsDbLoaded(true);
-      } catch (e) {
-
-      }
-
-    })();
-  },[])
-  const isLoadingComplete = useCachedResources();
-  if (!isLoadingComplete || !isDbLoaded) {
-    return <></>;
-  }
+  // const {db} = useDb();
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const transactionTypeLists = await db.select().from(TransactionTypes).where(isNotNull(TransactionTypes.transactionName));
+  //       const categoryLists = await db.select().from(Categories).where(isNotNull(Categories.categoryName));
+  //       if(Array.isArray(transactionTypeLists) && transactionTypeLists.length === 0) {
+  //         await db.insert(TransactionTypes).values(transactionTypes);
+  //       }
+  //       if(Array.isArray(categoryLists) && categoryLists.length === 0) {
+  //         await db.insert(Categories).values(categories)
+  //       }
+  //     } catch (e) {
+  //
+  //     }
+  //
+  //   })();
+  // },[])
+  // const isLoadingComplete = useCachedResources();
+  // if (!isLoadingComplete) {
+  //   return <></>;
+  // }
 
   return (
     <GestureHandlerRootView style={{flex:1}}>
-    <AuthProvider>
-    <TamaguiProvider config={config} defaultTheme={scheme!}>
-      <BottomSheetModalProvider>
-     <RootNavigation  scheme={scheme} />
-      <StatusBar style="auto"/>
-      </BottomSheetModalProvider>
-    </TamaguiProvider>
-    </AuthProvider>
+    {/*<AuthProvider>*/}
+    {/*<TamaguiProvider config={config} defaultTheme={scheme!}>*/}
+    {/*  <BottomSheetModalProvider>*/}
+    {/* <RootNavigation  scheme={scheme} />*/}
+    {/*  <StatusBar style="auto"/>*/}
+    {/*  </BottomSheetModalProvider>*/}
+    {/*</TamaguiProvider>*/}
+    {/*</AuthProvider>*/}
+      <Text>aloha</Text>
     </GestureHandlerRootView>
   );
 }

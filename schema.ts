@@ -1,7 +1,7 @@
 // import { sql, } from "drizzle-orm";
 import {sqliteTable, text, integer, real,} from "drizzle-orm/sqlite-core";
 
-export const TransactionTypes = sqliteTable('TransactionTypes',{
+export const TransactionTypes = sqliteTable('TransactionType',{
   transactionName: text('transactionName').notNull().unique(),
   id: text('id').notNull().primaryKey(),
 });
