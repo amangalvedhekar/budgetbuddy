@@ -8,7 +8,13 @@ import {Amplify} from "aws-amplify";
 import {RootNavigation} from "./src/navigation/stacks";
 import {BottomSheetModalProvider} from "@gorhom/bottom-sheet";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
-
+import {useEffect} from "react";
+import migrations from './drizzle/migrations';
+import {Categories, TransactionTypes} from "./schema";
+import {isNotNull} from "drizzle-orm";
+import {transactionTypes} from "./src/utils/transactionTypes";
+import {categories} from "./src/utils/categories";
+import {useDb} from "./src/hooks/useDb";
 Amplify.configure({
   Auth: {
     Cognito: {
@@ -22,6 +28,25 @@ Amplify.configure({
 export default function App() {
 
   const scheme = useColorScheme();
+
+  const {db} = useDb();
+  useEffect(() => {
+    (async () => {
+      try {
+        const transactionTypeLists = await db.select().from(TransactionTypes).where(isNotNull(TransactionTypes.transactionName));
+        const categoryLists = await db.select().from(Categories).where(isNotNull(Categories.categoryName));
+        if(Array.isArray(transactionTypeLists) && transactionTypeLists.length === 0) {
+          await db.insert(TransactionTypes).values(transactionTypes);
+        }
+        if(Array.isArray(categoryLists) && categoryLists.length === 0) {
+          await db.insert(Categories).values(categories)
+        }
+      } catch (e) {
+
+      }
+
+    })();
+  },[])
   const isLoadingComplete = useCachedResources();
   if (!isLoadingComplete) {
     return <></>;
