@@ -9,7 +9,6 @@ import {RootNavigation} from "./src/navigation/stacks";
 import {BottomSheetModalProvider} from "@gorhom/bottom-sheet";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import {useEffect} from "react";
-import migrations from './drizzle/migrations';
 import {Categories, TransactionTypes} from "./schema";
 import {isNotNull} from "drizzle-orm";
 import {transactionTypes} from "./src/utils/transactionTypes";
