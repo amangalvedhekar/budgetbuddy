@@ -8,8 +8,8 @@ const useDb = () => {
   const expo = openDatabaseSync("mySQLiteDB.db");
   const db = drizzle(expo);
   useDrizzleStudio(expo);
-  useMigrations(db, migrations);
-
+  const mig = useMigrations(db, migrations);
+console.log(mig, 'what is it')
   return {
     db,
   }

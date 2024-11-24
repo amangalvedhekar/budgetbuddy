@@ -1,13 +1,17 @@
-import {Avatar, Button, Card, H4, Paragraph, XStack, YStack} from "tamagui";
+import {Avatar, Button, Card, H4, XStack, YStack} from "tamagui";
 import {useAuth} from "../../hooks";
-import {useCallback} from "react";
+import {useCallback, useState} from "react";
+import {useNavigation} from "@react-navigation/native";
 
 export const Account = () => {
   const {ab, logout} = useAuth();
+  const {navigate} = useNavigation();
   const onBackPress = useCallback(async () => {
     await logout();
   },[]);
-
+  const handlePress = () => {
+    navigate('Categories');
+  }
   return  (
     <YStack justifyContent="flex-start" flex={1} padding="$4">
       <Card
@@ -21,13 +25,12 @@ export const Account = () => {
       >
         <Card.Header>
           <YStack  alignItems="center">
-          <Avatar circular size="$14">
-            <Avatar.Image
-              accessibilityLabel="Cam"
-              src="https://images.unsplash.com/photo-1531384441138-2736e62e0919?&w=100&h=100&dpr=2&q=80"
-            />
-            <Avatar.Fallback backgroundColor="purple" />
-          </Avatar>
+            <Avatar circular size="$14">
+              <Avatar.Image
+                accessibilityLabel="Cam"
+              />
+              <Avatar.Fallback backgroundColor="purple" />
+            </Avatar>
             <H4 size="$6" fontWeight="bold" textAlign="center" style={{textTransform:'lowercase',}}>
               {ab?.signInDetails?.loginId}
             </H4>
@@ -37,6 +40,22 @@ export const Account = () => {
         <Button onPress={onBackPress}>
           Logout
         </Button>
+      </Card>
+      <Card
+        elevate
+        borderRadius="$8"
+        marginVertical="$2"
+        animation="bouncy"
+        scale={0.5}
+        hoverStyle={{ scale: 0.925 }}
+        onPress={handlePress}
+        pressStyle={{ scale: 0.875 }}
+      >
+        <XStack marginVertical="$4" paddingHorizontal="$4">
+          <H4 size="$6" fontWeight="bold">
+            Categories
+          </H4>
+        </XStack>
       </Card>
 
     </YStack>
