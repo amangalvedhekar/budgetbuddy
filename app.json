@@ -1,5 +1,19 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#ffffff",
+          "image": "./assets/icon.png",
+          "dark": {
+            "image": "./assets/icon.png",
+            "backgroundColor": "#000000"
+          },
+          "imageWidth": 200
+        }
+      ]
+    ],
     "jsEngine": "hermes",
     "name": "BudgetBuddy",
     "slug": "budgetbuddy",
