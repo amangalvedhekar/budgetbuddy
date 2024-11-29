@@ -1,5 +1,6 @@
 {
   "expo": {
+    "jsEngine": "hermes",
     "name": "BudgetBuddy",
     "slug": "budgetbuddy",
     "version": "1.0.0",
