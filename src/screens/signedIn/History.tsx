@@ -3,7 +3,7 @@ import {useFocusEffect, useNavigation,} from "@react-navigation/native";
 import {Card, H2, H3, H4, Paragraph, XStack} from "tamagui";
 
 import { useCallback, useState} from "react";
-import {useDb} from "../../hooks/useDb";
+import {useDb} from "../../hooks";
 import {TransactionLists} from "../../../schema";
 
 // ToDo - Add types

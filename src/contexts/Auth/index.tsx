@@ -24,6 +24,7 @@ const AuthProvider = ({children}: AuthContextType) => {
     (async () => {
       try {
        const x = await getCurrentUser();
+       console.log(x, 'what is')
        setAb(x);
       } catch (e) {
         setAb(null);
