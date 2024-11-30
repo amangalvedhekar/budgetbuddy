@@ -1,9 +1,15 @@
 import {useEffect, useState} from "react";
 import {hideAsync, preventAutoHideAsync} from "expo-splash-screen";
 import {getCurrentUser} from "aws-amplify/auth";
+import {useDb} from "./useDb";
+import {Categories, TransactionTypes} from "../../schema";
+import {isNotNull} from "drizzle-orm";
+import {transactionTypes} from "../utils/transactionTypes";
+import {categories} from "../utils/categories";
 
 export const useCachedResources = () => {
   const [isLoadingComplete, setIsLoadingComplete] = useState<boolean>(false);
+  const {db} = useDb();
   useEffect(() => {
     (async () => {
       try {
@@ -11,6 +17,14 @@ export const useCachedResources = () => {
         /*
         * setup custom fonts here and then release splash screen
         * */
+        const transactionTypeLists = await db.select().from(TransactionTypes).where(isNotNull(TransactionTypes.transactionName));
+        const categoryLists = await db.select().from(Categories).where(isNotNull(Categories.categoryName));
+        if(Array.isArray(transactionTypeLists) && transactionTypeLists.length === 0) {
+          await db.insert(TransactionTypes).values(transactionTypes);
+        }
+        if(Array.isArray(categoryLists) && categoryLists.length === 0) {
+          await db.insert(Categories).values(categories)
+        }
         await hideAsync();
       } catch (e) {
 console.error(e);
