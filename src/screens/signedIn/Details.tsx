@@ -1,4 +1,4 @@
-import {Button, Card, H1, H2, H4, Paragraph, Separator, XStack} from "tamagui";
+import {Button, Card, H1, H4, Paragraph, Separator, XStack} from "tamagui";
 import {useFocusEffect, useNavigation, useRoute} from "@react-navigation/native";
 import {useCallback, useState} from "react";
 import {useDb} from "../../hooks/useDb";

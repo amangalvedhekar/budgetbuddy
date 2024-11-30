@@ -51,7 +51,7 @@
     "@types/react": "~18.3.12",
     "babel-plugin-inline-import": "^3.0.0",
     "drizzle-kit": "^0.28.0",
-    "expo-drizzle-studio-plugin": "^0.0.2",
+    "expo-drizzle-studio-plugin": "0.1.1",
     "jest": "^29.4.0",
     "jest-expo": "~52.0.2",
     "prettier": "3.3.2",
