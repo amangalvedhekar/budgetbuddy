@@ -9,14 +9,31 @@ import {
   Filter
 } from "../../icons";
 import {Home, Account, History, Insight, Add} from "../../screens";
+import {createStackNavigator} from "@react-navigation/stack";
+import {Details} from "../../screens/signedIn/Details";
 
 const SignedInStack = createBottomTabNavigator();
-
+const HistoryStack = createStackNavigator();
+const HistoryTabScreens = () => {
+  return (
+    <HistoryStack.Navigator screenOptions={{
+      headerShown: true,
+      headerTitleAlign: 'center',
+      headerBackTitleVisible: false,
+    }}>
+      <HistoryStack.Screen name='historyEntry' component={History} />
+      <HistoryStack.Screen name='historyEntryDetails' component={Details} />
+    </HistoryStack.Navigator>
+  );
+}
 export const SignedInScreens = () => {
   const {colors} = useTheme();
   return (
     <SignedInStack.Navigator
-      screenOptions={{headerTitleAlign: 'center'}}
+      screenOptions={({route}) =>({
+        headerShown: route.name !== 'History',
+        headerTitleAlign: 'center'
+      })}
       initialRouteName="History"
     >
       <SignedInStack.Screen
@@ -29,7 +46,7 @@ export const SignedInScreens = () => {
       />
       <SignedInStack.Screen
         name="History"
-        component={History}
+        component={HistoryTabScreens}
         options={
           {
             tabBarLabelStyle: {
@@ -37,7 +54,6 @@ export const SignedInScreens = () => {
               fontSize: 16
             },
             tabBarIcon: ({focused}) => <HistoryIcon fill={focused ? colors.primary : colors.text}/>,
-            headerRight: () => <Filter fill={colors.text}/>, headerRightContainerStyle: {paddingRight: 16}
           }}
       />
 

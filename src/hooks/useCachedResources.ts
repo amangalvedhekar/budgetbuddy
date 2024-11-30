@@ -1,11 +1,9 @@
 import {useEffect, useState} from "react";
 import {hideAsync, preventAutoHideAsync} from "expo-splash-screen";
-import {getCurrentUser} from "aws-amplify/auth";
 import {useDb} from "./useDb";
 import {Categories, TransactionTypes} from "../../schema";
 import {isNotNull} from "drizzle-orm";
-import {transactionTypes} from "../utils/transactionTypes";
-import {categories} from "../utils/categories";
+import {transactionTypes,categories} from "../utils/";
 
 export const useCachedResources = () => {
   const [isLoadingComplete, setIsLoadingComplete] = useState<boolean>(false);

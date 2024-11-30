@@ -20,11 +20,9 @@ Amplify.configure({
   }
 })
 export default function App() {
-
   const scheme = useColorScheme();
-
-
   const isLoadingComplete = useCachedResources();
+
   if (!isLoadingComplete) {
     return <></>;
   }

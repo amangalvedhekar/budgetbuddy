@@ -94,6 +94,7 @@ export function SignIn({route}: SignInProps) {
             size="$6"
             inputMode="email"
             autoComplete="email"
+            autoCapitalize="none"
             textContentType="username"
             value={formState.email.value}
             {...(formState.email.isInvalid ? {borderColor: "red"} : {})}
@@ -133,14 +134,6 @@ export function SignIn({route}: SignInProps) {
             {formState.isFormSubmitted ? <ActivityIndicator size="small" color="purple"/> : 'Sign In'}
           </Button>
           <Card.Footer>
-            {/*<Button*/}
-            {/*  borderRadius="$8"*/}
-            {/*  size="$6"*/}
-            {/*  flex={1}*/}
-            {/*  onPress={onBackPress}*/}
-            {/*>*/}
-            {/*  Use Face Id*/}
-            {/*</Button>*/}
             <Paragraph size="$7" paddingVertical="$2" onPress={() => navigate('Register')}>New to BudgetBuddy?
               Register</Paragraph>
           </Card.Footer>
