@@ -1,6 +1,6 @@
 import {FlatList} from "react-native";
 import {useFocusEffect, useNavigation,} from "@react-navigation/native";
-import {Card, H2, H4, Paragraph, XStack} from "tamagui";
+import {Card, H2, H3, H4, Paragraph, XStack} from "tamagui";
 
 import { useCallback, useState} from "react";
 import {useDb} from "../../hooks/useDb";
@@ -21,7 +21,7 @@ const RenderItem = ({item, onPress}: any) => (
   >
     <Card.Header>
       <XStack justifyContent="space-between" flex={1} flexWrap="wrap">
-        <H2 textWrap="wrap" flexWrap="wrap" flex={0.9}>{item.description}</H2>
+        <H3 size="$6" fontWeight="bold" textWrap="wrap" flexWrap="wrap" flex={0.9}>{item.description}</H3>
         <Paragraph size="$8" color={item.transactionType === '1' ? 'red' : 'green'}>{new Intl.NumberFormat('en-CA', {
           style: 'currency',
           currency: 'CAD'
@@ -75,7 +75,7 @@ export const History = ({navigation}: any) => {
         data={transactionList}
         renderItem={({item}) => <RenderItem item={item} onPress={() => {
           // @ts-expect-error
-          navigate('historyEntryDetails');
+          navigate('historyEntryDetails',{entryId: item.id});
         }}/>}
       />
 
