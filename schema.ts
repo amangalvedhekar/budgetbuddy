@@ -21,3 +21,4 @@ export const TransactionLists = sqliteTable('TransactionLists',{
   categoryType: text('categoryType').references(() => Categories.id),
   transactionType: text('transactionType').references(() => TransactionTypes.id),
 });
+

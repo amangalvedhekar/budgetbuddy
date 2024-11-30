@@ -1,6 +1,6 @@
 import {FlatList} from "react-native";
-import {useFocusEffect,} from "@react-navigation/native";
-import {Card, H2, H4, Paragraph, XStack} from "tamagui";
+import {useFocusEffect, useNavigation,} from "@react-navigation/native";
+import {Card, H2, H3, H4, Paragraph, XStack} from "tamagui";
 
 import { useCallback, useState} from "react";
 import {useDb} from "../../hooks/useDb";
@@ -10,8 +10,9 @@ import {TransactionLists} from "../../../schema";
 const RenderItem = ({item, onPress}: any) => (
   <Card elevate
         margin="$2"
+        bordered
         borderRadius="$8"
-        size="$3"
+        size="$4"
         animation="bouncy"
         scale={0.9}
         hoverStyle={{scale: 0.975}}
@@ -20,18 +21,25 @@ const RenderItem = ({item, onPress}: any) => (
   >
     <Card.Header>
       <XStack justifyContent="space-between" flex={1} flexWrap="wrap">
-        <H4 textWrap="wrap" flexWrap="wrap" flex={0.9}>{item.description}</H4>
+        <H3 size="$6" fontWeight="bold" textWrap="wrap" flexWrap="wrap" flex={0.9}>{item.description}</H3>
         <Paragraph size="$8" color={item.transactionType === '1' ? 'red' : 'green'}>{new Intl.NumberFormat('en-CA', {
           style: 'currency',
           currency: 'CAD'
         }).format(item.amount)}</Paragraph>
       </XStack>
     </Card.Header>
+    <Card.Footer>
+      <XStack justifyContent="space-between" flex={1} flexWrap="wrap" padding="$4">
+        <H4 textWrap="wrap" flexWrap="wrap" flex={0.9}>{''}</H4>
+      <H2 size="$4">Show More</H2>
+      </XStack>
+    </Card.Footer>
   </Card>
 );
 export const History = ({navigation}: any) => {
-  const [transactionList, setTransactionList] = useState();
+  const [transactionList, setTransactionList] = useState<unknown>();
   const {db} = useDb();
+  const {navigate} = useNavigation();
 
   useFocusEffect(useCallback(() => {
     (async () => {
@@ -45,7 +53,9 @@ export const History = ({navigation}: any) => {
       <Card
         margin="$2"
         padding="$2"
-        size="$1"
+        size="$2"
+        bordered
+        borderRadius="$8"
         animation="bouncy"
         scale={0.9}
         hoverStyle={{scale: 0.975}}
@@ -61,8 +71,12 @@ export const History = ({navigation}: any) => {
         </Card.Header>
       </Card>
       <FlatList
+        // @ts-expect-error
         data={transactionList}
-        renderItem={({item}) => <RenderItem item={item} />}
+        renderItem={({item}) => <RenderItem item={item} onPress={() => {
+          // @ts-expect-error
+          navigate('historyEntryDetails',{entryId: item.id});
+        }}/>}
       />
 
     </>

@@ -168,7 +168,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-amplify/react-native@npm:^1.1.1":
+"@aws-amplify/react-native@npm:1.1.4":
   version: 1.1.4
   resolution: "@aws-amplify/react-native@npm:1.1.4"
   dependencies:
@@ -3259,19 +3259,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/websql@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@expo/websql@npm:1.0.1"
-  dependencies:
-    argsarray: "npm:^0.0.1"
-    immediate: "npm:^3.2.2"
-    noop-fn: "npm:^1.0.0"
-    pouchdb-collections: "npm:^1.0.1"
-    tiny-queue: "npm:^0.2.1"
-  checksum: 10c0/c5736ef573f571623922648d320f8d65da0ccec3d8a140ebe93ea7036e42ce2cabc23666bac451fcc09518a72647859274f232323d0f7fbffe6a76cdf029561c
-  languageName: node
-  linkType: hard
-
 "@expo/xcpretty@npm:^4.3.0":
   version: 4.3.1
   resolution: "@expo/xcpretty@npm:4.3.1"
@@ -3350,7 +3337,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gorhom/bottom-sheet@npm:^4":
+"@gorhom/bottom-sheet@npm:4.6.4":
   version: 4.6.4
   resolution: "@gorhom/bottom-sheet@npm:4.6.4"
   dependencies:
@@ -4078,7 +4065,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/native@npm:^6.1.17":
+"@react-navigation/native@npm:6.1.18":
   version: 6.1.18
   resolution: "@react-navigation/native@npm:6.1.18"
   dependencies:
@@ -7117,13 +7104,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"argsarray@npm:^0.0.1":
-  version: 0.0.1
-  resolution: "argsarray@npm:0.0.1"
-  checksum: 10c0/d282742621698b0079ae0d1830cc35355c5a9ad21b831d6b006234ba08cccad3d4215190a9ff696af39587d7a5455cde64ffe94faa7762cda20fbf8c2d530889
-  languageName: node
-  linkType: hard
-
 "aria-hidden@npm:^1.1.3":
   version: 1.2.4
   resolution: "aria-hidden@npm:1.2.4"
@@ -7565,14 +7545,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "budgetbuddy@workspace:."
   dependencies:
-    "@aws-amplify/react-native": "npm:^1.1.1"
+    "@aws-amplify/react-native": "npm:1.1.4"
     "@babel/core": "npm:^7.20.0"
-    "@gorhom/bottom-sheet": "npm:^4"
+    "@gorhom/bottom-sheet": "npm:4.6.4"
     "@react-native-async-storage/async-storage": "npm:1.23.1"
     "@react-native-community/netinfo": "npm:11.4.1"
     "@react-native-masked-view/masked-view": "npm:0.3.2"
     "@react-navigation/bottom-tabs": "npm:6.6.0"
-    "@react-navigation/native": "npm:^6.1.17"
+    "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/stack": "npm:6.4.0"
     "@tamagui/babel-plugin": "npm:^1.101.7"
     "@tamagui/config": "npm:^1.101.7"
@@ -7585,14 +7565,14 @@ __metadata:
     babel-plugin-inline-import: "npm:^3.0.0"
     burnt: "npm:^0.12.2"
     drizzle-kit: "npm:^0.28.0"
-    drizzle-orm: "npm:^0.36.4"
-    expo: "npm:~52.0.11"
-    expo-dev-client: "npm:~5.0.4"
-    expo-drizzle-studio-plugin: "npm:^0.0.2"
-    expo-splash-screen: "npm:~0.29.13"
-    expo-sqlite: "npm:~15.0.3"
-    expo-status-bar: "npm:~2.0.0"
-    expo-system-ui: "npm:~4.0.4"
+    drizzle-orm: "npm:0.36.4"
+    expo: "npm:52.0.11"
+    expo-dev-client: "npm:5.0.4"
+    expo-drizzle-studio-plugin: "npm:0.1.1"
+    expo-splash-screen: "npm:0.29.13"
+    expo-sqlite: "npm:15.0.3"
+    expo-status-bar: "npm:2.0.0"
+    expo-system-ui: "npm:4.0.4"
     jest: "npm:^29.4.0"
     jest-expo: "npm:~52.0.2"
     joi: "npm:^17.13.3"
@@ -7601,11 +7581,11 @@ __metadata:
     react-dom: "npm:18.3.1"
     react-hook-form: "npm:^7.52.1"
     react-native: "npm:0.76.3"
-    react-native-gesture-handler: "npm:~2.20.2"
+    react-native-gesture-handler: "npm:2.20.2"
     react-native-get-random-values: "npm:1.11.0"
-    react-native-reanimated: "npm:~3.16.1"
+    react-native-reanimated: "npm:3.16.3"
     react-native-safe-area-context: "npm:4.12.0"
-    react-native-screens: "npm:~4.1.0"
+    react-native-screens: "npm:4.1.0"
     react-native-svg: "npm:15.8.0"
     tamagui: "npm:^1.101.7"
     ts-node: "npm:^10.9.2"
@@ -8630,7 +8610,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"drizzle-orm@npm:^0.36.4":
+"drizzle-orm@npm:0.36.4":
   version: 0.36.4
   resolution: "drizzle-orm@npm:0.36.4"
   peerDependencies:
@@ -9322,7 +9302,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-dev-client@npm:~5.0.4":
+"expo-dev-client@npm:5.0.4":
   version: 5.0.4
   resolution: "expo-dev-client@npm:5.0.4"
   dependencies:
@@ -9371,14 +9351,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-drizzle-studio-plugin@npm:^0.0.2":
-  version: 0.0.2
-  resolution: "expo-drizzle-studio-plugin@npm:0.0.2"
+"expo-drizzle-studio-plugin@npm:0.1.1":
+  version: 0.1.1
+  resolution: "expo-drizzle-studio-plugin@npm:0.1.1"
   dependencies:
-    expo-sqlite: "npm:^14.0.3"
+    expo-sqlite: "npm:^15.0.3"
   peerDependencies:
     expo: "*"
-  checksum: 10c0/395401a65396d0d1a54eff9cd5b0a43c3b028d69820e29e7d6ace91b36df21371291a7762aeaf2094e318a3f75604ca65e4d5ee4896517d78611788a20fb0ac5
+  checksum: 10c0/8c06b7a98d2487e3d59aaeb4ba2f315c65012ae65735f6d4b50a4078e8408950e36f4e2022aa8e6bc1a068935ecda454e0e957f43f34810b49826f7b66f41c9f
   languageName: node
   linkType: hard
 
@@ -9462,7 +9442,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-splash-screen@npm:~0.29.13":
+"expo-splash-screen@npm:0.29.13":
   version: 0.29.13
   resolution: "expo-splash-screen@npm:0.29.13"
   dependencies:
@@ -9473,18 +9453,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-sqlite@npm:^14.0.3":
-  version: 14.0.6
-  resolution: "expo-sqlite@npm:14.0.6"
-  dependencies:
-    "@expo/websql": "npm:^1.0.1"
-  peerDependencies:
-    expo: "*"
-  checksum: 10c0/5e0ff08ec52481ba9cde877ab7a71f62d2b30f1d9c0ddeeedf97797c75fab4decab586e2c0043c9fb0c670221669018146264194004c553202698538f398a9b3
-  languageName: node
-  linkType: hard
-
-"expo-sqlite@npm:~15.0.3":
+"expo-sqlite@npm:15.0.3, expo-sqlite@npm:^15.0.3":
   version: 15.0.3
   resolution: "expo-sqlite@npm:15.0.3"
   peerDependencies:
@@ -9495,7 +9464,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-status-bar@npm:~2.0.0":
+"expo-status-bar@npm:2.0.0":
   version: 2.0.0
   resolution: "expo-status-bar@npm:2.0.0"
   peerDependencies:
@@ -9505,7 +9474,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-system-ui@npm:~4.0.4":
+"expo-system-ui@npm:4.0.4":
   version: 4.0.4
   resolution: "expo-system-ui@npm:4.0.4"
   dependencies:
@@ -9531,7 +9500,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:~52.0.11":
+"expo@npm:52.0.11":
   version: 52.0.11
   resolution: "expo@npm:52.0.11"
   dependencies:
@@ -10368,13 +10337,6 @@ __metadata:
   bin:
     image-size: bin/image-size.js
   checksum: 10c0/2660470096d12be82195f7e80fe03274689fbd14184afb78eaf66ade7cd06352518325814f88af4bde4b26647889fe49e573129f6e7ba8f5ff5b85cc7f559000
-  languageName: node
-  linkType: hard
-
-"immediate@npm:^3.2.2":
-  version: 3.3.0
-  resolution: "immediate@npm:3.3.0"
-  checksum: 10c0/40eab095d5944ad79af054700beee97000271fde8743720932d8eb41ccbf2cb8c855ff95b128cf9a7fec523a4f11ee2e392b9f2fa6456b055b1160f1b4ad3e3b
   languageName: node
   linkType: hard
 
@@ -12508,13 +12470,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"noop-fn@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "noop-fn@npm:1.0.0"
-  checksum: 10c0/95ca0a65ea2b1f7de8c23be8c9d31797a66e7e861ffd2b79fb151274f3591254861f20b531072e1b9e116d5264186b6fd60c73435168891ee924dae98cc6955e
-  languageName: node
-  linkType: hard
-
 "nopt@npm:^7.0.0":
   version: 7.2.1
   resolution: "nopt@npm:7.2.1"
@@ -13026,13 +12981,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pouchdb-collections@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "pouchdb-collections@npm:1.0.1"
-  checksum: 10c0/3a4e414dcdf6bfc0d550f7daffd6f30a2d692a01f1d3944885cabc3e19f27f69074ec433b0be6b6b77077392f0bf1854072339cc10281b22c3fa48ccc744e465
-  languageName: node
-  linkType: hard
-
 "prettier@npm:3.3.2":
   version: 3.3.2
   resolution: "prettier@npm:3.3.2"
@@ -13289,7 +13237,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-gesture-handler@npm:~2.20.2":
+"react-native-gesture-handler@npm:2.20.2":
   version: 2.20.2
   resolution: "react-native-gesture-handler@npm:2.20.2"
   dependencies:
@@ -13315,7 +13263,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-reanimated@npm:~3.16.1":
+"react-native-reanimated@npm:3.16.3":
   version: 3.16.3
   resolution: "react-native-reanimated@npm:3.16.3"
   dependencies:
@@ -13348,7 +13296,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-screens@npm:~4.1.0":
+"react-native-screens@npm:4.1.0":
   version: 4.1.0
   resolution: "react-native-screens@npm:4.1.0"
   dependencies:
@@ -14902,13 +14850,6 @@ __metadata:
   version: 2.3.8
   resolution: "through@npm:2.3.8"
   checksum: 10c0/4b09f3774099de0d4df26d95c5821a62faee32c7e96fb1f4ebd54a2d7c11c57fe88b0a0d49cf375de5fee5ae6bf4eb56dbbf29d07366864e2ee805349970d3cc
-  languageName: node
-  linkType: hard
-
-"tiny-queue@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "tiny-queue@npm:0.2.1"
-  checksum: 10c0/710c658bf84f5e1fe72f2a2d6fbc8e6d078ede1d367968b7d16ca01639ab34aeae9d200b8228c78fe2346bcb16e1654bd013f501e9f7dea687488479438dc0d1
   languageName: node
   linkType: hard
 
