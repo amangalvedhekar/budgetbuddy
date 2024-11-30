@@ -11,13 +11,15 @@ import {ActivityIndicator, KeyboardAvoidingView, TextInput} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {useDb} from "../../hooks/useDb";
 import {TransactionLists} from "../../../schema";
+import {useAuth} from "../../hooks";
 
 
 export const Add = () => {
   const amountRef = useRef<TextInput>(null);
-  const {navigate, setParams} = useNavigation();
+  const {navigate,} = useNavigation();
   const {params} = useRoute();
   const {db} = useDb();
+  const {ab} = useAuth();
   const [categoryType, setCategoryType] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
@@ -33,6 +35,7 @@ export const Add = () => {
         amount: Number(amount),
         categoryType: params?.selectedCategory,
         description,
+        addedBy: ab?.username,
       };
       await db.insert(TransactionLists).values(transactionToAdd);
       console.log(transactionToAdd, 'is this goo')

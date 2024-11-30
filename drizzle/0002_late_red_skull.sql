@@ -1,0 +1,1 @@
+ALTER TABLE `UserLists` ADD `isUserOnboarded` integer DEFAULT false;
