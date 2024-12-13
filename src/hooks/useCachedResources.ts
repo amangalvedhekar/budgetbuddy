@@ -6,7 +6,7 @@ import {isNotNull} from "drizzle-orm";
 import {transactionTypes,categories} from "../utils/";
 
 export const useCachedResources = () => {
-  const [isLoadingComplete, setIsLoadingComplete] = useState<boolean>(false);
+  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const {db} = useDb();
   useEffect(() => {
     (async () => {

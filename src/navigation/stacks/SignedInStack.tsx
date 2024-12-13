@@ -21,7 +21,9 @@ const HistoryTabScreens = () => {
       headerTitleAlign: 'center',
       headerBackTitleVisible: false,
     }}>
-      <HistoryStack.Screen name='historyEntry' component={History} />
+      <HistoryStack.Screen name='historyEntry' component={History} options={{
+        headerTitle: 'Transactions'
+      }}/>
       <HistoryStack.Screen name='historyEntryDetails' component={Details} />
     </HistoryStack.Navigator>
   );
@@ -54,6 +56,7 @@ export const SignedInScreens = () => {
               fontSize: 16
             },
             tabBarIcon: ({focused}) => <HistoryIcon fill={focused ? colors.primary : colors.text}/>,
+            tabBarLabel: 'Transactions'
           }}
       />
 

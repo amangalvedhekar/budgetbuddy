@@ -6,6 +6,14 @@ const transactionTypes = [
   {
     transactionName: 'Expense',
     id: '1'
+  },
+  {
+    transactionName: 'Transfer',
+    id: '2'
+  },
+  {
+    transactionName: 'Other',
+    id: '3'
   }
 ];
 
