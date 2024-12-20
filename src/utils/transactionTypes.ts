@@ -12,8 +12,12 @@ const transactionTypes = [
     id: '2'
   },
   {
-    transactionName: 'Other',
+    transactionName: 'Investment',
     id: '3'
+  },
+  {
+    transactionName: 'Other',
+    id: '4'
   }
 ];
 

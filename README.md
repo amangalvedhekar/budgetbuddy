@@ -12,11 +12,13 @@
 
 ```typescript
 const transaction = {
+  description: string,
+  amount: number,
   createdDate: Date,
   modifiedDate: Date,
-  transactionType: '',
-  amount: '',
-  currency: '',
-  description: '',
+  id: Id,
+  addedBy: userId,
+  categoryType: CategoryType,
+  transactionType: TransactionType
 };
 ```

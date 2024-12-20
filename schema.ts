@@ -21,8 +21,8 @@ export const UserLists = sqliteTable('UserLists',{
 export const TransactionLists = sqliteTable('TransactionLists',{
   description: text('description'),
   amount: integer('amount').notNull(),
-  createdDate: text('createdDate').default(sql`(CURRENT_TIMESTAMP)`),
-  modifiedDate: text('modifiedDate').default(sql`(CURRENT_TIMESTAMP)`),
+  createdDate: text('createdDate').default(sql`(CURRENT_DATE)`),
+  modifiedDate: text('modifiedDate'),
   id: text('id').notNull().primaryKey(),
   addedBy: text('addedBy').references(() => UserLists.userId),
   categoryType: text('categoryType').references(() => Categories.id),

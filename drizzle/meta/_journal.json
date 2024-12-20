@@ -22,6 +22,20 @@
       "when": 1733010426695,
       "tag": "0002_late_red_skull",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1734569668656,
+      "tag": "0003_faulty_redwing",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1734570274688,
+      "tag": "0004_tiny_quicksilver",
+      "breakpoints": true
     }
   ]
 }

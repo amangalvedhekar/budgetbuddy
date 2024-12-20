@@ -30,7 +30,7 @@ export const Categories = () => {
       <YStack justifyContent="flex-start" flex={1} padding="$4">
         {Array.isArray(categories) &&  categories.map((category) => (
           <Fragment key={category.name}>
-            <H4 style={{paddingVertical: 8}} onPress={() => navigate('Add', {selectedCategory: category.name})}>
+            <H4 style={{paddingVertical: 8}}>
               {category.name}
             </H4>
             <Separator/>

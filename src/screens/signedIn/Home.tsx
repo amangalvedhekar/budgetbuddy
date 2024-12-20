@@ -1,12 +1,10 @@
-import {Paragraph} from "tamagui";
+import {DropDown} from "../../components/DropDown";
 
 export const Home = () => {
 
   return  (
     <>
-      <Paragraph>
-        Budget Buddy your buddy to budgeting
-      </Paragraph>
+      <DropDown />
     </>
   )
 };
