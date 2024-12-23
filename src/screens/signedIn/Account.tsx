@@ -72,7 +72,7 @@ export const Account = () => {
       >
         <XStack marginVertical="$4" paddingHorizontal="$4">
           <H4 size="$6" fontWeight="bold">
-            Planned Budget
+            Budgeted Expenses
           </H4>
         </XStack>
       </Card>

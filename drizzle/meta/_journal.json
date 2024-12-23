@@ -36,6 +36,27 @@
       "when": 1734570274688,
       "tag": "0004_tiny_quicksilver",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1734737637346,
+      "tag": "0005_fast_iron_lad",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1734737998187,
+      "tag": "0006_tricky_carmella_unuscione",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1734738566958,
+      "tag": "0007_huge_vengeance",
+      "breakpoints": true
     }
   ]
 }

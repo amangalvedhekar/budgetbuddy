@@ -28,16 +28,16 @@ export default function App() {
     return <></>;
   }
   return (
-    <GestureHandlerRootView style={{flex:1}}>
+    <GestureHandlerRootView style={{flex: 1}}>
       <KeyboardProvider>
-    <AuthProvider>
-    <TamaguiProvider config={config} defaultTheme={scheme!}>
-      <BottomSheetModalProvider>
-     <RootNavigation  scheme={scheme} />
-      <StatusBar style="auto"/>
-      </BottomSheetModalProvider>
-    </TamaguiProvider>
-    </AuthProvider>
+        <AuthProvider>
+          <TamaguiProvider config={config} defaultTheme={scheme!}>
+            <BottomSheetModalProvider>
+              <RootNavigation scheme={scheme}/>
+              <StatusBar style="auto"/>
+            </BottomSheetModalProvider>
+          </TamaguiProvider>
+        </AuthProvider>
       </KeyboardProvider>
     </GestureHandlerRootView>
   );

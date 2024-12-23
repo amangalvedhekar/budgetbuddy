@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {hideAsync, preventAutoHideAsync} from "expo-splash-screen";
 import {useDb} from "./useDb";
-import {Categories, TransactionTypes} from "../../schema";
+import {BudgetedData, Categories, TransactionTypes} from "../../schema";
 import {isNotNull} from "drizzle-orm";
 import {transactionTypes,categories} from "../utils/";
 
@@ -21,7 +21,7 @@ export const useCachedResources = () => {
           await db.insert(TransactionTypes).values(transactionTypes);
         }
         if(Array.isArray(categoryLists) && categoryLists.length === 0) {
-          await db.insert(Categories).values(categories)
+          await db.insert(Categories).values(categories);
         }
         await hideAsync();
       } catch (e) {

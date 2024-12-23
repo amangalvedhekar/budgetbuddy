@@ -1,26 +1,49 @@
-import {Card, H3, H5, Input, ScrollView, XStack} from "tamagui";
-import {useDb} from "../../hooks";
+import {Button, Card, H3, H5, Input, ScrollView, XStack} from "tamagui";
+import {useAuth, useDb} from "../../hooks";
 import {useFocusEffect, useTheme} from "@react-navigation/native";
 import {useCallback, useState} from "react";
-import {Categories as CategoriesSchema} from "../../../schema";
+import {BudgetedData, Categories as CategoriesSchema} from "../../../schema";
 import {eq} from "drizzle-orm";
 import {KeyboardAvoidingView} from "react-native";
 import {KeyboardStickyView} from "react-native-keyboard-controller";
 
 export const PlannedBudget = () => {
   const {db} = useDb();
+  const {ab} = useAuth();
   const [abc, setAbc] = useState();
   useFocusEffect(useCallback(() => {
     (async () => {
       const abc = await db.select({
-        name: CategoriesSchema.categoryName,
-        transactionType: CategoriesSchema.transactionType,
-      }).from(CategoriesSchema).where(eq(CategoriesSchema.transactionType, "1"));
-      const def = abc.map(d => ({
-        ...d,
-        value: '',
-      }))
-      setAbc(def);
+        id: BudgetedData.categoryType,
+        value: BudgetedData.value,
+      }).from(BudgetedData).where(eq(BudgetedData.userId, ab?.userId ?? ''));
+      if (Array.isArray(abc) && abc.length === 0) {
+        const def = await db.select({
+          id: CategoriesSchema.id,
+          name: CategoriesSchema.categoryName
+        }).from(CategoriesSchema).where(eq(CategoriesSchema.transactionType,"1"));
+        const freshData = def.map(d => ({
+          ...d,
+          value: '',
+        }));
+        console.log(freshData, 'hmm2')
+        setAbc(freshData)
+      } else {
+        const def = await Promise.all(abc.map(async (d) => {
+          try {
+            const h = await db.select({
+              name: CategoriesSchema.categoryName
+            }).from(CategoriesSchema).where(eq(CategoriesSchema.id,d.id));
+            return {
+              ...d,
+              name: h[0].name
+            };
+          } catch (e) {
+
+          }
+        }));
+        setAbc(def);
+      }
     })();
   }, []));
   const offset = { closed: 0, opened: 90 };
@@ -44,12 +67,28 @@ export const PlannedBudget = () => {
       style: 'currency',
       currency: 'CAD'
     }).format(total);
+  };
+
+  const saveBudgetedData = async () => {
+    try {
+      const dataToSave = abc.map(d => (
+        {
+          categoryType: d.id,
+          userId: ab?.userId,
+          value: Number(d.value) ?? 0,
+        }
+      ));
+      // console.log(dataToSave, 'tosave')
+      await db.insert(BudgetedData).values(dataToSave);
+    } catch (e) {
+
+    }
   }
+
   return (
     <>
-    {/*<KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>*/}
       <H5 textAlign="center" marginVertical="$2">
-        Monthly Budgeted Data
+        Monthly Budgeted Expenses
       </H5>
 
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
@@ -75,7 +114,7 @@ export const PlannedBudget = () => {
                   placeholder="amount"
                   keyboardType="numeric"
                   returnKeyType="next"
-                  value={a.value}
+                  value={a?.value?.toString()}
                   onChangeText={handleChangeText(a.name)}
                 />
               </XStack>
@@ -85,15 +124,18 @@ export const PlannedBudget = () => {
         </KeyboardAvoidingView>
       </ScrollView>
       <KeyboardStickyView offset={offset} style={{backgroundColor: useTheme().colors.background}}>
-      <H5 margin="$2" padding="$2">
-        Total Amount:
+      <XStack flexWrap="wrap" alignItems="center" justifyContent="space-between" margin="$2">
+        <H5>
+          Total Amount:
+        </H5>
         <H3>
           {calculateTotal()}
         </H3>
-      </H5>
+<Button elevate size="$4" onPress={saveBudgetedData}>
+  Save
+</Button>
+      </XStack>
       </KeyboardStickyView>
-    {/*</KeyboardAvoidingView>*/}
-
     </>
   );
 }
