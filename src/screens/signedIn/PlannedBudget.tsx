@@ -3,7 +3,7 @@ import {useAuth, useDb} from "../../hooks";
 import {useFocusEffect, useNavigation, useTheme} from "@react-navigation/native";
 import {useCallback, useState} from "react";
 import {BudgetedData, Categories as CategoriesSchema} from "../../../schema";
-import {eq} from "drizzle-orm";
+import {eq, and} from "drizzle-orm";
 import {KeyboardAvoidingView} from "react-native";
 import {KeyboardStickyView} from "react-native-keyboard-controller";
 
@@ -27,7 +27,6 @@ export const PlannedBudget = () => {
           ...d,
           value: '',
         }));
-        console.log(freshData, 'hmm2')
         setAbc(freshData)
       } else {
         const def = await Promise.all(abc.map(async (d) => {
@@ -79,11 +78,41 @@ export const PlannedBudget = () => {
           value: Number(d.value) ?? 0,
         }
       ));
-      // console.log(dataToSave, 'tosave')
-      await db.insert(BudgetedData).values(dataToSave);
+      const def = await db.select({
+        id: BudgetedData.categoryType,
+        value: BudgetedData.value,
+        userId: BudgetedData.userId,
+      }).from(BudgetedData).where(eq(BudgetedData.userId, ab?.userId ?? ''));
+      if(Array.isArray(def) && def.length !== 0) {
+        const existingItem = def.map(d => {
+          const foundItem = dataToSave.find(f => f.categoryType == d.id && d.userId == ab?.userId)
+          if(foundItem){
+            return foundItem;
+          }
+        });
+        console.log(existingItem, 'what is')
+        await Promise.all(existingItem.map(async (item) => {
+          console.log(item, 'in iteration item is', ab?.userId, )
+          try {
+            const x = await db.update(BudgetedData).set({
+              value: item.value
+            }).where(and(
+              eq(BudgetedData.categoryType, item.categoryType),
+              eq(BudgetedData.userId, ab?.userId),
+            )).returning();
+            console.log(x, 'updated data')
+          }catch (e) {
+
+          }
+        }))
+      } else {
+        console.log(dataToSave, 'tosave')
+        await db.insert(BudgetedData).values(dataToSave);
+
+      }
       navigate('accountEntry');
     } catch (e) {
-
+console.log(JSON.stringify(e), 'err sappened', e)
     }
   }
 
@@ -113,7 +142,7 @@ export const PlannedBudget = () => {
                   <Input
                     flex={0.3}
                     size="$6"
-                    placeholder="amount"
+                    placeholder="0.00"
                     keyboardType="numeric"
                     returnKeyType="next"
                     value={a?.value?.toString()}

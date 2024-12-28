@@ -1,5 +1,5 @@
 import { sql, } from "drizzle-orm";
-import {sqliteTable, text, integer, real} from "drizzle-orm/sqlite-core";
+import {sqliteTable, text, integer, real, primaryKey} from "drizzle-orm/sqlite-core";
 
 export const TransactionTypes = sqliteTable('TransactionType',{
   transactionName: text('transactionName').notNull().unique(),
@@ -33,4 +33,10 @@ export const BudgetedData = sqliteTable('BudgetedData', {
   categoryType: text('categoryType').references(() => Categories.id),
   userId: text('userId').references(() => UserLists.userId),
   value: real('value').default(0)
+}, (table) => {
+  return ({
+    pk: primaryKey({
+      columns: [table.userId, table.categoryType]
+    })
+  });
 });

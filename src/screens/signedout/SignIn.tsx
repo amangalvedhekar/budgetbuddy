@@ -1,6 +1,6 @@
 import {Button, Card, H4, Input, Paragraph, ScrollView, Separator, SizableText, YStack} from "tamagui";
 import {useNavigation} from "@react-navigation/native";
-import {useAuth} from "../../hooks";
+import {useAuth, useDb} from "../../hooks";
 import {useCallback, useState} from "react";
 import {ActivityIndicator} from "react-native";
 import {ErrorType, FormState} from "./Registration";
@@ -14,7 +14,8 @@ const validationSchema = Joi.object({
 
 export function SignIn({route}: SignInProps) {
   const {navigate} = useNavigation();
-  const {logIn} = useAuth();
+  const {logIn, ab} = useAuth();
+  const {db} = useDb();
   const [formState, setFormState] = useState<FormState>({
     email: {
       value: '',
@@ -37,6 +38,7 @@ export function SignIn({route}: SignInProps) {
       await validationSchema.validateAsync({email: formState.email.value, password: formState.password.value});
 
       await logIn({username: formState.email.value, password: formState.password.value});
+
     } catch (error: unknown) {
 
       if (Array.isArray((error as ErrorType)?.details)) {
