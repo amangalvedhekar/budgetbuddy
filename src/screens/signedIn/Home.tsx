@@ -1,8 +1,8 @@
-
 export const Home = () => {
 
   return  (
     <>
+
     </>
   )
 };

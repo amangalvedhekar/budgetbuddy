@@ -12,6 +12,9 @@ export const Account = () => {
   const handlePress = () => {
     navigate('Categories');
   }
+  const onCardPress = () => {
+    navigate('plannedBudget');
+  }
   return  (
     <YStack justifyContent="flex-start" flex={1} padding="$4">
       <Card
@@ -25,7 +28,7 @@ export const Account = () => {
       >
         <Card.Header>
           <YStack  alignItems="center">
-            <Avatar circular size="$14">
+            <Avatar circular size="$8">
               <Avatar.Image
                 accessibilityLabel="Cam"
               />
@@ -54,6 +57,22 @@ export const Account = () => {
         <XStack marginVertical="$4" paddingHorizontal="$4">
           <H4 size="$6" fontWeight="bold">
             Categories
+          </H4>
+        </XStack>
+      </Card>
+      <Card
+        elevate
+        borderRadius="$8"
+        marginVertical="$2"
+        animation="bouncy"
+        scale={0.5}
+        hoverStyle={{ scale: 0.925 }}
+        onPress={onCardPress}
+        pressStyle={{ scale: 0.875 }}
+      >
+        <XStack marginVertical="$4" paddingHorizontal="$4">
+          <H4 size="$6" fontWeight="bold">
+            Budgeted Expenses
           </H4>
         </XStack>
       </Card>

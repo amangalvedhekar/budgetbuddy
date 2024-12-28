@@ -7583,10 +7583,13 @@ __metadata:
     react-native: "npm:0.76.3"
     react-native-gesture-handler: "npm:2.20.2"
     react-native-get-random-values: "npm:1.11.0"
+    react-native-keyboard-controller: "npm:1.15.1"
+    react-native-pager-view: "npm:6.5.1"
     react-native-reanimated: "npm:3.16.3"
     react-native-safe-area-context: "npm:4.12.0"
     react-native-screens: "npm:4.1.0"
     react-native-svg: "npm:15.8.0"
+    react-native-tab-view: "npm:4.0.5"
     tamagui: "npm:^1.101.7"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.1.3"
@@ -13263,6 +13266,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-is-edge-to-edge@npm:^1.1.6":
+  version: 1.1.6
+  resolution: "react-native-is-edge-to-edge@npm:1.1.6"
+  peerDependencies:
+    react: ">=18.2.0"
+    react-native: ">=0.73.0"
+  checksum: 10c0/5690e521e8310d21643634a8d0dacd524e19b76695f347b26f649fcac156a7a901fd6daef7f78482381a41e8445f4552f40ade13790fdf112fab15b0f54dbabd
+  languageName: node
+  linkType: hard
+
+"react-native-keyboard-controller@npm:1.15.1":
+  version: 1.15.1
+  resolution: "react-native-keyboard-controller@npm:1.15.1"
+  dependencies:
+    react-native-is-edge-to-edge: "npm:^1.1.6"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+    react-native-reanimated: ">=3.0.0"
+  checksum: 10c0/f6f98282ae2509f8b425045a7c052b8c3687443648aacf6f741859d95fbaed375f10e20e36d3545ec1fc405928e00b8894af254aeeee4f60d17770684e978b3a
+  languageName: node
+  linkType: hard
+
+"react-native-pager-view@npm:6.5.1":
+  version: 6.5.1
+  resolution: "react-native-pager-view@npm:6.5.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10c0/2c6a1cdd30151252f7ee31ce039246c59308ddd4ff6d4dbf44b0d64387338e51cfc432a68795cd80f2f7a1c77617c259462de48c2f4cd24d98805290d70ec02f
+  languageName: node
+  linkType: hard
+
 "react-native-reanimated@npm:3.16.3":
   version: 3.16.3
   resolution: "react-native-reanimated@npm:3.16.3"
@@ -13320,6 +13356,19 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10c0/03d2cb19c799da6ba41dea0dc414338d01a55549ea4e4a370315c8ec34e1c6de430a62b538f099423060edc8bea6df134f765bde862770059404617c3c296af8
+  languageName: node
+  linkType: hard
+
+"react-native-tab-view@npm:4.0.5":
+  version: 4.0.5
+  resolution: "react-native-tab-view@npm:4.0.5"
+  dependencies:
+    use-latest-callback: "npm:^0.2.1"
+  peerDependencies:
+    react: ">= 18.2.0"
+    react-native: "*"
+    react-native-pager-view: ">= 6.0.0"
+  checksum: 10c0/8eade6c916df4aaf5c2729ab245428e3db9128a4477d74ba488cbfefb86ad203ec1416344f579eb48fd765fe92b28f319f45c16e37d7f32f5ad3090749ca5e43
   languageName: node
   linkType: hard
 

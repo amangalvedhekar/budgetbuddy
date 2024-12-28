@@ -1,5 +1,5 @@
 import { sql, } from "drizzle-orm";
-import {sqliteTable, text, integer} from "drizzle-orm/sqlite-core";
+import {sqliteTable, text, integer, real, primaryKey} from "drizzle-orm/sqlite-core";
 
 export const TransactionTypes = sqliteTable('TransactionType',{
   transactionName: text('transactionName').notNull().unique(),
@@ -21,10 +21,22 @@ export const UserLists = sqliteTable('UserLists',{
 export const TransactionLists = sqliteTable('TransactionLists',{
   description: text('description'),
   amount: integer('amount').notNull(),
-  createdDate: text('createdDate').default(sql`(CURRENT_TIMESTAMP)`),
-  modifiedDate: text('modifiedDate').default(sql`(CURRENT_TIMESTAMP)`),
+  createdDate: text('createdDate').default(sql`(CURRENT_DATE)`),
+  modifiedDate: text('modifiedDate'),
   id: text('id').notNull().primaryKey(),
   addedBy: text('addedBy').references(() => UserLists.userId),
   categoryType: text('categoryType').references(() => Categories.id),
   transactionType: text('transactionType').references(() => TransactionTypes.id),
+});
+
+export const BudgetedData = sqliteTable('BudgetedData', {
+  categoryType: text('categoryType').references(() => Categories.id),
+  userId: text('userId').references(() => UserLists.userId),
+  value: real('value').default(0)
+}, (table) => {
+  return ({
+    pk: primaryKey({
+      columns: [table.userId, table.categoryType]
+    })
+  });
 });

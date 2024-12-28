@@ -15,10 +15,14 @@ import {
   ResetPasswordInput,
   ConfirmResetPasswordInput,
 } from 'aws-amplify/auth'
+import {useDb} from "../../hooks";
+import {UserLists} from "../../../schema";
+import {eq} from "drizzle-orm";
 
 const AuthContext = createContext<AuthProviderProps | null>(null);
 
 const AuthProvider = ({children}: AuthContextType) => {
+  const {db} = useDb();
   const [ab, setAb] = useState<AuthUser | null | undefined>(undefined);
   useEffect(() => {
     (async () => {
@@ -57,6 +61,14 @@ const AuthProvider = ({children}: AuthContextType) => {
     try {
       await signIn({username, password, options: {authFlowType: 'USER_PASSWORD_AUTH'}});
       const x = await getCurrentUser();
+      const dataToAdd = {
+        userId: x?.userId,
+        isUserOnboarded: false,
+      };
+      const isUserAdded = await db.select().from(UserLists).where(eq(UserLists.userId, x?.userId));
+      if(Array.isArray(isUserAdded) && isUserAdded.length === 0) {
+        await db.insert(UserLists).values(dataToAdd)
+      }
       setAb(x);
     } catch (e) {
       console.log(JSON.stringify(e), 'login call');

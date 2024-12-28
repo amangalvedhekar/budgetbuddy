@@ -28,12 +28,11 @@ const RenderItem = ({item, onPress}: any) => (
         }).format(item.amount)}</Paragraph>
       </XStack>
     </Card.Header>
-    <Card.Footer>
-      <XStack justifyContent="space-between" flex={1} flexWrap="wrap" padding="$4">
-        <H4 textWrap="wrap" flexWrap="wrap" flex={0.9}>{''}</H4>
-      <H2 size="$4">Show More</H2>
-      </XStack>
-    </Card.Footer>
+    {/*<Card.Footer>*/}
+    {/*  <XStack justifyContent="space-between" flex={1} flexWrap="wrap" padding="$4">*/}
+    {/*  /!*<H2 size="$4">Show More</H2>*!/*/}
+    {/*  </XStack>*/}
+    {/*</Card.Footer>*/}
   </Card>
 );
 export const History = ({navigation}: any) => {
@@ -74,8 +73,8 @@ export const History = ({navigation}: any) => {
         // @ts-expect-error
         data={transactionList}
         renderItem={({item}) => <RenderItem item={item} onPress={() => {
-          // @ts-expect-error
-          navigate('historyEntryDetails',{entryId: item.id});
+
+          // navigate('historyEntryDetails',{entryId: item.id});
         }}/>}
       />
 

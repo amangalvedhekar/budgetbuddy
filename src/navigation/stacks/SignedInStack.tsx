@@ -11,9 +11,31 @@ import {
 import {Home, Account, History, Insight, Add} from "../../screens";
 import {createStackNavigator} from "@react-navigation/stack";
 import {Details} from "../../screens/signedIn/Details";
+import {AddCategory} from "../../screens/signedIn/AddCategory";
+import {PlannedBudget} from "../../screens/signedIn/PlannedBudget";
 
 const SignedInStack = createBottomTabNavigator();
 const HistoryStack = createStackNavigator();
+const AccountStack = createStackNavigator();
+const AccountStackScreens = () => {
+  return (
+    <AccountStack.Navigator screenOptions={{
+      headerShown: true,
+      headerTitleAlign: 'center',
+      headerBackTitleVisible: false,
+    }}>
+      <AccountStack.Screen name="accountEntry" component={Account} options={{
+        headerTitle: 'Account'
+      }} />
+      <AccountStack.Screen name="plannedBudget" component={PlannedBudget} options={{
+        headerTitle: 'Planned Budget'
+      }} />
+      <AccountStack.Screen name="addCategory" component={AddCategory} options={{
+        headerTitle: 'Add New Category'
+      }} />
+    </AccountStack.Navigator>
+  );
+}
 const HistoryTabScreens = () => {
   return (
     <HistoryStack.Navigator screenOptions={{
@@ -21,7 +43,9 @@ const HistoryTabScreens = () => {
       headerTitleAlign: 'center',
       headerBackTitleVisible: false,
     }}>
-      <HistoryStack.Screen name='historyEntry' component={History} />
+      <HistoryStack.Screen name='historyEntry' component={History} options={{
+        headerTitle: 'Transactions'
+      }}/>
       <HistoryStack.Screen name='historyEntryDetails' component={Details} />
     </HistoryStack.Navigator>
   );
@@ -31,7 +55,7 @@ export const SignedInScreens = () => {
   return (
     <SignedInStack.Navigator
       screenOptions={({route}) =>({
-        headerShown: route.name !== 'History',
+        headerShown:  !['History', 'Account'].includes(route.name),
         headerTitleAlign: 'center'
       })}
       initialRouteName="History"
@@ -54,6 +78,7 @@ export const SignedInScreens = () => {
               fontSize: 16
             },
             tabBarIcon: ({focused}) => <HistoryIcon fill={focused ? colors.primary : colors.text}/>,
+            tabBarLabel: 'Transactions'
           }}
       />
 
@@ -76,7 +101,7 @@ export const SignedInScreens = () => {
       />
       <SignedInStack.Screen
         name="Account"
-        component={Account}
+        component={AccountStackScreens}
         options={{
           tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
           tabBarIcon: ({focused}) => <AccountIcon fill={focused ? colors.primary : colors.text}/>,

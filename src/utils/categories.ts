@@ -69,13 +69,49 @@ const incomeCategories = [
   }
 ];
 
+const investmentCategories = [
+  {
+    categoryName: 'TFSA',
+    id: '13',
+    transactionType: '3',
+  },
+  {
+    categoryName: 'RRSP',
+    id: '14',
+    transactionType: '3',
+  },
+  {
+    categoryName: 'RESP',
+    id: '15',
+    transactionType: '3',
+  },
+  {
+    categoryName: 'FHSA',
+    id: '16',
+    transactionType: '3',
+  },
+  {
+    categoryName: 'crypto',
+    id: '17',
+    transactionType: '3',
+  },
+
+  {
+    categoryName: 'Non-registered',
+    id: '18',
+    transactionType: '3',
+  },
+];
+
 const categories = [
   ...expenseCategories,
   ...incomeCategories,
+  ...investmentCategories,
 ];
 
 export {
   categories,
   incomeCategories,
   expenseCategories,
+  investmentCategories,
 }
