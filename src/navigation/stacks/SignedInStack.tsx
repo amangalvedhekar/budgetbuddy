@@ -31,7 +31,7 @@ const AccountStackScreens = () => {
         headerTitle: 'Planned Budget'
       }} />
       <AccountStack.Screen name="addCategory" component={AddCategory} options={{
-        headerTitle: 'Planned Budget'
+        headerTitle: 'Add New Category'
       }} />
     </AccountStack.Navigator>
   );

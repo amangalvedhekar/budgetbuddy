@@ -10,7 +10,7 @@ import {KeyboardStickyView} from "react-native-keyboard-controller";
 export const PlannedBudget = () => {
   const {db} = useDb();
   const {ab} = useAuth();
-  const {navigate} = useNavigation();
+  const {navigate, } = useNavigation();
   const [abc, setAbc] = useState();
   useFocusEffect(useCallback(() => {
     (async () => {
@@ -106,9 +106,7 @@ export const PlannedBudget = () => {
           }
         }))
       } else {
-        console.log(dataToSave, 'tosave')
         await db.insert(BudgetedData).values(dataToSave);
-
       }
       navigate('accountEntry');
     } catch (e) {
