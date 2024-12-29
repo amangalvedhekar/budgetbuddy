@@ -1,6 +1,6 @@
 import {FlatList} from "react-native";
 import {useFocusEffect, useNavigation,} from "@react-navigation/native";
-import {Card, H2, H3, H4, Paragraph, XStack} from "tamagui";
+import {Card, H2, H3, H4, H5, Paragraph, XStack} from "tamagui";
 
 import { useCallback, useState} from "react";
 import {useDb} from "../../hooks";
@@ -30,7 +30,7 @@ const RenderItem = ({item, onPress}: any) => (
     </Card.Header>
     {/*<Card.Footer>*/}
     {/*  <XStack justifyContent="space-between" flex={1} flexWrap="wrap" padding="$4">*/}
-    {/*  /!*<H2 size="$4">Show More</H2>*!/*/}
+    {/*  <H2 size="$4">Show More</H2>*/}
     {/*  </XStack>*/}
     {/*</Card.Footer>*/}
   </Card>
@@ -43,7 +43,6 @@ export const History = ({navigation}: any) => {
   useFocusEffect(useCallback(() => {
     (async () => {
       const abc = await db.select().from(TransactionLists);
-      console.log(abc, 'hmm');
       setTransactionList(abc);
     })();
   }, []));
@@ -62,10 +61,10 @@ export const History = ({navigation}: any) => {
       >
         <Card.Header>
           <XStack justifyContent="space-between">
-            <H4 textWrap="wrap">
+            <H5 textWrap="wrap">
               Description
-            </H4>
-            <Paragraph size="$8">Amount</Paragraph>
+            </H5>
+            <H5>Amount</H5>
           </XStack>
         </Card.Header>
       </Card>

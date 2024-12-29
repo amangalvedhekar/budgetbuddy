@@ -15,11 +15,10 @@ export const AddCategory = () => {
   const [categoryName, setCategoryName] = useState("");
   const addCategory = async () => {
     try {
-      console.log(categoryType, 'on save')
       await db.insert(Categories).values({
         categoryName,
         transactionType: categoryType.id,
-        id:  Math.floor(Math.random() * 9999).toString()
+        id: Math.floor(Math.random() * 9999).toString()
       });
       navigate('Categories')
     } catch (e) {
@@ -55,31 +54,6 @@ export const AddCategory = () => {
             value={categoryName}
             onChangeText={setCategoryName}
           />
-          {/*<Label size="$6" marginLeft="$3">*/}
-          {/*  Category Type:*/}
-          {/*</Label>*/}
-          {/*<RadioGroup value={categoryType} onValueChange={setCategoryType}>*/}
-          {/*  <YStack width={300} alignItems="center">*/}
-          {/*    <XStack width={300} alignItems="center">*/}
-          {/*      <RadioGroup.Item value="1" size="$6">*/}
-          {/*        <RadioGroup.Indicator/>*/}
-          {/*      </RadioGroup.Item>*/}
-
-          {/*      <Label size="$6" marginLeft="$3">*/}
-          {/*        Expense*/}
-          {/*      </Label>*/}
-          {/*    </XStack>*/}
-          {/*    <XStack width={300} alignItems="center">*/}
-          {/*      <RadioGroup.Item value="0" size="$6">*/}
-          {/*        <RadioGroup.Indicator/>*/}
-          {/*      </RadioGroup.Item>*/}
-
-          {/*      <Label size="$6" marginLeft="$3">*/}
-          {/*        Income*/}
-          {/*      </Label>*/}
-          {/*    </XStack>*/}
-          {/*  </YStack>*/}
-          {/*</RadioGroup>*/}
           <DropDown items={categories} placeholder="Categories" val={categoryType} setVal={setCategoryType}/>
           <Button onPress={addCategory}>Add Category</Button>
         </Card>

@@ -7,3 +7,4 @@ export * from './Cross';
 export * from './Plus';
 export * from './ChevronDown';
 export * from './Filter';
+export * from './Calendar';
