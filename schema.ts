@@ -32,7 +32,8 @@ export const TransactionLists = sqliteTable('TransactionLists',{
 export const BudgetedData = sqliteTable('BudgetedData', {
   categoryType: text('categoryType').references(() => Categories.id),
   userId: text('userId').references(() => UserLists.userId),
-  value: real('value').default(0)
+  value: real('value').default(0),
+  month: integer('month').default(0),
 }, (table) => {
   return ({
     pk: primaryKey({

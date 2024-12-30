@@ -6,6 +6,7 @@ import {DarkTheme, DefaultTheme} from "../theme";
 import {createStackNavigator} from "@react-navigation/stack";
 import {Categories} from "../../screens/signedIn/Categories";
 import {Text} from "tamagui";
+import {Month} from "../../screens/signedIn/Month";
 
 const DefaultStack = createStackNavigator();
 export const RootNavigation = ({scheme}: any) => {
@@ -21,6 +22,13 @@ export const RootNavigation = ({scheme}: any) => {
           <DefaultStack.Screen name="Categories" component={Categories} options={({navigation}) => ({
             presentation: 'modal',
             headerShown: true,
+            headerLeft: () => <></>,
+            headerRight: () => <Text style={{marginHorizontal: 16}} onPress={() => navigation.goBack()}>Done</Text>
+          })}/>
+          <DefaultStack.Screen name="Months" component={Month} options={({navigation}) => ({
+            presentation: 'modal',
+            headerShown: true,
+            headerTitle: 'Select month to budget',
             headerLeft: () => <></>,
             headerRight: () => <Text style={{marginHorizontal: 16}} onPress={() => navigation.goBack()}>Done</Text>
           })}/>
