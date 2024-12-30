@@ -10,6 +10,7 @@ import m0005 from './0005_fast_iron_lad.sql';
 import m0006 from './0006_tricky_carmella_unuscione.sql';
 import m0007 from './0007_huge_vengeance.sql';
 import m0008 from './0008_broken_odin.sql';
+import m0009 from './0009_confused_sharon_carter.sql';
 
   export default {
     journal,
@@ -22,7 +23,8 @@ m0004,
 m0005,
 m0006,
 m0007,
-m0008
+m0008,
+m0009
     }
   }
   

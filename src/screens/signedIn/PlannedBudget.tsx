@@ -1,6 +1,6 @@
 import {Button, Card, H3, H5, Input, ScrollView, XStack} from "tamagui";
 import {useAuth, useDb} from "../../hooks";
-import {useFocusEffect, useNavigation, useTheme} from "@react-navigation/native";
+import {useFocusEffect, useNavigation, useRoute, useTheme} from "@react-navigation/native";
 import {useCallback, useState} from "react";
 import {BudgetedData, Categories as CategoriesSchema} from "../../../schema";
 import {eq, and} from "drizzle-orm";
@@ -10,14 +10,21 @@ import {KeyboardStickyView} from "react-native-keyboard-controller";
 export const PlannedBudget = () => {
   const {db} = useDb();
   const {ab} = useAuth();
-  const {navigate, } = useNavigation();
+  const {params} = useRoute();
+  const {navigate, setOptions} = useNavigation();
   const [abc, setAbc] = useState();
   useFocusEffect(useCallback(() => {
     (async () => {
+      setOptions({
+        headerTitle: `Planned Budget for ${params?.selectedMonth.month}`
+      })
       const abc = await db.select({
         id: BudgetedData.categoryType,
         value: BudgetedData.value,
-      }).from(BudgetedData).where(eq(BudgetedData.userId, ab?.userId ?? ''));
+      }).from(BudgetedData).where(and(
+        eq(BudgetedData.userId, ab?.userId ?? ''),
+        eq(BudgetedData.month, params?.selectedMonth?.id)
+      ));
       if (Array.isArray(abc) && abc.length === 0) {
         const def = await db.select({
           id: CategoriesSchema.id,
@@ -76,6 +83,7 @@ export const PlannedBudget = () => {
           categoryType: d.id,
           userId: ab?.userId,
           value: Number(d.value) ?? 0,
+          month: params?.selectedMonth?.id
         }
       ));
       const def = await db.select({
@@ -95,7 +103,8 @@ export const PlannedBudget = () => {
           console.log(item, 'in iteration item is', ab?.userId, )
           try {
             const x = await db.update(BudgetedData).set({
-              value: item.value
+              value: item.value,
+              month: params?.selectedMonth?.id
             }).where(and(
               eq(BudgetedData.categoryType, item.categoryType),
               eq(BudgetedData.userId, ab?.userId),
@@ -117,7 +126,7 @@ console.log(JSON.stringify(e), 'err sappened', e)
   return (
     <>
       <H5 textAlign="center" marginVertical="$2">
-        Monthly Budgeted Expenses
+        {params?.selectedMonth.month} Budgeted Expenses
       </H5>
 
       <ScrollView contentContainerStyle={{flexGrow: 1}}>

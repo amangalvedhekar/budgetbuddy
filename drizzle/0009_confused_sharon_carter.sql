@@ -1,0 +1,1 @@
+ALTER TABLE `BudgetedData` ADD `month` integer DEFAULT 0;

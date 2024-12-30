@@ -13,7 +13,7 @@ export const Account = () => {
     navigate('Categories');
   }
   const onCardPress = () => {
-    navigate('plannedBudget');
+    navigate('Months');
   }
   return  (
     <YStack justifyContent="flex-start" flex={1} padding="$4">
@@ -72,11 +72,10 @@ export const Account = () => {
       >
         <XStack marginVertical="$4" paddingHorizontal="$4">
           <H4 size="$6" fontWeight="bold">
-            Budgeted Expenses
+            Monthly Budgeted Expenses
           </H4>
         </XStack>
       </Card>
-
     </YStack>
   )
 };
