@@ -6,7 +6,6 @@ import {AuthProvider} from "./src/contexts/";
 import {useCachedResources} from "./src/hooks";
 import {Amplify} from "aws-amplify";
 import {RootNavigation} from "./src/navigation/stacks";
-import {BottomSheetModalProvider} from "@gorhom/bottom-sheet";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import {KeyboardProvider} from "react-native-keyboard-controller";
 
@@ -32,10 +31,8 @@ export default function App() {
       <KeyboardProvider>
         <AuthProvider>
           <TamaguiProvider config={config} defaultTheme={scheme!}>
-            <BottomSheetModalProvider>
-              <RootNavigation scheme={scheme}/>
-              <StatusBar style="auto"/>
-            </BottomSheetModalProvider>
+            <RootNavigation scheme={scheme}/>
+            <StatusBar style="auto"/>
           </TamaguiProvider>
         </AuthProvider>
       </KeyboardProvider>
