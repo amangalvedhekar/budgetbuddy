@@ -10,7 +10,7 @@ const MONTH_LIST = [
   {
     month: 'January',
     id: 0,
-    isBudgeted:true,
+    isBudgeted:false,
   },
   {
     month: 'February',

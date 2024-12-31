@@ -4,8 +4,8 @@ import {useFocusEffect, useNavigation, useRoute, useTheme} from "@react-navigati
 import {useCallback, useState} from "react";
 import {BudgetedData, Categories as CategoriesSchema} from "../../../schema";
 import {eq, and} from "drizzle-orm";
-import {KeyboardAvoidingView} from "react-native";
-import {KeyboardStickyView} from "react-native-keyboard-controller";
+
+import {KeyboardStickyView, KeyboardAvoidingView} from "react-native-keyboard-controller";
 
 export const PlannedBudget = () => {
   const {db} = useDb();
@@ -129,8 +129,8 @@ console.log(JSON.stringify(e), 'err sappened', e)
         {params?.selectedMonth.month} Budgeted Expenses
       </H5>
 
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
+      <ScrollView>
+        <KeyboardAvoidingView behavior="padding">
           {abc?.map(a => (
             <Card key={a.name} elevate
                   margin="$2"
@@ -151,7 +151,6 @@ console.log(JSON.stringify(e), 'err sappened', e)
                     size="$6"
                     placeholder="0.00"
                     keyboardType="numeric"
-                    returnKeyType="next"
                     value={a?.value?.toString()}
                     onChangeText={handleChangeText(a.name)}
                   />
