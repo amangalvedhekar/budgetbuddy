@@ -145,13 +145,13 @@ export const Add = () => {
               }}
               theme={{
                 // backgroundColor: colors.primary,
-                // calendarBackground: colors.background,
-                textSectionTitleColor: '#cf4f4f',
-                selectedDayBackgroundColor: '#0d4dc5',
-                selectedDayTextColor: '#cf4f4f',
-                todayTextColor: '#0d4dc5',
-                dayTextColor: '#0d4dc5',
-                textDisabledColor: '#cf4f4f'
+                // calendarBackground: colors.primary,
+                // textSectionTitleColor: colors.text,
+                // selectedDayBackgroundColor: '#0d4dc5',
+                // selectedDayTextColor: '#cf4f4f',
+                // todayTextColor: colors.border,
+                // dayTextColor: '#0d4dc5',
+                // textDisabledColor: '#cf4f4f'
               }}
             />
           </Sheet.Frame>

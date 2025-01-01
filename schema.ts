@@ -27,6 +27,8 @@ export const TransactionLists = sqliteTable('TransactionLists',{
   addedBy: text('addedBy').references(() => UserLists.userId),
   categoryType: text('categoryType').references(() => Categories.id),
   transactionType: text('transactionType').references(() => TransactionTypes.id),
+  isDeleted: integer('isDeleted',{mode: 'boolean'}).default(false),
+  deletedDate: text('deletedDate'),
 });
 
 export const BudgetedData = sqliteTable('BudgetedData', {

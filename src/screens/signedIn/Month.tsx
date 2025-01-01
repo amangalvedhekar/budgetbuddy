@@ -105,7 +105,7 @@ export const Month = () => {
     <>
       <ScrollView>
         <H5 margin="$2">
-          2024
+          2025
         </H5>
         <Separator/>
         {monthData.map(month => (
