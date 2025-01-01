@@ -46,7 +46,7 @@ const HistoryTabScreens = () => {
       <HistoryStack.Screen name='historyEntry' component={History} options={{
         headerTitle: 'Transactions'
       }}/>
-      <HistoryStack.Screen name='historyEntryDetails' component={Details} />
+      {/*<HistoryStack.Screen name='historyEntryDetails' component={Details} />*/}
     </HistoryStack.Navigator>
   );
 }

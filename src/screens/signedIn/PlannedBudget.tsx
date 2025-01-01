@@ -53,7 +53,7 @@ export const PlannedBudget = () => {
       }
     })();
   }, []));
-  const offset = {closed: 0, opened: 90};
+  const offset = {closed: 0, opened: 80};
 
   const handleChangeText = (a) => (b) => {
     const newData = abc.map(d => {
