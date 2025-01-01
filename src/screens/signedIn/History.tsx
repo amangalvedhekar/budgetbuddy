@@ -5,7 +5,7 @@ import {Button, Card, H2, H3, H4, H5, Paragraph, ScrollView, XStack} from "tamag
 import { useCallback, useState} from "react";
 import {useAuth, useDb} from "../../hooks";
 import {TransactionLists, TransactionTypes} from "../../../schema";
-import {eq} from "drizzle-orm";
+import {and, eq} from "drizzle-orm";
 
 // ToDo - Add types
 const RenderItem = ({item, onPress}: any) => (
@@ -49,7 +49,10 @@ export const History = () => {
     (async () => {
       const abc = await db.select().from(TransactionTypes);
       const def = await db.query.TransactionLists.findMany({
-        where: eq(TransactionLists.addedBy, ab?.userId)
+        where: and(
+          eq(TransactionLists.addedBy, ab?.userId),
+          eq(TransactionLists.isDeleted, false)
+        )
       })
       const newData = def.map(d => {
         return ({

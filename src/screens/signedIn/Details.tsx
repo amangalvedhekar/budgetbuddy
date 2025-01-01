@@ -8,7 +8,7 @@ import {DropDown} from "../../components/DropDown";
 
 
 export const Details = () => {
-  const {setOptions} = useNavigation();
+  const {setOptions, canGoBack, goBack} = useNavigation();
   const {db} = useDb();
   const {params} = useRoute();
   const [transactionDetail, setTransactionDetail] = useState();
@@ -56,9 +56,27 @@ export const Details = () => {
     console.log(dataToSave, 'this will be pushed to db');
     await db.update(TransactionLists).set(dataToSave).where(eq(
       TransactionLists.id, params?.entryId
-    ))
+    ));
+    if(canGoBack()){
+      goBack();
+    }
   }
 
+  const deleteTransaction = async () => {
+    await db.update(TransactionLists).set({
+      isDeleted: true,
+      deletedDate: `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
+    }).where(
+      eq(
+        TransactionLists.id,
+        params?.entryId
+      )
+    );
+
+    if(canGoBack()){
+      goBack();
+    }
+  }
 
   return (
     <Card
@@ -123,7 +141,7 @@ export const Details = () => {
       {/*<Separator/>*/}
       <Card.Footer>
         <XStack flex={1} flexWrap="wrap" justifyContent="space-between" padding="$2">
-          <Button size="$6">
+          <Button size="$6" onPress={deleteTransaction}>
             <Paragraph>
               Delete
             </Paragraph>

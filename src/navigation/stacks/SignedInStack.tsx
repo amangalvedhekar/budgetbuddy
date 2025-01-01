@@ -60,14 +60,14 @@ export const SignedInScreens = () => {
       })}
       initialRouteName="History"
     >
-      <SignedInStack.Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
-          tabBarIcon: ({focused}) => <HomeIcon fill={focused ? colors.primary : colors.text}/>,
-        }}
-      />
+      {/*<SignedInStack.Screen*/}
+      {/*  name="Home"*/}
+      {/*  component={Home}*/}
+      {/*  options={{*/}
+      {/*    tabBarLabelStyle: {fontWeight: '600', fontSize: 16},*/}
+      {/*    tabBarIcon: ({focused}) => <HomeIcon fill={focused ? colors.primary : colors.text}/>,*/}
+      {/*  }}*/}
+      {/*/>*/}
       <SignedInStack.Screen
         name="History"
         component={HistoryTabScreens}
@@ -75,10 +75,10 @@ export const SignedInScreens = () => {
           {
             tabBarLabelStyle: {
               fontWeight: '600',
-              fontSize: 16
+              fontSize: 16,
             },
             tabBarIcon: ({focused}) => <HistoryIcon fill={focused ? colors.primary : colors.text}/>,
-            tabBarLabel: 'Transactions'
+            tabBarLabel: 'Home'
           }}
       />
 

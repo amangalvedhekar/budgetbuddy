@@ -1,0 +1,325 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "65fa6ac1-2293-486c-84ec-6bebdf896907",
+  "prevId": "234de397-cccf-4df4-9857-977ec0e750c0",
+  "tables": {
+    "BudgetedData": {
+      "name": "BudgetedData",
+      "columns": {
+        "categoryType": {
+          "name": "categoryType",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "value": {
+          "name": "value",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 0
+        },
+        "month": {
+          "name": "month",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "BudgetedData_categoryType_Categories_id_fk": {
+          "name": "BudgetedData_categoryType_Categories_id_fk",
+          "tableFrom": "BudgetedData",
+          "tableTo": "Categories",
+          "columnsFrom": [
+            "categoryType"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "BudgetedData_userId_UserLists_userId_fk": {
+          "name": "BudgetedData_userId_UserLists_userId_fk",
+          "tableFrom": "BudgetedData",
+          "tableTo": "UserLists",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "userId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "BudgetedData_userId_categoryType_pk": {
+          "columns": [
+            "userId",
+            "categoryType"
+          ],
+          "name": "BudgetedData_userId_categoryType_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "Categories": {
+      "name": "Categories",
+      "columns": {
+        "categoryName": {
+          "name": "categoryName",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "transactionType": {
+          "name": "transactionType",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "Categories_categoryName_unique": {
+          "name": "Categories_categoryName_unique",
+          "columns": [
+            "categoryName"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "Categories_transactionType_TransactionType_id_fk": {
+          "name": "Categories_transactionType_TransactionType_id_fk",
+          "tableFrom": "Categories",
+          "tableTo": "TransactionType",
+          "columnsFrom": [
+            "transactionType"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "TransactionLists": {
+      "name": "TransactionLists",
+      "columns": {
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "amount": {
+          "name": "amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "createdDate": {
+          "name": "createdDate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(CURRENT_DATE)"
+        },
+        "modifiedDate": {
+          "name": "modifiedDate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "addedBy": {
+          "name": "addedBy",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "categoryType": {
+          "name": "categoryType",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "transactionType": {
+          "name": "transactionType",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "deletedDate": {
+          "name": "deletedDate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "TransactionLists_addedBy_UserLists_userId_fk": {
+          "name": "TransactionLists_addedBy_UserLists_userId_fk",
+          "tableFrom": "TransactionLists",
+          "tableTo": "UserLists",
+          "columnsFrom": [
+            "addedBy"
+          ],
+          "columnsTo": [
+            "userId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "TransactionLists_categoryType_Categories_id_fk": {
+          "name": "TransactionLists_categoryType_Categories_id_fk",
+          "tableFrom": "TransactionLists",
+          "tableTo": "Categories",
+          "columnsFrom": [
+            "categoryType"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "TransactionLists_transactionType_TransactionType_id_fk": {
+          "name": "TransactionLists_transactionType_TransactionType_id_fk",
+          "tableFrom": "TransactionLists",
+          "tableTo": "TransactionType",
+          "columnsFrom": [
+            "transactionType"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "TransactionType": {
+      "name": "TransactionType",
+      "columns": {
+        "transactionName": {
+          "name": "transactionName",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "TransactionType_transactionName_unique": {
+          "name": "TransactionType_transactionName_unique",
+          "columns": [
+            "transactionName"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "UserLists": {
+      "name": "UserLists",
+      "columns": {
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "isUserOnboarded": {
+          "name": "isUserOnboarded",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}
