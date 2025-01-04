@@ -1,101 +1,117 @@
 import {Card, H5, ScrollView, Separator, XStack} from "tamagui";
 import {Check} from "../../icons";
-import {useFocusEffect, useNavigation} from "@react-navigation/native";
-import {useDb} from "../../hooks";
+import {useFocusEffect, useNavigation, useRoute} from "@react-navigation/native";
+import {useAuth, useDb} from "../../hooks";
 import {useCallback, useState} from "react";
-import {BudgetedData} from "../../../schema";
-import {eq} from "drizzle-orm";
+import {BudgetedData, Categories} from "../../../schema";
+import {and, eq} from "drizzle-orm";
+
 
 const MONTH_LIST = [
   {
     month: 'January',
     id: 0,
-    isBudgeted:false,
+    isBudgeted: false,
   },
   {
     month: 'February',
     id: 1,
-    isBudgeted:false,
+    isBudgeted: false,
   },
   {
     month: 'March',
     id: 2,
-    isBudgeted:false,
+    isBudgeted: false,
   },
   {
     month: 'April',
     id: 3,
-    isBudgeted:false,
+    isBudgeted: false,
   },
 
   {
     month: 'May',
     id: 4,
-    isBudgeted:false,
+    isBudgeted: false,
   },
 
   {
     month: 'June',
     id: 5,
-    isBudgeted:false,
+    isBudgeted: false,
   },
   {
     month: 'July',
     id: 6,
-    isBudgeted:false,
+    isBudgeted: false,
   },
   {
     month: 'August',
     id: 7,
-    isBudgeted:false,
+    isBudgeted: false,
   },
   {
     month: 'September',
     id: 8,
-    isBudgeted:false,
+    isBudgeted: false,
   },
   {
     month: 'October',
     id: 9,
-    isBudgeted:false,
+    isBudgeted: false,
   },
   {
     month: 'November',
     id: 10,
-    isBudgeted:false,
+    isBudgeted: false,
   },
   {
     month: 'December',
     id: 11,
-    isBudgeted:false,
+    isBudgeted: false,
   },
 ];
 export const Month = () => {
   const {navigate} = useNavigation();
   const {db} = useDb();
-
+  const {ab} = useAuth();
+  const {params} = useRoute();
   const [monthData, setMonthData] = useState(() => MONTH_LIST);
 
   useFocusEffect(useCallback(() => {
     (async () => {
       try {
+        const categories = await db.query.Categories
+          .findMany(
+            {
+              where: eq(Categories.transactionType, params.transactionType)
+            }
+          );
+        // console.log(categories, 'categories')
         const results = await Promise.all(MONTH_LIST.map(async (month) => {
           const result = await db
             .query.BudgetedData.findMany({
-              where: eq(BudgetedData.month, month.id)
+              where: and(
+                eq(BudgetedData.month, month.id),
+                eq(BudgetedData.userId, ab?.userId??'')
+              )
             })
-          console.log(result, 'inside focus')
-          if(Array.isArray(result) && result.length > 0) {
+          if (Array.isArray(result) && result.length > 0) {
+            const isCategoryAdded = categories.filter(category => {
+              if (result.find(r => r.categoryType == category.id)){
+                return category
+              }
+            });
             return ({
               ...month,
-              isBudgeted: true,
+              isBudgeted: Array.isArray(isCategoryAdded) && isCategoryAdded.length > 0,
             });
-          }else {
+          } else {
             return month;
           }
         }));
         setMonthData(results);
-      }catch (e) {
+      } catch (e) {
         console.log(e, 'hmm')
       }
 
@@ -115,8 +131,14 @@ export const Month = () => {
                 margin="$2"
           >
             <Card.Header>
-              <XStack justifyContent="space-between" onPress={() => navigate('plannedBudget', {selectedMonth: month})}>
-                <H5>
+              <XStack justifyContent="space-between" onPress={() => {
+                if(params.transactionType == '0'){
+                  navigate('addIncome', {selectedMonth: month})
+                } else {
+                  navigate('plannedBudget' , {selectedMonth: month})
+                }
+              }}>
+                <H5 {...month.isBudgeted ? {color: "purple"}: null}>
                   {month.month}
                 </H5>
                 {month.isBudgeted ? <Check color="purple"/> : <></>}

@@ -28,18 +28,15 @@ export const Details = () => {
         name: TransactionTypes.transactionName,
         id: TransactionTypes.id,
       }).from(TransactionTypes);
-      // console.log(abcd, 'abcd')
       setTransactionType(defd);
 
-      // console.log(params?.entryId, 'hmm')
       const abc = await db.select().from(TransactionLists).where(eq(TransactionLists.id, params?.entryId));
-      // console.log(abc, 'hmm')
+
       setTransactionDetail(abc[0]);
       const currentTransactionType = defd.find(d => d.id == abc[0].transactionType);
       const currentCategoryType = abcd.find(b => b.name == abc[0].categoryType);
       setSubCategory(currentCategoryType);
       setCategoryType(currentTransactionType)
-      // setTransactionType()
       setOptions({headerTitle: abc[0].description})
     })();
   }, [params]));

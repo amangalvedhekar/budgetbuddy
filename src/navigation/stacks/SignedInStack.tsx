@@ -6,13 +6,12 @@ import {
   History as HistoryIcon,
   Insights as InsightIcon,
   Plus,
-  Filter
 } from "../../icons";
 import {Home, Account, History, Insight, Add} from "../../screens";
 import {createStackNavigator} from "@react-navigation/stack";
-import {Details} from "../../screens/signedIn/Details";
 import {AddCategory} from "../../screens/signedIn/AddCategory";
 import {PlannedBudget} from "../../screens/signedIn/PlannedBudget";
+import {EstimatedIncome} from "../../screens/signedIn/EstimatedIncome";
 
 const SignedInStack = createBottomTabNavigator();
 const HistoryStack = createStackNavigator();
@@ -32,6 +31,9 @@ const AccountStackScreens = () => {
       }} />
       <AccountStack.Screen name="addCategory" component={AddCategory} options={{
         headerTitle: 'Add New Category'
+      }} />
+      <AccountStack.Screen name="addIncome" component={EstimatedIncome} options={{
+        headerTitle: 'Estimated Income'
       }} />
     </AccountStack.Navigator>
   );
@@ -60,14 +62,14 @@ export const SignedInScreens = () => {
       })}
       initialRouteName="History"
     >
-      <SignedInStack.Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
-          tabBarIcon: ({focused}) => <HomeIcon fill={focused ? colors.primary : colors.text}/>,
-        }}
-      />
+      {/*<SignedInStack.Screen*/}
+      {/*  name="Home"*/}
+      {/*  component={Home}*/}
+      {/*  options={{*/}
+      {/*    tabBarLabelStyle: {fontWeight: '600', fontSize: 16},*/}
+      {/*    tabBarIcon: ({focused}) => <HomeIcon fill={focused ? colors.primary : colors.text}/>,*/}
+      {/*  }}*/}
+      {/*/>*/}
       <SignedInStack.Screen
         name="History"
         component={HistoryTabScreens}
@@ -91,14 +93,14 @@ export const SignedInScreens = () => {
         }}
       />
 
-      <SignedInStack.Screen
-        name="Insights"
-        component={Insight}
-        options={{
-          tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
-          tabBarIcon: ({focused}) => <InsightIcon fill={focused ? colors.primary : colors.text}/>,
-        }}
-      />
+      {/*<SignedInStack.Screen*/}
+      {/*  name="Insights"*/}
+      {/*  component={Insight}*/}
+      {/*  options={{*/}
+      {/*    tabBarLabelStyle: {fontWeight: '600', fontSize: 16},*/}
+      {/*    tabBarIcon: ({focused}) => <InsightIcon fill={focused ? colors.primary : colors.text}/>,*/}
+      {/*  }}*/}
+      {/*/>*/}
       <SignedInStack.Screen
         name="Account"
         component={AccountStackScreens}

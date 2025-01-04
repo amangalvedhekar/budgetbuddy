@@ -9,7 +9,12 @@ export interface DropDownProps {
 
 export const DropDown = ({items, placeholder, val,setVal}) => {
   return (
-    <Select value={val} onValueChange={setVal} disablePreventBodyScroll size="$5" >
+    <Select
+      value={val}
+      onValueChange={setVal}
+      disablePreventBodyScroll
+      size="$5"
+    >
       <Select.Trigger size="$5" iconAfter={() => <ChevronDown color="purple" width={32}/>} marginVertical="$2">
         <Select.Value placeholder={placeholder}/>
       </Select.Trigger>
@@ -76,7 +81,7 @@ export const DropDown = ({items, placeholder, val,setVal}) => {
                     </Select.Item>
                   )
                 }),
-              [items]
+              [items, val]
             )}
           </Select.Group>
         </Select.Viewport>

@@ -25,18 +25,28 @@ export const PlannedBudget = () => {
         eq(BudgetedData.userId, ab?.userId ?? ''),
         eq(BudgetedData.month, params?.selectedMonth?.id)
       ));
-      if (Array.isArray(abc) && abc.length === 0) {
-        const def = await db.select({
-          id: CategoriesSchema.id,
-          name: CategoriesSchema.categoryName
-        }).from(CategoriesSchema).where(eq(CategoriesSchema.transactionType, "1"));
+      const def = await db.select({
+        id: CategoriesSchema.id,
+        name: CategoriesSchema.categoryName
+      }).from(CategoriesSchema).where(eq(CategoriesSchema.transactionType, "1"));
+      const dataForExpense = def.map(d => {
+        const found = abc.find(b => b.id == d.id);
+        if (found) {
+          return {
+            ...d,
+            value: found.value,
+          };
+        }
+      }).filter(Boolean);
+      console.log(dataForExpense, 'hmm')
+      if (Array.isArray(dataForExpense) && dataForExpense.length === 0) {
         const freshData = def.map(d => ({
           ...d,
           value: '',
         }));
         setAbc(freshData)
       } else {
-        const def = await Promise.all(abc.map(async (d) => {
+        const def = await Promise.all(dataForExpense.map(async (d) => {
           try {
             const h = await db.select({
               name: CategoriesSchema.categoryName
@@ -68,6 +78,7 @@ export const PlannedBudget = () => {
     });
     setAbc(newData);
   }
+
   const calculateTotal = () => {
     const total = Array.isArray(abc) ? abc.reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
     return new Intl.NumberFormat('en-CA', {
@@ -91,16 +102,18 @@ export const PlannedBudget = () => {
         value: BudgetedData.value,
         userId: BudgetedData.userId,
       }).from(BudgetedData).where(eq(BudgetedData.userId, ab?.userId ?? ''));
-      if(Array.isArray(def) && def.length !== 0) {
-        const existingItem = def.map(d => {
-          const foundItem = dataToSave.find(f => f.categoryType == d.id && d.userId == ab?.userId)
-          if(foundItem){
-            return foundItem;
-          }
-        });
+      if (Array.isArray(def) && def.length !== 0) {
+        const existingItem = def
+          .map(d => {
+            const foundItem = dataToSave
+              .find(f => f.categoryType == d.id && d.userId == ab?.userId)
+            if (foundItem) {
+              return foundItem;
+            }
+          });
         console.log(existingItem, 'what is')
         await Promise.all(existingItem.map(async (item) => {
-          console.log(item, 'in iteration item is', ab?.userId, )
+          console.log(item, 'in iteration item is', ab?.userId,)
           try {
             const x = await db.update(BudgetedData).set({
               value: item.value,
@@ -110,7 +123,7 @@ export const PlannedBudget = () => {
               eq(BudgetedData.userId, ab?.userId),
             )).returning();
             console.log(x, 'updated data')
-          }catch (e) {
+          } catch (e) {
 
           }
         }))
@@ -119,7 +132,7 @@ export const PlannedBudget = () => {
       }
       navigate('accountEntry');
     } catch (e) {
-console.log(JSON.stringify(e), 'err sappened', e)
+      console.log(JSON.stringify(e), 'err happened', e)
     }
   }
 
