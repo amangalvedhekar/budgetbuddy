@@ -109,7 +109,14 @@ export const History = () => {
        a.id != 'all' ?  eq(TransactionLists.transactionType, a.id) : undefined,
       )
     });
-    setTransactionList(def);
+    const newData = def.map(d => {
+      return ({
+        ...d,
+        transactionTypeName: newState?.find(x => x.id == d.transactionType)?.transactionName
+      });
+    });
+    setTransactionList(newData);
+    // setTransactionList(def);
 
   }
 
@@ -156,12 +163,10 @@ export const History = () => {
           <XStack justifyContent="space-between">
             <H5 textWrap="wrap">
               Description
-              {/*<ChevronDown color="black"/>*/}
             </H5>
 
             <H5>
               Amount
-              {/*<ChevronDown color="black"/>*/}
             </H5>
           </XStack>
         </Card.Header>
@@ -184,7 +189,7 @@ export const History = () => {
         borderWidth={StyleSheet.hairlineWidth}
         borderColor="purple"
       >
-        <H5>Category Total</H5>
+        <H5>{categories?.find(category => category.isActive === true)?.transactionName} Total</H5>
         <H5>
           {calculateTotal()}
         </H5>
