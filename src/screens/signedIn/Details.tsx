@@ -1,4 +1,4 @@
-import {Button, Card, H1, H4, Input, Label, Paragraph, Separator, XStack} from "tamagui";
+import {Button, Card, H1, H3, H5, Input, Label, Paragraph, Separator, XStack} from "tamagui";
 import {useFocusEffect, useNavigation, useRoute} from "@react-navigation/native";
 import {useCallback, useState} from "react";
 import {useDb} from "../../hooks/useDb";
@@ -42,7 +42,6 @@ export const Details = () => {
   }, [params]));
 
   const saveChanges = async () => {
-    console.log('pressed', transactionDetail, categoryType, subCategory)
     const dataToSave = {
       ...transactionDetail,
       amount: Number(transactionDetail.amount),
@@ -50,7 +49,6 @@ export const Details = () => {
       transactionType: categoryType.id,
       modifiedDate: `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
     };
-    console.log(dataToSave, 'this will be pushed to db');
     await db.update(TransactionLists).set(dataToSave).where(eq(
       TransactionLists.id, params?.entryId
     ));
@@ -131,6 +129,14 @@ export const Details = () => {
           val={subCategory}
           setVal={setSubCategory}
         />
+      </XStack>
+      <XStack justifyContent="space-between" margin="$3">
+        <Label flex={0.4}>
+          Created Date:
+        </Label>
+       <H3>
+         {transactionDetail?.createdDate}
+       </H3>
       </XStack>
       {/*<H4>*/}
       {/*  Date Added - {transactionDetail?.createdDate}*/}

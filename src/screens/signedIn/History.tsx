@@ -5,7 +5,7 @@ import {Button, Card, H2, H3, H4, H5, Paragraph, ScrollView, XStack} from "tamag
 import {useCallback, useState} from "react";
 import {useAuth, useDb} from "../../hooks";
 import {TransactionLists, TransactionTypes} from "../../../schema";
-import {and, eq} from "drizzle-orm";
+import {and, desc, eq} from "drizzle-orm";
 import {ChevronDown} from "../../icons";
 
 // ToDo - Add types
@@ -38,6 +38,9 @@ const RenderItem = ({item, onPress}: any) => (
         <H5>
           {item.transactionTypeName}
         </H5>
+        <H5>
+          {item?.createdDate}
+        </H5>
       </XStack>
     </Card.Footer>
   </Card>
@@ -62,7 +65,8 @@ export const History = () => {
         where: and(
           eq(TransactionLists.addedBy, ab?.userId),
           eq(TransactionLists.isDeleted, false),
-        )
+        ),
+        orderBy: [desc(TransactionLists.createdDate)]
       });
       const newData = def.map(d => {
         return ({
@@ -107,7 +111,8 @@ export const History = () => {
         eq(TransactionLists.addedBy, ab?.userId),
         eq(TransactionLists.isDeleted, false),
        a.id != 'all' ?  eq(TransactionLists.transactionType, a.id) : undefined,
-      )
+      ),
+      orderBy: [desc(TransactionLists.createdDate)]
     });
     const newData = def.map(d => {
       return ({
@@ -116,7 +121,6 @@ export const History = () => {
       });
     });
     setTransactionList(newData);
-    // setTransactionList(def);
 
   }
 
