@@ -56,20 +56,22 @@ export const SignedInScreens = () => {
   const {colors} = useTheme();
   return (
     <SignedInStack.Navigator
+
       screenOptions={({route}) =>({
         headerShown:  !['History', 'Account'].includes(route.name),
-        headerTitleAlign: 'center'
+        headerTitleAlign: 'center',
+        tabBarHideOnKeyboard: true,
       })}
       initialRouteName="History"
     >
-      {/*<SignedInStack.Screen*/}
-      {/*  name="Home"*/}
-      {/*  component={Home}*/}
-      {/*  options={{*/}
-      {/*    tabBarLabelStyle: {fontWeight: '600', fontSize: 16},*/}
-      {/*    tabBarIcon: ({focused}) => <HomeIcon fill={focused ? colors.primary : colors.text}/>,*/}
-      {/*  }}*/}
-      {/*/>*/}
+      <SignedInStack.Screen
+        name="Home"
+        component={Home}
+        options={{
+          tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
+          tabBarIcon: ({focused}) => <HomeIcon fill={focused ? colors.primary : colors.text}/>,
+        }}
+      />
       <SignedInStack.Screen
         name="History"
         component={HistoryTabScreens}

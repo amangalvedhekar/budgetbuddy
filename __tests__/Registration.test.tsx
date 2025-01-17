@@ -14,7 +14,7 @@ describe('Registration', () => {
   describe('Validation', () => {
     it('should render', async () => {
       renderWithProviders(<Registration/>);
-      const headerTitle = await screen.findByText('Welcome to BudgetBuddy');
+      const headerTitle = await screen.findByText('Welcome to BudgetGenie');
       expect(headerTitle).toBeDefined();
     });
 

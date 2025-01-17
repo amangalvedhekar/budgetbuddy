@@ -8,7 +8,7 @@ import {
   YStack,
   H4,
   SizableText,
-  XStack
+  XStack, H5
 } from "tamagui";
 import {useNavigation} from "@react-navigation/native";
 import {useCallback, useState} from "react";
@@ -128,7 +128,7 @@ export const Registration = () => {
 
   return (
     <ScrollView>
-      <YStack padding="$4">
+      <YStack padding="$2">
         <Card
           elevate
           padded
@@ -139,9 +139,9 @@ export const Registration = () => {
           pressStyle={{scale: 0.975}}
         >
           <Card.Header>
-            <H4 size="$7" fontWeight="bold">
-              Welcome to BudgetBuddy
-            </H4>
+            <H5 fontWeight="bold">
+              Welcome to BudgetGenie
+            </H5>
           </Card.Header>
           <Input
             placeholder="Email"

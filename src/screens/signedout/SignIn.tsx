@@ -87,7 +87,7 @@ export function SignIn({route}: SignInProps) {
         >
           <Card.Header>
             <H4 size="$7" fontWeight="bold">
-              Sign In to BudgetBuddy
+              Sign In to BudgetGenie
             </H4>
           </Card.Header>
           <Input
@@ -136,7 +136,7 @@ export function SignIn({route}: SignInProps) {
             {formState.isFormSubmitted ? <ActivityIndicator size="small" color="purple"/> : 'Sign In'}
           </Button>
           <Card.Footer>
-            <Paragraph size="$7" paddingVertical="$2" onPress={() => navigate('Register')}>New to BudgetBuddy?
+            <Paragraph size="$7" paddingVertical="$2" onPress={() => navigate('Register')}>New to BudgetGenie?
               Register</Paragraph>
           </Card.Footer>
         </Card>

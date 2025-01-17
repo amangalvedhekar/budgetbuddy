@@ -6412,6 +6412,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-test-renderer@npm:^18":
+  version: 18.3.1
+  resolution: "@types/react-test-renderer@npm:18.3.1"
+  dependencies:
+    "@types/react": "npm:^18"
+  checksum: 10c0/9fc8467ff1a3f14be6cc3498a75fc788d2c92c0fffa7bf21269ed5d9d82db9195bf2178ddc42ea16a0836995c1b77601c6be8abb27bd1864668c418c6d0e5a3b
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^18":
+  version: 18.3.18
+  resolution: "@types/react@npm:18.3.18"
+  dependencies:
+    "@types/prop-types": "npm:*"
+    csstype: "npm:^3.0.2"
+  checksum: 10c0/8fb2b00672072135d0858dc9db07873ea107cc238b6228aaa2a9afd1ef7a64a7074078250db38afbeb19064be8ea6af5eac32d404efdd5f45e093cc4829d87f8
+  languageName: node
+  linkType: hard
+
 "@types/react@npm:~18.3.12":
   version: 18.3.12
   resolution: "@types/react@npm:18.3.12"
@@ -7202,6 +7221,7 @@ __metadata:
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.14.11"
     "@types/react": "npm:~18.3.12"
+    "@types/react-test-renderer": "npm:^18"
     aws-amplify: "npm:^6.3.8"
     babel-plugin-inline-import: "npm:^3.0.0"
     drizzle-kit: "npm:^0.28.0"
@@ -7233,6 +7253,7 @@ __metadata:
     react-native-screens: "npm:4.1.0"
     react-native-svg: "npm:15.8.0"
     react-native-tab-view: "npm:4.0.5"
+    react-test-renderer: "npm:18.3.1"
     tamagui: "npm:^1.101.7"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.1.3"
