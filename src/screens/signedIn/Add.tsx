@@ -24,7 +24,7 @@ export const Add = () => {
   const [categoryType, setCategoryType] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
-  const [transactionDate, setTransactionDate] = useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
+  const [transactionDate, setTransactionDate] = useState(`${new Date().getFullYear()}-0${new Date().getMonth() + 1}-${new Date().getDate()}`);
   const [isTransactionBeingAdded, setIsTransactionBeingAdded] = useState(false);
   const [subCategory, setSubCategory] = useState('');
   const [categories, setCategories] = useState<Array<{ name: string, transactionType: string }>>();

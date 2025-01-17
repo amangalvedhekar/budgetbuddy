@@ -156,22 +156,22 @@ export const Home = () => {
           // textBackgroundRadius={23}
           data={pieData ?? []}
         />
-        <H5 padding="$3">
+        <H5 padding="$1">
           Expected Income for January
         </H5>
-        <XStack flex={1}>
-          {Array.isArray(barData) && barData.length > 0 && (<BarChart
+        <>
+          {Array.isArray(barData) && barData?.length > 0 && (<BarChart
             showValuesAsTopLabel
             topLabelContainerStyle={{
               paddingTop: 8
 
             }}
-            height={height > width ? height/3 : height}
+            height={height > width ? height/3.1 : height}
             topLabelTextStyle={{
               color: colors.text
             }
             }
-            barWidth={(width -120)/barData?.length}
+            barWidth={(width -140)/barData?.length}
             noOfSections={3}
             barBorderRadius={8}
             frontColor={colors.text}
@@ -186,7 +186,7 @@ export const Home = () => {
             yAxisThickness={0}
             xAxisThickness={0}
           />)}
-        </XStack>
+        </>
       </YStack>
     </ScrollView>
   )
