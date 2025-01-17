@@ -125,42 +125,50 @@ export const Home = () => {
       currency: 'CAD'
     }).format(total);
   };
+  const calculateIncomeTotal = () => Array.isArray(barData) ? barData.reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
 
+  const formatTotal = new Intl.NumberFormat('en-CA', {
+    style: 'currency',
+    currency: 'CAD'
+  }).format(calculateIncomeTotal());
   return (
     <ScrollView>
       <YStack justifyContent="center" alignItems="center" marginVertical="$2">
-        <H5>
-          Budgeted Expense for January
-        </H5>
-        <PieChart
-          radius={(width/2) - 20}
-          donut
-          showTooltip
-          innerCircleColor={colors.card}
-          onPress={setSelectedPie}
-          centerLabelComponent={() => (
-            <YStack flex={1} textWrap="wrap" alignItems="center" justifyContent="center">
-              {selectedPie != undefined ? <>
-                <H5>{selectedPie?.name}</H5>
-                <H5>{new Intl.NumberFormat('en-CA', {
-                  style: 'currency',
-                  currency: 'CAD'
-                }).format(selectedPie?.value)}</H5>
-              </>: <>
-                <H5 textWrap="balance">Total expense</H5>
-                <H5>{calculateTotal()}</H5>
-              </>}
-            </YStack>
-          )}
-          // tooltipComponent={}
-          // textBackgroundRadius={23}
-          data={pieData ?? []}
-        />
-        <H5 padding="$1">
-          Expected Income for January
-        </H5>
-        <>
-          {Array.isArray(barData) && barData?.length > 0 && (<BarChart
+        {pieData?.length > 0 && (<>
+          <H5>
+            Budgeted Expense for January
+          </H5>
+          <PieChart
+            radius={(width/2) - 20}
+            donut
+            showTooltip
+            innerCircleColor={colors.card}
+            onPress={setSelectedPie}
+            centerLabelComponent={() => (
+              <YStack flex={1} textWrap="wrap" alignItems="center" justifyContent="center">
+                {selectedPie != undefined ? <>
+                  <H5>{selectedPie?.name}</H5>
+                  <H5>{new Intl.NumberFormat('en-CA', {
+                    style: 'currency',
+                    currency: 'CAD'
+                  }).format(selectedPie?.value)}</H5>
+                </>: <>
+                  <H5 textWrap="balance">Total expense</H5>
+                  <H5>{calculateTotal()}</H5>
+                </>}
+              </YStack>
+            )}
+            data={pieData ?? []}
+          />
+        </>)}
+
+
+          {Array.isArray(barData) && barData?.length > 0 &&  calculateIncomeTotal() > 0 && (
+            <>
+              <H5 padding="$1">
+                Expected Income for January
+              </H5>
+            <BarChart
             showValuesAsTopLabel
             topLabelContainerStyle={{
               paddingTop: 8
@@ -185,8 +193,9 @@ export const Home = () => {
 
             yAxisThickness={0}
             xAxisThickness={0}
-          />)}
-        </>
+          />
+              </>)}
+
       </YStack>
     </ScrollView>
   )
