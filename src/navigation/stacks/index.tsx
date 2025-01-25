@@ -8,6 +8,7 @@ import {Categories} from "../../screens/signedIn/Categories";
 import {Text} from "tamagui";
 import {Month} from "../../screens/signedIn/Month";
 import {Details} from "../../screens/signedIn/Details";
+import {Insight} from "../../screens";
 
 const DefaultStack = createStackNavigator();
 export const RootNavigation = ({scheme}: any) => {
@@ -37,6 +38,13 @@ export const RootNavigation = ({scheme}: any) => {
             presentation: 'modal',
             headerShown: true,
             headerTitle: 'Select month to budget',
+            headerLeft: () => <></>,
+            headerRight: () => <Text style={{marginHorizontal: 16}} onPress={() => navigation.goBack()}>Done</Text>
+          })}/>
+          <DefaultStack.Screen name="Insight" component={Insight} options={({navigation}) => ({
+            presentation: 'modal',
+            headerShown: true,
+            // headerTitle: 'Select month to budget',
             headerLeft: () => <></>,
             headerRight: () => <Text style={{marginHorizontal: 16}} onPress={() => navigation.goBack()}>Done</Text>
           })}/>

@@ -81,6 +81,8 @@ export const Categories = () => {
                      renderSectionFooter={({section:{transactionName, transactionId}}) => (
                        <Button
                          elevate
+                         bordered
+                         themeInverse
                          size="$4"
                          margin="$2"
                          onPress={() => navigate('addCategory',{

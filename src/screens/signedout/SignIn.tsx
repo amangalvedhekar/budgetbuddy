@@ -59,27 +59,11 @@ export function SignIn({route}: SignInProps) {
   }, [formState]);
   return (
     <ScrollView>
-      <YStack padding="$4">
-        {route.params?.showPasswordResetBanner
-          ? <Card
-            elevate
-            marginVertical="$3"
-            borderRadius="$8"
-            animation="bouncy"
-            scale={0.9}
-            backgroundColor="green"
-            hoverStyle={{scale: 0.975}}
-            pressStyle={{scale: 0.975}}>
-            <Card.Header>
-              <H4 size="$7" fontWeight="bold">
-                Password reset successfully. Try Sign In using new password
-              </H4>
-            </Card.Header>
-          </Card> : <></>}
+      <YStack padding="$2">
         <Card
           elevate
           padded
-          borderRadius="$8"
+          bordered
           animation="bouncy"
           scale={0.9}
           hoverStyle={{scale: 0.975}}

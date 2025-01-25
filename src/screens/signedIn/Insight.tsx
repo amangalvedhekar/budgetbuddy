@@ -1,6 +1,6 @@
 import {BarChart} from "react-native-gifted-charts";
 // import {DropDown} from "../../components/DropDown";
-import {H5, ScrollView, View} from "tamagui";
+import {H2, H5, ScrollView, View} from "tamagui";
 import {useTheme} from "@react-navigation/native";
 import {Text} from "tamagui";
 
@@ -178,6 +178,9 @@ export const Insight = () => {
   }
   return (
     <ScrollView>
+      <H2 style={{paddingHorizontal: 8,}}>
+       Demonstration purpose only
+      </H2>
       <View style={{
         backgroundColor: useTheme().colors.card,
         marginHorizontal: 8,

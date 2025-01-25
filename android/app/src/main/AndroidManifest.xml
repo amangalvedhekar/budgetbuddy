@@ -26,6 +26,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="com.anirudhm.budgetbuddy"/>
         <data android:scheme="exp+budgetbuddy"/>
+        <data android:scheme="exp+budgetgenie"/>
       </intent-filter>
     </activity>
   </application>

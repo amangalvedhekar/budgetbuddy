@@ -21,7 +21,7 @@ extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
   }
 }
 
-rootProject.name = 'BudgetBuddy'
+rootProject.name = 'BudgetGenie'
 
 dependencyResolutionManagement {
   versionCatalogs {

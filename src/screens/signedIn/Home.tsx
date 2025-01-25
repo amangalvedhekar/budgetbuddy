@@ -3,13 +3,15 @@ import {useCallback, useState} from "react";
 import {useAuth, useDb} from "../../hooks";
 import {BudgetedData, Categories as CategoriesSchema} from "../../../schema";
 import {and, eq} from "drizzle-orm";
-import {H5, ScrollView, useWindowDimensions, XStack, YStack} from "tamagui";
+import {Button, H5, Paragraph, ScrollView, useWindowDimensions, XStack, YStack} from "tamagui";
 import {BarChart, PieChart} from "react-native-gifted-charts";
+import {Alert} from "react-native";
 
 export const Home = () => {
   const {db} = useDb();
   const {ab} = useAuth();
   const {params} = useRoute();
+  const {navigate} = useNavigation();
   const [abc, setAbc] = useState();
   const [pieData, setPieData] = useState();
   const [selectedPie, setSelectedPie] = useState();
@@ -132,71 +134,78 @@ export const Home = () => {
     currency: 'CAD'
   }).format(calculateIncomeTotal());
   return (
-    <ScrollView>
-      <YStack justifyContent="center" alignItems="center" marginVertical="$2">
-        {pieData?.length > 0 && (<>
-          <H5>
-            Budgeted Expense for January
-          </H5>
-          <PieChart
-            radius={(width/2) - 20}
-            donut
-            showTooltip
-            innerCircleColor={colors.card}
-            onPress={setSelectedPie}
-            centerLabelComponent={() => (
-              <YStack flex={1} textWrap="wrap" alignItems="center" justifyContent="center">
-                {selectedPie != undefined ? <>
-                  <H5>{selectedPie?.name}</H5>
-                  <H5>{new Intl.NumberFormat('en-CA', {
-                    style: 'currency',
-                    currency: 'CAD'
-                  }).format(selectedPie?.value)}</H5>
-                </>: <>
-                  <H5 textWrap="balance">Total expense</H5>
-                  <H5>{calculateTotal()}</H5>
-                </>}
-              </YStack>
-            )}
-            data={pieData ?? []}
-          />
-        </>)}
-
-
-          {Array.isArray(barData) && barData?.length > 0 &&  calculateIncomeTotal() > 0 && (
+    <>
+      <ScrollView>
+        <YStack justifyContent="center" alignItems="center" marginVertical="$2">
+          {pieData?.length > 0 && (<>
+            <H5>
+              Budgeted Expense for January
+            </H5>
+            <PieChart
+              radius={(width / 2) - 20}
+              donut
+              showTooltip
+              innerCircleColor={colors.card}
+              onPress={setSelectedPie}
+              centerLabelComponent={() => (
+                <YStack flex={1} textWrap="wrap" alignItems="center" justifyContent="center">
+                  {selectedPie != undefined ? <>
+                    <H5>{selectedPie?.name}</H5>
+                    <H5 color="red">{new Intl.NumberFormat('en-CA', {
+                      style: 'currency',
+                      currency: 'CAD'
+                    }).format(selectedPie?.value)}</H5>
+                  </> : <>
+                    <H5 textWrap="balance">Total expense</H5>
+                    <H5 color="red">{calculateTotal()}</H5>
+                  </>}
+                </YStack>
+              )}
+              data={pieData ?? []}
+            />
+          </>)}
+          {Array.isArray(barData) && barData?.length > 0 && calculateIncomeTotal() > 0 && (
             <>
               <H5 padding="$1">
                 Expected Income for January
               </H5>
-            <BarChart
-            showValuesAsTopLabel
-            topLabelContainerStyle={{
-              paddingTop: 8
+              <BarChart
+                showValuesAsTopLabel
+                maxValue={15000}
+                topLabelContainerStyle={{
+                  paddingTop: 8
+                }}
+                topLabelTextStyle={{color: colors.text}}
+                barWidth={(width - 200) / barData?.length}
+                noOfSections={4}
+                yAxisLabelWidth={64}
+                barBorderRadius={8}
+                frontColor={colors.text}
+                yAxisTextStyle={{
+                  color: colors.text
+                }}
+                xAxisLabelTextStyle={{
+                  color: colors.text
+                }}
+                data={barData}
 
-            }}
-            height={height > width ? height/3.1 : height}
-            topLabelTextStyle={{
-              color: colors.text
-            }
-            }
-            barWidth={(width -140)/barData?.length}
-            noOfSections={3}
-            barBorderRadius={8}
-            frontColor={colors.text}
-            yAxisTextStyle={{
-              color: colors.text
-            }}
-            xAxisLabelTextStyle={{
-              color: colors.text
-            }}
-            data={barData}
+                yAxisThickness={0}
+                xAxisThickness={0}
+              />
+            </>)}
 
-            yAxisThickness={0}
-            xAxisThickness={0}
-          />
-              </>)}
-
+        </YStack>
+      </ScrollView>
+      <YStack padding="$3" justifyContent="flex-end">
+        <Button
+          bordered
+          elevate
+          themeInverse
+          onPress={() => navigate('Insight')}
+        >
+          Get More Insights - Coming Soon
+        </Button>
       </YStack>
-    </ScrollView>
+    </>
   )
 };
