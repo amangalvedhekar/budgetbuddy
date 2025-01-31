@@ -16,13 +16,7 @@ export const Home = () => {
   const [pieData, setPieData] = useState();
   const [selectedPie, setSelectedPie] = useState();
   const [barData, setBarData] = useState();
-  // const barData = [
-  //   {value: 12019, label: 'Pay Cheque',},
-  //   {value: 18000, label: 'Bonus',},
-  //   {value: 500, label: 'Dividend',},
-  //   {value: 90, label: 'Distribution'},
-  //
-  // ];
+
   const {width, height} = useWindowDimensions();
   useFocusEffect(useCallback(() => {
     (async () => {
@@ -72,7 +66,7 @@ export const Home = () => {
         value: BudgetedData.value,
       }).from(BudgetedData).where(and(
         eq(BudgetedData.userId, ab?.userId ?? ''),
-        eq(BudgetedData.month, 0)
+        eq(BudgetedData.month, 1)
       ));
       const def = await db.select({
         id: CategoriesSchema.id,

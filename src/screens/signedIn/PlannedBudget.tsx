@@ -101,7 +101,10 @@ export const PlannedBudget = () => {
         id: BudgetedData.categoryType,
         value: BudgetedData.value,
         userId: BudgetedData.userId,
-      }).from(BudgetedData).where(eq(BudgetedData.userId, ab?.userId ?? ''));
+      }).from(BudgetedData).where(and(
+        eq(BudgetedData.userId, ab?.userId ?? ''),
+        eq(BudgetedData.month, params?.selectedMonth?.id)
+      ));
       if (Array.isArray(def) && def.length !== 0) {
         const existingItem = def
           .map(d => {
