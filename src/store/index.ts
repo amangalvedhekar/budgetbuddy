@@ -22,10 +22,13 @@ export type AppDispatch = typeof store.dispatch;
 * categories: [],
 * transactionType: [],
 * transactionList: [],
-* budgetedData: [],
+* budgetedExpense: [],
+* expectedIncome: [],
 *
-* const budgetedData = {
-* userId: []
-* };
-* };
+* const budgetedExpense = [
+* {month: 'January', year: '2025' categories: [{categoryType: '', amount: 0}]}
+* ];
+* const budgetedIncome = [
+* {month: 'January', year: '2025', categories: [{categoryType: '', amount:0}],}
+* ];
 * */

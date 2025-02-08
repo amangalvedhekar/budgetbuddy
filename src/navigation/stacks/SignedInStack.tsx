@@ -69,6 +69,7 @@ export const SignedInScreens = () => {
         component={Home}
         options={{
           tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
+          tabBarLabel: 'Dashboard',
           tabBarIcon: ({focused}) => <HomeIcon fill={focused ? colors.primary : colors.text}/>,
         }}
       />

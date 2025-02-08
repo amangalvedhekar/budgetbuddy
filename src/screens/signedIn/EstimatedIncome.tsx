@@ -6,6 +6,8 @@ import {useAuth, useDb} from "../../hooks";
 import {Button, Card, H3, H5, Input, ScrollView, useWindowDimensions, XStack} from "tamagui";
 import {KeyboardAvoidingView, KeyboardStickyView} from "react-native-keyboard-controller";
 import {calculateTotalInputted} from "../../utils/calculateTotalInputted";
+import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
+import {useHeaderHeight} from "@react-navigation/elements";
 
 export const EstimatedIncome = () => {
   const {db} = useDb();
@@ -143,13 +145,12 @@ export const EstimatedIncome = () => {
     }
   }
 
-  const offset = {closed: 170, opened: 240};
-
   return (
-    <ScrollView>
+    <>
+    <ScrollView automaticallyAdjustKeyboardInsets>
       <KeyboardAvoidingView behavior="padding">
         {Array.isArray(incomeStream) && incomeStream.map(stream => (
-          <Card key={stream.id} elevate margin="$2" size="$2">
+          <Card key={stream.id} elevate margin="$2" size="$2" bordered>
             <Card.Header>
               <XStack alignItems="center">
                 <H5 flex={0.7}>
@@ -157,9 +158,10 @@ export const EstimatedIncome = () => {
                 </H5>
                 <Input
                   flex={0.3}
-                  size="$6"
+                  size="$5"
                   placeholder="0.00"
                   keyboardType="numeric"
+                  returnKeyType="done"
                   value={stream?.value?.toString()}
                   onChangeText={handleChangeText(stream?.name)}
                   borderWidth="$1"
@@ -168,8 +170,15 @@ export const EstimatedIncome = () => {
             </Card.Header>
           </Card>))}
       </KeyboardAvoidingView>
-      <KeyboardStickyView offset={offset} style={{backgroundColor: useTheme().colors.background}}>
-        <XStack flexWrap="wrap" alignItems="center" justifyContent="space-between" margin="$2">
+    </ScrollView>
+      <KeyboardStickyView  style={{backgroundColor: useTheme().colors.background}}>
+        <XStack
+          flexWrap="wrap"
+          alignItems="center"
+          justifyContent="space-between"
+          margin="$2"
+
+        >
           <H5>
             Total Amount:
           </H5>
@@ -181,6 +190,7 @@ export const EstimatedIncome = () => {
           </Button>
         </XStack>
       </KeyboardStickyView>
-    </ScrollView>
+
+    </>
   );
 }

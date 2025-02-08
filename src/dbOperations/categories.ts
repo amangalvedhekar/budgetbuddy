@@ -26,32 +26,35 @@ export const addCategory = async (
   dispatch: AppDispatch) => {
   try {
     const id = Math.floor(Math.random() * 9999).toString();
-    const transactionNameToAdd = await db
-      .select({
-        transactionName: TransactionTypes.transactionName,
-        transactionId: TransactionTypes.id
-      })
-      .from(TransactionTypes)
-      .where(eq(
-        category.transactionName,
-        TransactionTypes.transactionName,
-      ));
-    const {transactionName, transactionId} = transactionNameToAdd[0];
+    if(category.transactionName != null) {
+      const transactionNameToAdd = await db
+        .select({
+          transactionName: TransactionTypes.transactionName,
+          transactionId: TransactionTypes.id
+        })
+        .from(TransactionTypes)
+        .where(eq(
+          category.transactionName,
+          TransactionTypes.transactionName,
+        ));
+      const {transactionName, transactionId} = transactionNameToAdd[0];
 
-    const categoryToAdd = {
-      categoryName: category.categoryName,
-      transactionType: transactionId,
-      id,
-    };
-    const categoryToDispatch = {
-      ...category,
-      id,
-      transactionName,
-      transactionType: transactionId,
-    };
+      const categoryToAdd = {
+        categoryName: category.categoryName,
+        transactionType: transactionId,
+        id,
+      };
+      const categoryToDispatch = {
+        ...category,
+        id,
+        transactionName,
+        transactionType: transactionId,
+      };
 
-    await db.insert(Categories).values(categoryToAdd);
-    dispatch(addCategories(categoryToDispatch));
+      await db.insert(Categories).values(categoryToAdd);
+      dispatch(addCategories(categoryToDispatch));
+    }
+
   } catch (e) {
     console.log(JSON.stringify(e), 'error while adding')
   }

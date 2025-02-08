@@ -137,7 +137,7 @@ const {show} = useContext(ToastContext)
               Budgeted Expense for January
             </H5>
             <PieChart
-              radius={(width / 2) - 20}
+              radius={(width / 2) - 40}
               donut
               showTooltip
               innerCircleColor={colors.card}
@@ -196,7 +196,7 @@ const {show} = useContext(ToastContext)
           bordered
           elevate
           themeInverse
-          onPress={() => show('Insight not showing up?')}
+          onPress={() => navigate('Insight')}
         >
           Get More Insights - Coming Soon
         </Button>

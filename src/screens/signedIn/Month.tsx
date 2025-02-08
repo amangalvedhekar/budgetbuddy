@@ -71,6 +71,7 @@ const MONTH_LIST = [
     isBudgeted: false,
   },
 ];
+
 export const Month = () => {
   const {navigate} = useNavigation();
   const {db} = useDb();

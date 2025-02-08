@@ -44,7 +44,6 @@ export const Account = () => {
         padded
         borderRadius="$8"
         animation="bouncy"
-
       >
         <Card.Header>
           <YStack  alignItems="center">

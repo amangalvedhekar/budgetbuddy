@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useId, useState} from "react";
-import {Button, Card, Input, Label, RadioGroup, ScrollView, XStack, YStack} from "tamagui";
+import React, {useEffect, useState} from "react";
+import {Button, Card, Input, ScrollView, XStack, YStack} from "tamagui";
 import {KeyboardAvoidingView} from "react-native";
 import {Categories as CategoriesSchema, Categories, TransactionTypes} from "../../../schema";
-import {useFocusEffect, useNavigation, useRoute} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import {DropDown} from "../../components/DropDown";
 import {useDispatch, useSelector} from "react-redux";
 import {addCategory} from "../../dbOperations/categories";
@@ -13,7 +13,8 @@ import {fetchTransactionType} from "../../dbOperations/transactionType";
 export const AddCategory = () => {
   const {navigate} = useNavigation();
   const {params} = useRoute();
-  const [transactionName, setTransactionName] = useState<string>(() => params.name);
+  // @ts-ignore
+  const [transactionName, setTransactionName] = useState<string>(() => params?.name);
   const [categoryName, setCategoryName] = useState("");
   const dispatch = useDispatch();
   useEffect(() => {
@@ -28,7 +29,7 @@ export const AddCategory = () => {
     try {
       await addCategory({
         categoryName,
-       transactionName,
+        transactionName,
       }, dispatch);
       setCategoryName('');
       setTransactionName('');
