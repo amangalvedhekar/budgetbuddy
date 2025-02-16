@@ -1,39 +1,39 @@
-import React, {useCallback, useId, useState} from "react";
-import {Button, Card, Input, Label, RadioGroup, ScrollView, XStack, YStack} from "tamagui";
+import React, {useEffect, useState} from "react";
+import {Button, Card, Input, ScrollView, XStack, YStack} from "tamagui";
 import {KeyboardAvoidingView} from "react-native";
-import {useDb} from "../../hooks/useDb";
 import {Categories as CategoriesSchema, Categories, TransactionTypes} from "../../../schema";
-import {useFocusEffect, useNavigation, useRoute} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import {DropDown} from "../../components/DropDown";
+import {useDispatch, useSelector} from "react-redux";
+import {addCategory} from "../../dbOperations/categories";
+
+import {RootState} from "../../store";
 
 export const AddCategory = () => {
-
-  const {db} = useDb();
   const {navigate} = useNavigation();
-  const [categoryType, setCategoryType] = useState();
-  const [categories, setCategories] = useState<Array<{ name: string, transactionType: string }>>();
+  const {params} = useRoute();
+  // @ts-ignore
+  const [transactionName, setTransactionName] = useState<string>(() => params?.name);
   const [categoryName, setCategoryName] = useState("");
-  const addCategory = async () => {
+  const dispatch = useDispatch();
+  const categories = useSelector((state: RootState) => state.categories);
+  const transactionTypes = useSelector((state: RootState) => state.transactionType)
+
+  const handleAddCategory = async () => {
     try {
-      await db.insert(Categories).values({
+      await addCategory({
         categoryName,
-        transactionType: categoryType.id,
-        id: Math.floor(Math.random() * 9999).toString()
-      });
+        transactionName,
+      }, dispatch);
+      setCategoryName('');
+      setTransactionName('');
       navigate('Categories');
     } catch (e) {
       console.log(JSON.stringify(e), 'what is it')
     }
   }
-  useFocusEffect(useCallback(() => {
-    (async () => {
-      const def = await db.select({
-        name: TransactionTypes.transactionName,
-        id: TransactionTypes.id,
-      }).from(TransactionTypes);
-      setCategories(def);
-    })();
-  }, []))
+
+  const getTransactionTypes = () => transactionTypes.reduce((acc, elm) => [...acc, elm.transactionName], []);
   return (
     <ScrollView automaticallyAdjustKeyboardInsets={true}>
       <KeyboardAvoidingView>
@@ -57,13 +57,13 @@ export const AddCategory = () => {
             onChangeText={setCategoryName}
           />
           {Array.isArray(categories) && <DropDown
-            items={categories}
+            items={getTransactionTypes()}
             placeholder="Categories"
-            val={categoryType}
-            setVal={setCategoryType}
+            val={transactionName}
+            setVal={setTransactionName}
           />}
           <Button
-            onPress={addCategory}
+            onPress={handleAddCategory}
           >
             Add Category
           </Button>

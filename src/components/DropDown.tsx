@@ -68,13 +68,15 @@ export const DropDown = ({items, placeholder, val,setVal}) => {
             {React.useMemo(
               () =>
                 items?.map((item, i) => {
+
                   return (
                     <Select.Item
                       index={i}
-                      key={item.name}
+                      key={item?.name ? item.name : item}
                       value={item}
+
                     >
-                      <Select.ItemText size="$6">{item.name}</Select.ItemText>
+                      <Select.ItemText size="$6">{item?.name ? item.name : item}</Select.ItemText>
                       <Select.ItemIndicator marginLeft="auto">
                         <Check color="purple" height={32} width={32}/>
                       </Select.ItemIndicator>

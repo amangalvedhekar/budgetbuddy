@@ -1,14 +1,15 @@
 import {useFocusEffect, useNavigation, useRoute, useTheme} from "@react-navigation/native";
-import {useCallback, useState} from "react";
+import {useCallback, useContext, useState} from "react";
 import {useAuth, useDb} from "../../hooks";
 import {BudgetedData, Categories as CategoriesSchema} from "../../../schema";
 import {and, eq} from "drizzle-orm";
-import {Button, H5, Paragraph, ScrollView, useWindowDimensions, XStack, YStack} from "tamagui";
+import {Button, H5, ScrollView, useWindowDimensions, YStack} from "tamagui";
 import {BarChart, PieChart} from "react-native-gifted-charts";
-import {Alert} from "react-native";
+import {ToastContext} from "../../contexts/Toast/ToastProvider";
 
 export const Home = () => {
   const {db} = useDb();
+
   const {ab} = useAuth();
   const {params} = useRoute();
   const {navigate} = useNavigation();
@@ -16,7 +17,7 @@ export const Home = () => {
   const [pieData, setPieData] = useState();
   const [selectedPie, setSelectedPie] = useState();
   const [barData, setBarData] = useState();
-
+  const {colors} = useTheme();
   const {width, height} = useWindowDimensions();
   useFocusEffect(useCallback(() => {
     (async () => {
@@ -37,7 +38,7 @@ export const Home = () => {
           return {...d, value: found.value};
         }
       }).filter(Boolean);
-      console.log(dataForIncome, 'hmm')
+      // console.log(dataForIncome, 'hmm')
       if (Array.isArray(dataForIncome) && dataForIncome.length === 0) {
         const freshData = def1.map(d => ({
           ...d,
@@ -66,7 +67,7 @@ export const Home = () => {
         value: BudgetedData.value,
       }).from(BudgetedData).where(and(
         eq(BudgetedData.userId, ab?.userId ?? ''),
-        eq(BudgetedData.month, 1)
+        eq(BudgetedData.month, 0)
       ));
       const def = await db.select({
         id: CategoriesSchema.id,
@@ -81,7 +82,7 @@ export const Home = () => {
           };
         }
       }).filter(Boolean);
-      console.log(dataForExpense, 'hmm')
+      // console.log(dataForExpense, 'hmm')
       if (Array.isArray(dataForExpense) && dataForExpense.length === 0) {
         const freshData = def.map(d => ({
           ...d,
@@ -113,7 +114,7 @@ export const Home = () => {
       }
     })();
   }, []));
-  const {colors} = useTheme();
+
   const calculateTotal = () => {
     const total = Array.isArray(abc) ? abc.reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
     return new Intl.NumberFormat('en-CA', {
@@ -122,7 +123,7 @@ export const Home = () => {
     }).format(total);
   };
   const calculateIncomeTotal = () => Array.isArray(barData) ? barData.reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
-
+const {show} = useContext(ToastContext)
   const formatTotal = new Intl.NumberFormat('en-CA', {
     style: 'currency',
     currency: 'CAD'
@@ -136,7 +137,7 @@ export const Home = () => {
               Budgeted Expense for January
             </H5>
             <PieChart
-              radius={(width / 2) - 20}
+              radius={(width / 2) - 40}
               donut
               showTooltip
               innerCircleColor={colors.card}

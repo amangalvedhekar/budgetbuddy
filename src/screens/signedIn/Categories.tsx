@@ -1,106 +1,102 @@
-import {Button, Card, H4, H5, ScrollView, Separator, YStack} from "tamagui";
-import {useFocusEffect, useNavigation, useRoute} from "@react-navigation/native";
-import {Fragment, useCallback, useEffect, useState} from "react";
-import {useDb} from "../../hooks/useDb";
-import {Categories as CategoriesSchema, TransactionTypes} from "../../../schema";
+import {Button, Card, H4, H5, ScrollView, Separator, XStack, H6} from "tamagui";
+import { useNavigation} from "@react-navigation/native";
+import { useEffect, useState} from "react";
 import {SectionList} from "react-native";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../../store";
+import {fetchCategories} from "../../dbOperations/categories";
+import {CategoriesWithTransaction} from "../../features/categoriesSlice";
 
 export const Categories = () => {
-  const {db} = useDb();
   const {navigate} = useNavigation();
-  const [categories, setCategories] = useState<Array<{ name: string, transactionType: string }>>();
-
-  useFocusEffect(useCallback(() => {
+  const [categories, setCategories] = useState();
+  const dispatch = useDispatch();
+  const categoriesWithTransactionType = useSelector((state: RootState)=> state.categories);
+  useEffect(() => {
     (async () => {
-      const abc = await db.select({
-        name: CategoriesSchema.categoryName,
-        transactionType: CategoriesSchema.transactionType,
-      }).from(CategoriesSchema);
-      console.log(abc, 'abc');
-      const def = await db.select().from(TransactionTypes);
-      const newData = abc.map(d => ({
-        ...d,
-        transactionName: def.find(f => f.id == d.transactionType)?.transactionName,
-        transactionId: def.find(f => f.id == d.transactionType)?.id,
-      }));
-      console.log(newData);
-
-      const initialValue = [];
-      const sectionalData = newData.reduce((acc, elm) => {
-
-        const isPresent = acc?.find(e => e?.transactionName == elm?.transactionName);
-
-        if (isPresent) {
-          // console.log(isPresent, 'is present',)
-          const index = acc?.findIndex(e => e?.transactionName == elm?.transactionName);
-          const newDatas = {
-            transactionName: acc[index].transactionName,
-              transactionId: elm?.transactionId,
-            data: [...acc[index].data, elm?.name]
-          };
-          return [...acc?.slice(0, index), newDatas, ...acc?.slice(index + 1)]
-        } else {
-          // console.log('else', elm)
-          const addData = {
-            transactionName: elm?.transactionName,
-            transactionId: elm?.transactionId,
-            data: [elm?.name],
-          };
-          return acc.concat(addData);
-        }
-      }, initialValue);
-      console.log(sectionalData, 'what is')
-      setCategories(sectionalData);
+      await fetchCategories(dispatch);
     })();
-  }, []));
+  }, [dispatch]);
+  useEffect(() => {
+    const initialValue: CategoriesWithTransaction[] = [];
+    const sectionalData = categoriesWithTransactionType.reduce((acc, elm) => {
+
+      const isPresent = acc?.find((e: CategoriesWithTransaction) => e?.transactionName == elm?.transactionName);
+
+      if (isPresent) {
+        const index = acc?.findIndex((e: CategoriesWithTransaction) => e?.transactionName == elm?.transactionName);
+        const newDatas = {
+          transactionName: acc[index].transactionName,
+          transactionId: elm?.transactionType,
+          data: [...acc[index].data, elm?.categoryName]
+        };
+        return [...acc?.slice(0, index), newDatas, ...acc?.slice(index + 1)]
+      } else {
+        const addData = {
+          transactionName: elm?.transactionName,
+          transactionId: elm?.transactionType,
+          data: [elm?.categoryName],
+        };
+        return acc.concat(addData);
+      }
+    }, initialValue);
+    setCategories(sectionalData);
+  }, [categoriesWithTransactionType]);
+
+
   return (
     <>
-      {/*<YStack justifyContent="flex-start" flex={1} marginHorizontal="$2">*/}
-      {/*  {Array.isArray(categories) && categories.map((category) => (*/}
-      {/*    <Card*/}
-      {/*      key={category.name}*/}
-      {/*      elevate*/}
-      {/*      size="$2"*/}
-      {/*      marginVertical="$2"*/}
-      {/*    >*/}
-      {/*      <Card.Header>*/}
-      {/*        <H5>*/}
-      {/*          {category.name}*/}
-      {/*        </H5>*/}
-      {/*      </Card.Header>*/}
-      {/*      <Separator/>*/}
-      {/*    </Card>*/}
-      {/*  ))}*/}
-      {/*  <Button marginBottom="$3" onPress={() => navigate('addCategory')}>Add New</Button>*/}
-      {/*</YStack>*/}
       {Array.isArray(categories) && (
-        <SectionList sections={categories}
-                     renderSectionHeader={({section: {transactionName}}) => (
-                       <H5 textAlign="center" marginVertical="$2">{transactionName}</H5>
-                     )}
-                     renderSectionFooter={({section:{transactionName, transactionId}}) => (
-                       <Button
-                         elevate
-                         bordered
-                         themeInverse
-                         size="$4"
-                         margin="$2"
-                         onPress={() => navigate('addCategory',{
-                           name: transactionName, id: transactionId
-                         })}
-                       >
-                         Add New{transactionName}Category
-                       </Button>
-                     )}
-                     renderItem={({item}) => (
-                       <Card elevate size="$2" margin="$2">
-                         <Card.Header>
-                           <H5>
-                             {item}
-                           </H5>
-                         </Card.Header>
-                       </Card>
-                     )}/>
+        <SectionList
+          ListFooterComponent={() => <XStack margin="$3"/>}
+          ListFooterComponentStyle={{
+            margin: 32
+          }}
+          sections={categories}
+          renderSectionHeader={({section: {transactionName}}) => (
+              <H4 textAlign="center" marginVertical="$4">{transactionName}</H4>
+          )}
+          renderSectionFooter={({section: {transactionName, transactionId}}) => (
+            <Button
+              elevate
+              bordered
+              themeInverse
+              size="$4"
+              margin="$2"
+              padding="$2"
+              onPress={() =>
+              {
+                // @ts-ignore
+                navigate('addCategory', {
+                  name: transactionName, id: transactionId
+                })}
+              }
+
+            >
+              Add New{transactionName}Category
+            </Button>
+          )}
+          SectionSeparatorComponent={() => <Separator />}
+          renderItem={({item}) => (
+            <Card
+              elevate
+              size="$2"
+              margin="$2"
+              bordered
+              borderRadius="$8"
+            >
+              <Card.Header>
+                <XStack flex={1} justifyContent="space-between">
+                <H6 verticalAlign="center" alignSelf="center" paddingLeft="$2">
+                  {item}
+                </H6>
+                  {/*<Button borderRadius="$10" marginRight="$3">*/}
+                  {/*  667*/}
+                  {/*</Button>*/}
+                </XStack>
+              </Card.Header>
+            </Card>
+          )}/>
       )}
     </>
   );

@@ -39,7 +39,7 @@ export const BudgetedData = sqliteTable('BudgetedData', {
 }, (table) => {
   return ({
     pk: primaryKey({
-      columns: [table.userId, table.categoryType]
+      columns: [table.userId, table.categoryType, table.month]
     })
   });
 });

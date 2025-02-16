@@ -2,18 +2,20 @@ import {FlatList, StyleSheet} from "react-native";
 import {useFocusEffect, useNavigation,} from "@react-navigation/native";
 import {Button, Card, H2, H3, H4, H5, Paragraph, ScrollView, XStack} from "tamagui";
 
-import {useCallback, useState} from "react";
+import {useCallback, useContext, useState} from "react";
 import {useAuth, useDb} from "../../hooks";
 import {TransactionLists, TransactionTypes} from "../../../schema";
 import {and, desc, eq} from "drizzle-orm";
 import {ChevronDown} from "../../icons";
+import {ToastContext} from "../../contexts/Toast/ToastProvider";
 
 // ToDo - Add types
 const RenderItem = ({item, onPress}: any) => (
   <Card elevate
-        margin="$2"
+        marginHorizontal="$2"
+        marginVertical="$1"
         padding="$2"
-        size="$2"
+        size="$1"
         bordered
         borderRadius="$8"
         animation="bouncy"
@@ -33,7 +35,7 @@ const RenderItem = ({item, onPress}: any) => (
       </XStack>
     </Card.Header>
     <Card.Footer>
-      <XStack justifyContent="space-between" flex={1} flexWrap="wrap" padding="$4">
+      <XStack justifyContent="space-between" flex={1} flexWrap="wrap" padding="$2">
         <H5>{item.categoryType}</H5>
         <H5>
           {item.transactionTypeName}
@@ -57,6 +59,7 @@ export const History = () => {
   const {db} = useDb();
   const {ab} = useAuth();
   const {navigate} = useNavigation();
+
   useFocusEffect(useCallback(() => {
     (async () => {
       const abc = await db.select().from(TransactionTypes);
@@ -90,6 +93,7 @@ export const History = () => {
   }, []));
   const handleFilterPress = (a) => async (b) => {
     const indexFound = categories.findIndex(category => category.id == a.id);
+
     const newCategories = categories.map(category => {
       if (category.isActive) {
         return ({
@@ -140,7 +144,7 @@ export const History = () => {
             <Button
               key={x.transactionName}
               margin="$2"
-              paddingHorizontal="$6"
+              paddingHorizontal="$4"
               elevate
               bordered
               borderRadius="$8"

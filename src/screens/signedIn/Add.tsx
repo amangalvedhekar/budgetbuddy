@@ -29,7 +29,7 @@ export const Add = () => {
   const [subCategory, setSubCategory] = useState('');
   const [categories, setCategories] = useState<Array<{ name: string, transactionType: string }>>();
   const [transactionType, setTransactionType] = useState();
-  const snapPoints = [50, 50, 50]
+  const snapPoints = [50, 50, 50];
   useFocusEffect(useCallback(() => {
     (async () => {
       const abc = await db.select({
@@ -46,7 +46,6 @@ export const Add = () => {
 
     })();
   }, []));
-
   const handleAddTransaction = async () => {
     try {
       setIsTransactionBeingAdded(true);

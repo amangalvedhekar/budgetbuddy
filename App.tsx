@@ -5,9 +5,12 @@ import {StatusBar} from "expo-status-bar";
 import {AuthProvider} from "./src/contexts/";
 import {useCachedResources} from "./src/hooks";
 import {Amplify} from "aws-amplify";
+import {Provider} from "react-redux";
 import {RootNavigation} from "./src/navigation/stacks";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import {KeyboardProvider} from "react-native-keyboard-controller";
+import {store} from "./src/store";
+import {Toast} from "./src/contexts/Toast/Toast";
 
 Amplify.configure({
   Auth: {
@@ -28,6 +31,7 @@ export default function App() {
   }
   return (
     <GestureHandlerRootView style={{flex: 1}}>
+      <Provider store={store}>
       <KeyboardProvider>
         <AuthProvider>
           <TamaguiProvider config={config} defaultTheme={scheme!}>
@@ -36,6 +40,7 @@ export default function App() {
           </TamaguiProvider>
         </AuthProvider>
       </KeyboardProvider>
+      </Provider>
     </GestureHandlerRootView>
   );
 }

@@ -12,6 +12,7 @@ import m0007 from './0007_huge_vengeance.sql';
 import m0008 from './0008_broken_odin.sql';
 import m0009 from './0009_confused_sharon_carter.sql';
 import m0010 from './0010_white_veda.sql';
+import m0011 from './0011_military_sersi.sql';
 
   export default {
     journal,
@@ -26,7 +27,8 @@ m0006,
 m0007,
 m0008,
 m0009,
-m0010
+m0010,
+m0011
     }
   }
   
