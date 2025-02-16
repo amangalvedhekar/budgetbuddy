@@ -8,7 +8,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {addCategory} from "../../dbOperations/categories";
 
 import {RootState} from "../../store";
-import {fetchTransactionType} from "../../dbOperations/transactionType";
 
 export const AddCategory = () => {
   const {navigate} = useNavigation();
@@ -17,11 +16,6 @@ export const AddCategory = () => {
   const [transactionName, setTransactionName] = useState<string>(() => params?.name);
   const [categoryName, setCategoryName] = useState("");
   const dispatch = useDispatch();
-  useEffect(() => {
-    (async () => {
-      await fetchTransactionType(dispatch)
-    })();
-  }, [dispatch]);
   const categories = useSelector((state: RootState) => state.categories);
   const transactionTypes = useSelector((state: RootState) => state.transactionType)
 

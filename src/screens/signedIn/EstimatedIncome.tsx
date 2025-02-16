@@ -6,8 +6,6 @@ import {useAuth, useDb} from "../../hooks";
 import {Button, Card, H3, H5, Input, ScrollView, useWindowDimensions, XStack} from "tamagui";
 import {KeyboardAvoidingView, KeyboardStickyView} from "react-native-keyboard-controller";
 import {calculateTotalInputted} from "../../utils/calculateTotalInputted";
-import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
-import {useHeaderHeight} from "@react-navigation/elements";
 
 export const EstimatedIncome = () => {
   const {db} = useDb();

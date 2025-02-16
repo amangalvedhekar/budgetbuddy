@@ -1,11 +1,19 @@
 import {Avatar, Button, Card, H4, H5, H6, ScrollView, Separator, XStack, YStack} from "tamagui";
 import {useAuth} from "../../hooks";
-import {useCallback, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useNavigation} from "@react-navigation/native";
+import {fetchTransactionType} from "../../dbOperations/transactionType";
+import {useDispatch} from "react-redux";
 
 export const Account = () => {
   const {ab, logout} = useAuth();
   const {navigate} = useNavigation();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    (async () => {
+      await fetchTransactionType(dispatch)
+    })();
+  }, [dispatch]);
   const onBackPress = useCallback(async () => {
     await logout();
   },[]);

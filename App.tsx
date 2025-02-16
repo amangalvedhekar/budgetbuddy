@@ -10,7 +10,6 @@ import {RootNavigation} from "./src/navigation/stacks";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import {KeyboardProvider} from "react-native-keyboard-controller";
 import {store} from "./src/store";
-import {ToastProvider} from "./src/contexts/Toast/ToastProvider";
 import {Toast} from "./src/contexts/Toast/Toast";
 
 Amplify.configure({
@@ -32,19 +31,16 @@ export default function App() {
   }
   return (
     <GestureHandlerRootView style={{flex: 1}}>
-      <ToastProvider>
       <Provider store={store}>
       <KeyboardProvider>
         <AuthProvider>
           <TamaguiProvider config={config} defaultTheme={scheme!}>
-            <Toast />
             <RootNavigation scheme={scheme}/>
             <StatusBar style="auto"/>
           </TamaguiProvider>
         </AuthProvider>
       </KeyboardProvider>
       </Provider>
-      </ToastProvider>
     </GestureHandlerRootView>
   );
 }

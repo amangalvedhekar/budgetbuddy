@@ -73,7 +73,7 @@ export const DropDown = ({items, placeholder, val,setVal}) => {
                     <Select.Item
                       index={i}
                       key={item?.name ? item.name : item}
-                      value={item?.name ? item.name : item}
+                      value={item}
 
                     >
                       <Select.ItemText size="$6">{item?.name ? item.name : item}</Select.ItemText>
