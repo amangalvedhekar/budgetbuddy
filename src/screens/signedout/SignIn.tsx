@@ -1,11 +1,12 @@
 import {Button, Card, H4, Input, Paragraph, ScrollView, Separator, SizableText, YStack} from "tamagui";
 import {useNavigation} from "@react-navigation/native";
 import {useAuth, useDb} from "../../hooks";
-import {useCallback, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {ActivityIndicator} from "react-native";
 import {ErrorType, FormState} from "./Registration";
 import Joi from "joi";
 import {SignInProps} from "../../navigation/types";
+import {useDispatch} from "react-redux";
 
 const validationSchema = Joi.object({
   email: Joi.string().required().email({tlds: false}),
@@ -14,8 +15,7 @@ const validationSchema = Joi.object({
 
 export function SignIn({route}: SignInProps) {
   const {navigate} = useNavigation();
-  const {logIn, ab} = useAuth();
-  const {db} = useDb();
+  const {logIn} = useAuth();
   const [formState, setFormState] = useState<FormState>({
     email: {
       value: '',
@@ -45,11 +45,9 @@ export function SignIn({route}: SignInProps) {
         if ((error as ErrorType)?.details[0].path.includes('password')) {
           setFormState((formState) => ({...formState, password: {...formState.password, isInvalid: true}}));
         } else {
-          console.log('coming')
           setFormState((formState) => ({...formState, email: {...formState.email, isInvalid: true}}));
         }
       } else {
-        console.log(JSON.stringify(error), 'hmm')
         setFormState((formState) => ({...formState, serverError: {...formState.email, isInvalid: true}}));
       }
 
