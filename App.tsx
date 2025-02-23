@@ -11,6 +11,7 @@ import {GestureHandlerRootView} from "react-native-gesture-handler";
 import {KeyboardProvider} from "react-native-keyboard-controller";
 import {store} from "./src/store";
 import {Toast} from "./src/contexts/Toast/Toast";
+import {StoreInitializer} from "./src/components/StoreInitializer";
 
 Amplify.configure({
   Auth: {
@@ -35,8 +36,10 @@ export default function App() {
       <KeyboardProvider>
         <AuthProvider>
           <TamaguiProvider config={config} defaultTheme={scheme!}>
+            <StoreInitializer>
             <RootNavigation scheme={scheme}/>
             <StatusBar style="auto"/>
+            </StoreInitializer>
           </TamaguiProvider>
         </AuthProvider>
       </KeyboardProvider>

@@ -2,21 +2,15 @@ import {Button, Card, H4, H5, ScrollView, Separator, XStack, H6} from "tamagui";
 import { useNavigation} from "@react-navigation/native";
 import { useEffect, useState} from "react";
 import {SectionList} from "react-native";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {RootState} from "../../store";
-import {fetchCategories} from "../../dbOperations/categories";
 import {CategoriesWithTransaction} from "../../features/categoriesSlice";
 
 export const Categories = () => {
   const {navigate} = useNavigation();
   const [categories, setCategories] = useState();
-  const dispatch = useDispatch();
   const categoriesWithTransactionType = useSelector((state: RootState)=> state.categories);
-  useEffect(() => {
-    (async () => {
-      await fetchCategories(dispatch);
-    })();
-  }, [dispatch]);
+
   useEffect(() => {
     const initialValue: CategoriesWithTransaction[] = [];
     const sectionalData = categoriesWithTransactionType.reduce((acc, elm) => {

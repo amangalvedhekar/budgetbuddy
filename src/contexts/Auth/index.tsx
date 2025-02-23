@@ -27,9 +27,9 @@ const AuthProvider = ({children}: AuthContextType) => {
   useEffect(() => {
     (async () => {
       try {
-       const x = await getCurrentUser();
-       console.log(x, 'what is')
-       setAb(x);
+        const x = await getCurrentUser();
+        console.log(x, 'what is')
+        setAb(x);
       } catch (e) {
         setAb(null);
         console.error(e);
@@ -66,15 +66,16 @@ const AuthProvider = ({children}: AuthContextType) => {
         isUserOnboarded: false,
       };
       const isUserAdded = await db.select().from(UserLists).where(eq(UserLists.userId, x?.userId));
-      if(Array.isArray(isUserAdded) && isUserAdded.length === 0) {
-        await db.insert(UserLists).values(dataToAdd)
+      if (Array.isArray(isUserAdded) && isUserAdded.length === 0) {
+        await db.insert(UserLists).values(dataToAdd);
       }
+
       setAb(x);
     } catch (e) {
       console.log(JSON.stringify(e), 'login call');
       throw e;
     }
-  },[])
+  }, [])
 
   const logout = useCallback(async () => {
     try {
@@ -86,20 +87,24 @@ const AuthProvider = ({children}: AuthContextType) => {
   }, []);
 
   const passwordResetRequest = useCallback(async ({username}: ResetPasswordInput) => {
-   try {
-     await  resetPassword({username});
-   } catch (e) {
+    try {
+      await resetPassword({username});
+    } catch (e) {
 
-   }
-  },[]);
+    }
+  }, []);
 
-  const passwordResetConfirmation = useCallback(async ({username, confirmationCode, newPassword}: ConfirmResetPasswordInput) => {
+  const passwordResetConfirmation = useCallback(async ({
+                                                         username,
+                                                         confirmationCode,
+                                                         newPassword
+                                                       }: ConfirmResetPasswordInput) => {
     try {
       await confirmResetPassword({username, confirmationCode, newPassword})
     } catch (e) {
 
     }
-  },[]);
+  }, []);
 
   return <AuthContext.Provider
     value={{
@@ -112,7 +117,7 @@ const AuthProvider = ({children}: AuthContextType) => {
       passwordResetRequest
     }}
   >
-    {ab === undefined ? <></>: children}
+    {ab === undefined ? <></> : children}
   </AuthContext.Provider>;
 }
 

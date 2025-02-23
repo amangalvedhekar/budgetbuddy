@@ -73,14 +73,17 @@ const MONTH_LIST = [
 ];
 
 export const Month = () => {
-  const {navigate} = useNavigation();
+  const {navigate, setParams, setOptions} = useNavigation();
   const {db} = useDb();
   const {ab} = useAuth();
-  const {params} = useRoute();
+  const {params,} = useRoute();
   const [monthData, setMonthData] = useState(() => MONTH_LIST);
 
   useFocusEffect(useCallback(() => {
     (async () => {
+      setOptions({
+        headerTitle: params.transactionType == '0' ? 'Select month to estimate income': 'Select month to budget',
+      })
       try {
         const categories = await db.query.Categories
           .findMany(

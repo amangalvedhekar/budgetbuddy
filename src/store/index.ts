@@ -6,7 +6,7 @@ import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
 
 export const store = configureStore({
   reducer: {
-    users: usersReducer,
+    user: usersReducer,
     categories:categoriesReducer,
     transactionType: transactionTypeReducer,
   },

@@ -37,7 +37,6 @@ export const RootNavigation = ({scheme}: any) => {
           <DefaultStack.Screen name="historyEntryDetails" component={Details} options={({navigation}) => ({
             presentation: 'modal',
             headerShown: true,
-            headerTitle: 'Select month to budget',
             headerLeft: () => <></>,
             headerRight: () => <Text style={{marginHorizontal: 16}} onPress={() => navigation.goBack()}>Done</Text>
           })}/>
