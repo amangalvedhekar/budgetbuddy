@@ -7,7 +7,7 @@ export type Transaction = {
 
 
 const transactionTypeSlice = createSlice({
-  name: 'transactions',
+  name: 'transactionType',
   initialState: [] as Transaction[],
   reducers: {
     setTransactions: (state, action) => {

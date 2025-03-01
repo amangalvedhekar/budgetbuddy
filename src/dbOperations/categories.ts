@@ -27,6 +27,7 @@ export const addCategory = async (
   try {
     const id = Math.floor(Math.random() * 9999).toString();
     if(category.transactionName != null) {
+
       const transactionNameToAdd = await db
         .select({
           transactionName: TransactionTypes.transactionName,
@@ -34,6 +35,7 @@ export const addCategory = async (
         })
         .from(TransactionTypes)
         .where(eq(
+          // @ts-expect-error
           category.transactionName,
           TransactionTypes.transactionName,
         ));

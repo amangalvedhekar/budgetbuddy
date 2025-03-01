@@ -1,13 +1,13 @@
 import {FlatList, StyleSheet} from "react-native";
 import {useFocusEffect, useNavigation,} from "@react-navigation/native";
-import {Button, Card, H2, H3, H4, H5, Paragraph, ScrollView, XStack} from "tamagui";
+import {Button, Card, H3, H5, Paragraph, ScrollView, XStack} from "tamagui";
 
-import {useCallback, useContext, useState} from "react";
+import {useCallback, useState} from "react";
 import {useAuth, useDb} from "../../hooks";
 import {TransactionLists, TransactionTypes} from "../../../schema";
 import {and, desc, eq} from "drizzle-orm";
 import {ChevronDown} from "../../icons";
-import {ToastContext} from "../../contexts/Toast/ToastProvider";
+import {getTransactionForUser} from "../../dbOperations/transactionList";
 
 // ToDo - Add types
 const RenderItem = ({item, onPress}: any) => (
@@ -47,6 +47,8 @@ const RenderItem = ({item, onPress}: any) => (
     </Card.Footer>
   </Card>
 );
+
+
 const defaultCategory = {
   transactionName: 'ALL',
   isActive: true,
@@ -62,6 +64,8 @@ export const History = () => {
 
   useFocusEffect(useCallback(() => {
     (async () => {
+      const lol = await getTransactionForUser({userId: ab?.userId})
+      console.log(lol, 'lol')
       const abc = await db.select().from(TransactionTypes);
 
       const def = await db.query.TransactionLists.findMany({
@@ -77,7 +81,7 @@ export const History = () => {
           transactionTypeName: abc?.find(x => x.id == d.transactionType)?.transactionName
         });
       });
-      setTransactionList(newData);
+      setTransactionList(lol);
       const categoriesList = await db
         .query.TransactionTypes
         .findMany({});
@@ -114,7 +118,7 @@ export const History = () => {
       where: and(
         eq(TransactionLists.addedBy, ab?.userId),
         eq(TransactionLists.isDeleted, false),
-       a.id != 'all' ?  eq(TransactionLists.transactionType, a.id) : undefined,
+        a.id != 'all' ? eq(TransactionLists.transactionType, a.id) : undefined,
       ),
       orderBy: [desc(TransactionLists.createdDate)]
     });
@@ -129,7 +133,7 @@ export const History = () => {
   }
 
   const calculateTotal = () => {
-    const total = Array.isArray(transactionList) ? transactionList.reduce((acc,elm) => acc + Number(elm.amount), 0) : 0;
+    const total = Array.isArray(transactionList) ? transactionList.reduce((acc, elm) => acc + Number(elm.amount), 0) : 0;
     return new Intl.NumberFormat('en-CA', {
       style: 'currency',
       currency: 'CAD'
