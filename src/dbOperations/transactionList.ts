@@ -6,6 +6,7 @@ export const getTransactionForUser = async ({userId}: { userId: string }) => {
   try {
     const transactionList = await db
       .select({
+        id: TransactionLists.id,
         addedBy: TransactionLists.addedBy,
         amount: TransactionLists.amount,
         categoryType: TransactionLists.categoryType,
@@ -32,6 +33,4 @@ export const getTransactionForUser = async ({userId}: { userId: string }) => {
   } catch (e) {
     console.log(e, 'hmm')
   }
-
-
 };
