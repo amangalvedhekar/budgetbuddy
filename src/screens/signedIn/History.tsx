@@ -1,20 +1,21 @@
 import {FlatList, StyleSheet} from "react-native";
 import {useFocusEffect, useNavigation,} from "@react-navigation/native";
-import {Button, Card, H3, H5, Paragraph, ScrollView, XStack, useTheme} from "tamagui";
-
+import {Button, Card, H3, H5, Paragraph, ScrollView, XStack,} from "tamagui";
+import * as Haptics from 'expo-haptics';
+import {ImpactFeedbackStyle} from 'expo-haptics';
 import {useCallback, useState} from "react";
 import {useAuth, useDb} from "../../hooks";
-import {TransactionLists, TransactionTypes} from "../../../schema";
+import {TransactionLists} from "../../../schema";
 import {and, desc, eq} from "drizzle-orm";
-import {ChevronDown} from "../../icons";
 import {getTransactionForUser} from "../../dbOperations/transactionList";
+
 const getColorForTransaction = (transactionType: number) => {
   const colorMap = {
     0: '#0d7c02',
     1: '#ec0b0b',
     2: '#ecbf0b',
-    3: '#1bbe08',
-    4: '#0857be'
+    3: '#0d7c02',
+    4: '#ecbf0b'
   };
   return colorMap[transactionType];
 }
@@ -182,10 +183,12 @@ export const History = () => {
       <FlatList
         // @ts-expect-error
         data={transactionList}
-        renderItem={({item}) => <RenderItem item={item} onPress={() => {
-
-          navigate('historyEntryDetails', {entryId: item.id});
-        }}/>
+        renderItem={({item}) => <RenderItem
+          item={item}
+          onPress={async () => {
+            await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
+            navigate('historyEntryDetails', {entryId: item.id});
+          }}/>
         }
       />
       {categories?.find(category => category.isActive === true)?.id !== 'all' && <XStack

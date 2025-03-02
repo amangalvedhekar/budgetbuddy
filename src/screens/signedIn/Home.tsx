@@ -9,10 +9,7 @@ import {ToastContext} from "../../contexts/Toast/ToastProvider";
 
 export const Home = () => {
   const {db} = useDb();
-
   const {ab} = useAuth();
-  const {params} = useRoute();
-  const {navigate} = useNavigation();
   const [abc, setAbc] = useState();
   const [pieData, setPieData] = useState();
   const [selectedPie, setSelectedPie] = useState();
@@ -123,7 +120,7 @@ export const Home = () => {
     }).format(total);
   };
   const calculateIncomeTotal = () => Array.isArray(barData) ? barData.reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
-const {show} = useContext(ToastContext)
+
   const formatTotal = new Intl.NumberFormat('en-CA', {
     style: 'currency',
     currency: 'CAD'
@@ -137,7 +134,7 @@ const {show} = useContext(ToastContext)
               Budgeted Expense for January
             </H5>
             <PieChart
-              radius={(width / 2) - 40}
+              radius={(width / 2) - 64}
               donut
               showTooltip
               innerCircleColor={colors.card}
@@ -196,9 +193,8 @@ const {show} = useContext(ToastContext)
           bordered
           elevate
           themeInverse
-          onPress={() => navigate('Insight')}
         >
-          Get More Insights - Coming Soon
+          More Insights - Coming Soon
         </Button>
       </YStack>
     </>
