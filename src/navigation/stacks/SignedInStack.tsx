@@ -12,6 +12,10 @@ import {createStackNavigator} from "@react-navigation/stack";
 import {AddCategory} from "../../screens/signedIn/AddCategory";
 import {PlannedBudget} from "../../screens/signedIn/PlannedBudget";
 import {EstimatedIncome} from "../../screens/signedIn/EstimatedIncome";
+import * as Haptics from "expo-haptics";
+import {ImpactFeedbackStyle} from "expo-haptics";
+import {Text} from "tamagui";
+import {Pressable} from "react-native";
 
 const SignedInStack = createBottomTabNavigator();
 const HistoryStack = createStackNavigator();
@@ -61,39 +65,65 @@ export const SignedInScreens = () => {
         headerShown:  !['History', 'Account'].includes(route.name),
         headerTitleAlign: 'center',
         tabBarHideOnKeyboard: true,
+        tabBarShowLabel: false,
+        tabBarItemStyle: {
+          alignSelf: 'center'
+        },
+        tabBarIcon:({focused}) => {
+          const Icon = {
+            Home: () =><HomeIcon
+              fill={focused ? colors.primary : colors.text}
+              onTouchStart={async() => {
+                await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
+              }}
+            />,
+            History: () => <HistoryIcon
+              fill={focused ? colors.primary : colors.text}
+              onTouchStart={async() => {
+                await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
+              }}
+            />,
+            Add: () => <Plus
+              fill={focused ? colors.primary : colors.text}
+              onTouchStart={async() => {
+                await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
+              }}
+            />,
+            Account: () => <AccountIcon
+              fill={focused ? colors.primary : colors.text}
+              onTouchStart={async() => {
+                await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
+              }}
+            />,
+          };
+          return Icon[route.name]();
+        },
+        tabBarStyle: {
+          marginBottom: 24,
+          marginHorizontal: 24,
+          borderRadius: 32,
+          paddingTop: 8,
+          minHeight: 72,
+          paddingBottom: 16,
+          alignContent: 'center',
+          justifyContent: 'center',
+          paddingHorizontal: 16,
+        }
       })}
       initialRouteName="History"
     >
       <SignedInStack.Screen
         name="Home"
         component={Home}
-        options={{
-          tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
-          tabBarLabel: 'Dashboard',
-          tabBarIcon: ({focused}) => <HomeIcon fill={focused ? colors.primary : colors.text}/>,
-        }}
       />
       <SignedInStack.Screen
         name="History"
         component={HistoryTabScreens}
-        options={
-          {
-            tabBarLabelStyle: {
-              fontWeight: '600',
-              fontSize: 16
-            },
-            tabBarIcon: ({focused}) => <HistoryIcon fill={focused ? colors.primary : colors.text}/>,
-            tabBarLabel: 'Transactions'
-          }}
       />
 
       <SignedInStack.Screen
         name="Add"
         component={Add}
-        options={{
-          tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
-          tabBarIcon: ({focused}) => <Plus fill={focused ? colors.primary : colors.text}/>
-        }}
       />
 
       {/*<SignedInStack.Screen*/}
@@ -107,10 +137,6 @@ export const SignedInScreens = () => {
       <SignedInStack.Screen
         name="Account"
         component={AccountStackScreens}
-        options={{
-          tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
-          tabBarIcon: ({focused}) => <AccountIcon fill={focused ? colors.primary : colors.text}/>,
-        }}
       />
     </SignedInStack.Navigator>
   );

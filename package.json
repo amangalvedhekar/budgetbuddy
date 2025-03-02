@@ -24,6 +24,7 @@
     "drizzle-orm": "0.36.4",
     "expo": "52.0.11",
     "expo-dev-client": "5.0.4",
+    "expo-haptics": "~14.0.1",
     "expo-linear-gradient": "~14.0.1",
     "expo-splash-screen": "0.29.13",
     "expo-sqlite": "15.0.3",
