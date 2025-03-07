@@ -8,3 +8,5 @@ export * from './Plus';
 export * from './ChevronDown';
 export * from './Filter';
 export * from './Calendar';
+export * from './ChevronUp';
+export * from './Warning';

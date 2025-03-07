@@ -29,16 +29,16 @@ const AccountStackScreens = () => {
     }}>
       <AccountStack.Screen name="accountEntry" component={Account} options={{
         headerTitle: 'Account'
-      }} />
+      }}/>
       <AccountStack.Screen name="plannedBudget" component={PlannedBudget} options={{
         headerTitle: 'Planned Budget'
-      }} />
+      }}/>
       <AccountStack.Screen name="addCategory" component={AddCategory} options={{
         headerTitle: 'Add New Category'
-      }} />
+      }}/>
       <AccountStack.Screen name="addIncome" component={EstimatedIncome} options={{
         headerTitle: 'Estimated Income'
-      }} />
+      }}/>
     </AccountStack.Navigator>
   );
 }
@@ -60,38 +60,37 @@ export const SignedInScreens = () => {
   const {colors} = useTheme();
   return (
     <SignedInStack.Navigator
-
-      screenOptions={({route}) =>({
-        headerShown:  !['History', 'Account'].includes(route.name),
+      screenOptions={({route}) => ({
+        headerShown: !['History', 'Account'].includes(route.name),
         headerTitleAlign: 'center',
         tabBarHideOnKeyboard: true,
         tabBarShowLabel: false,
         tabBarItemStyle: {
           alignSelf: 'center'
         },
-        tabBarIcon:({focused}) => {
+        tabBarIcon: ({focused}) => {
           const Icon = {
-            Home: () =><HomeIcon
+            Home: () => <HomeIcon
               fill={focused ? colors.primary : colors.text}
-              onTouchStart={async() => {
+              onTouchStart={async () => {
                 await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
               }}
             />,
             History: () => <HistoryIcon
               fill={focused ? colors.primary : colors.text}
-              onTouchStart={async() => {
+              onTouchStart={async () => {
                 await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
               }}
             />,
             Add: () => <Plus
               fill={focused ? colors.primary : colors.text}
-              onTouchStart={async() => {
+              onTouchStart={async () => {
                 await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
               }}
             />,
             Account: () => <AccountIcon
               fill={focused ? colors.primary : colors.text}
-              onTouchStart={async() => {
+              onTouchStart={async () => {
                 await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
               }}
             />,
@@ -126,14 +125,14 @@ export const SignedInScreens = () => {
         component={Add}
       />
 
-      {/*<SignedInStack.Screen*/}
-      {/*  name="Insights"*/}
-      {/*  component={Insight}*/}
-      {/*  options={{*/}
-      {/*    tabBarLabelStyle: {fontWeight: '600', fontSize: 16},*/}
-      {/*    tabBarIcon: ({focused}) => <InsightIcon fill={focused ? colors.primary : colors.text}/>,*/}
-      {/*  }}*/}
-      {/*/>*/}
+      <SignedInStack.Screen
+        name="Insights"
+        component={Insight}
+        options={{
+          tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
+          tabBarIcon: ({focused}) => <InsightIcon fill={focused ? colors.primary : colors.text}/>,
+        }}
+      />
       <SignedInStack.Screen
         name="Account"
         component={AccountStackScreens}
