@@ -23,8 +23,11 @@ export const BannerCard = ({icon, text, color, idx = 0, ...rest}: BannerCardProp
 
   const swipeGesture = Gesture
     .Pan()
-    .onStart(() => {
-      runOnJS(triggerShowDelete)();
+    .onStart((event) => {
+      if (event.translationX < 0) {
+        runOnJS(triggerShowDelete)();
+      }
+
     })
     .onUpdate((event) => {
       translateX.value = event.translationX < 0 ? event.translationX : 0;
