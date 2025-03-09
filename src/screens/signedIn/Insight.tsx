@@ -1,17 +1,18 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, Pressable, DeviceEventEmitter} from 'react-native';
-import {Button, Card, Paragraph, useWindowDimensions, View, XStack, YStack} from "tamagui";
+import React, {useLayoutEffect, useRef, useState} from 'react';
+import {StyleSheet, Pressable} from 'react-native';
+import {Button,Card, Paragraph, useWindowDimensions, View, XStack, YStack} from "tamagui";
 import {Check, ChevronDown, ChevronUp, Cross, Warning} from "../../icons";
 import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
-  withDelay,
   withSpring,
   withTiming,
 } from "react-native-reanimated";
 import {useTheme} from "@react-navigation/native";
 import {Gesture, GestureDetector,} from "react-native-gesture-handler";
+import * as Haptics from 'expo-haptics';
+import {BannerContainer} from "../../components/Banner/Container";
 
 const SWIPE_THRESHOLD = -125;
 export const Insight = () => {
@@ -24,7 +25,10 @@ export const Insight = () => {
   const styles = createStyles({width, isPositionAbsolute});
   const translateX = useSharedValue(0); // Shared state for swipe position
   const translateXForSwipe = useSharedValue(0);
-  const updateButton = () => setShowButton(prevState => !prevState)
+  const updateButton = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+    setShowButton(prevState => !prevState);
+  }
   const onDelete = () => setIsVisible(false);
   const swipeGesture = Gesture.Pan()
     .onStart(() => {
@@ -46,9 +50,13 @@ export const Insight = () => {
     });
 
   const translateY = useSharedValue(30);
-
+  useLayoutEffect(() => {
+    translateY.value = withTiming(-40, {duration: 300});
+    setTimeout(() => {
+      translateY.value = withTiming(30, {duration: 300});
+    }, 200);
+  }, []);
   const animatedStyle = useAnimatedStyle(() => ({
-    // opacity: opacity.value,
     transform: [{translateY: translateY.value}],
   }));
   const animatedStyleForSwipe = useAnimatedStyle(() => ({
@@ -60,155 +68,166 @@ export const Insight = () => {
   }));
   return (
     <YStack style={styles.container} flex={1}>
-      <Pressable
-        onPress={() => {
+      {/*<Button*/}
+      {/*  onPress={async () => {*/}
+      {/*    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);*/}
+      {/*    translateY.value = withTiming(-40, {duration: 300});*/}
+      {/*    setIsPositionAbsolute((prev) => !prev);*/}
+      {/*    setTimeout(() => {*/}
+      {/*      translateY.value = withTiming(30, {duration: 300});*/}
+      {/*    }, 200);*/}
+      {/*  }}*/}
+      {/*  style={{*/}
+      {/*    flex: 1,*/}
+      {/*    flexDirection: 'row',*/}
+      {/*    alignSelf: 'flex-end',*/}
+      {/*    position: 'absolute',*/}
+      {/*    top: 30,*/}
+      {/*    zIndex: 9,*/}
+      {/*    backgroundColor: colors.border,*/}
+      {/*    borderColor: colors.border,*/}
+      {/*    right: 8,*/}
+      {/*    borderWidth: StyleSheet.hairlineWidth,*/}
+      {/*    borderRadius: 32,*/}
+      {/*    alignItems: 'center',*/}
+      {/*    alignContent: 'center',*/}
+      {/*    justifyContent: 'space-between',*/}
+      {/*  }}>*/}
+      {/*  {isPositionAbsolute ?*/}
+      {/*    <ChevronDown width={32} height={32} color={colors.text}/>*/}
+      {/*    :*/}
+      {/*    <ChevronUp width={32} height={32} color={colors.text}/>*/}
+      {/*  }*/}
+      {/*</Button>*/}
+      {/*<Animated.View style={[{flexGrow: 1}, animatedStyle]}>*/}
+      {/*  <GestureDetector gesture={swipeGesture}>*/}
+      {/*    <Animated.View style={animatedStyle2}>*/}
+      {/*      {isVisible &&<Card*/}
+      {/*        elevate*/}
+      {/*        borderRadius="$8"*/}
+      {/*        style={[styles.box, styles.box1]}*/}
+      {/*        onLayout={e => {*/}
+      {/*          heightOfCard.current = e?.nativeEvent?.layout?.height;*/}
+      {/*        }}*/}
+      {/*      >*/}
+      {/*        <Card.Header>*/}
+      {/*          <XStack*/}
+      {/*            justifyContent="space-between"*/}
+      {/*            marginHorizontal="$2"*/}
+      {/*            alignItems="center"*/}
+      {/*          >*/}
+      {/*            <XStack paddingRight="$2">*/}
+      {/*              <Cross color="red"/>*/}
+      {/*            </XStack>*/}
+      {/*            <Paragraph*/}
+      {/*              size="$6"*/}
+      {/*              color="red"*/}
+      {/*              textWrap="wrap"*/}
+      {/*              flexWrap="wrap"*/}
+      {/*              paddingRight="$3"*/}
+      {/*            >*/}
+      {/*              You spent more than budgeted in Doordash/Uber Eats.*/}
+      {/*              Ensure budgeted expense aligns with spend*/}
+      {/*            </Paragraph>*/}
+      {/*          </XStack>*/}
+      {/*        </Card.Header>*/}
+      {/*      </Card>}*/}
+      {/*    </Animated.View>*/}
 
-          translateY.value = withTiming(-40, {duration: 300});
-          setIsPositionAbsolute((prev) => !prev);
-          setTimeout(() => {
-            translateY.value = withTiming(30, {duration: 300});
-          }, 200);
-        }}
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          alignSelf: 'flex-end',
-          position: 'absolute',
-          top: 30,
-          zIndex: 9,
-          backgroundColor: colors.border,
-          borderColor: colors.border,
-          right: 8,
-          borderWidth: StyleSheet.hairlineWidth,
-          borderRadius: 16,
-          alignItems: 'center',
-          alignContent: 'center',
-          justifyContent: 'space-between',
-        }}>
-        {isPositionAbsolute ?
-          <ChevronDown width={40} height={40} color={colors.text}/>
-          :
-          <ChevronUp width={40} height={40} color={colors.text}/>
-        }
-      </Pressable>
-      <Animated.View style={[{flexGrow: 1}, animatedStyle]}>
-        <GestureDetector gesture={swipeGesture}>
-          <Animated.View style={animatedStyle2}>
-            {isVisible &&<Card
-              elevate
-              borderRadius="$8"
-              style={[styles.box, styles.box1]}
-              onLayout={e => {
-                heightOfCard.current = e?.nativeEvent?.layout?.height;
-                console.log(e?.nativeEvent.layout.height, 'coming')
-              }}
-            >
-              <Card.Header>
-                <XStack
-                  justifyContent="space-between"
-                  marginHorizontal="$2"
-                  alignItems="center"
-                >
-                  <XStack paddingRight="$2">
-                    <Cross color="red"/>
-                  </XStack>
-                  <Paragraph
-                    size="$6"
-                    color="red"
-                    textWrap="wrap"
-                    flexWrap="wrap"
-                    paddingRight="$3"
-                  >
-                    You spent more than budgeted in Doordash/Uber Eats.
-                    Ensure budgeted expense aligns with spend
-                  </Paragraph>
-                </XStack>
-              </Card.Header>
-            </Card>}
-          </Animated.View>
+      {/*  </GestureDetector>*/}
+      {/*  {showButton && isVisible &&<Animated.View style={[{*/}
+      {/*    position: "absolute",*/}
+      {/*    right: 0,*/}
+      {/*    top: 10,*/}
+      {/*    bottom: 0,*/}
+      {/*    backgroundColor: "red",*/}
+      {/*    justifyContent: "center",*/}
+      {/*    alignItems: "center",*/}
+      {/*    borderRadius: 16,*/}
+      {/*    height: heightOfCard.current,*/}
+      {/*    zIndex:1,*/}
+      {/*  }, animatedStyleForSwipe ]}>*/}
+      {/*    <Paragraph color={colors.text}>*/}
+      {/*      Delete*/}
+      {/*    </Paragraph>*/}
+      {/*  </Animated.View>}*/}
 
-        </GestureDetector>
-        {showButton && isVisible &&<Animated.View style={[{
-          position: "absolute",
-          right: 0,
-          top: 10,
-          bottom: 0,
-          backgroundColor: "red",
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 16,
-          height: heightOfCard.current,
-          zIndex:1,
-        }, animatedStyleForSwipe ]}>
-          <Paragraph color={colors.text}>
-            Delete
-          </Paragraph>
-        </Animated.View>}
-
-        <Card
-          elevate
-          animation="bouncy"
-          borderRadius="$8"
-          scale={0.5}
-          pressStyle={{scale: 0.875}}
-          style={[styles.box, styles.box2]}>
-          <Card.Header>
-            <XStack
-              justifyContent="space-between"
-              marginHorizontal="$2"
-              alignItems="center"
-            >
-              <XStack paddingRight="$2">
-                <Warning color="#8B8000"/>
-              </XStack>
-              <Paragraph
-                size="$6"
-                color="#8B8000"
-                textWrap="wrap"
-                flexWrap="wrap"
-                paddingRight="$3"
-              >
-                Your income came lower than expected for dividends. Ensure stocks that are bought have good dividend track record
-              </Paragraph>
-            </XStack>
-          </Card.Header>
-        </Card>
-        <Card
-          elevate
-          animation="bouncy"
-          borderRadius="$8"
-          scale={0.5}
-          pressStyle={{scale: 0.875}}
-          style={[styles.box, styles.box3]}
-        >
-          <Card.Header>
-            <XStack
-              justifyContent="space-between"
-              marginHorizontal="$2"
-              alignItems="center"
-            >
-              <XStack paddingRight="$2">
-                <Check color="green"/>
-              </XStack>
-              <Paragraph
-                size="$6"
-                color="green"
-                textWrap="wrap"
-                flexWrap="wrap"
-                paddingRight="$3"
-              >
-                Great job on staying within budget for subscriptions 🎉
-              </Paragraph>
-            </XStack>
-          </Card.Header>
-        </Card>
-      </Animated.View>
-
+      {/*  <Card*/}
+      {/*    elevate*/}
+      {/*    borderRadius="$8"*/}
+      {/*    style={[styles.box, styles.box2]}>*/}
+      {/*    <Card.Header>*/}
+      {/*      <XStack*/}
+      {/*        justifyContent="space-between"*/}
+      {/*        marginHorizontal="$2"*/}
+      {/*        alignItems="center"*/}
+      {/*      >*/}
+      {/*        <XStack paddingRight="$2">*/}
+      {/*          <Warning color="#8B8000"/>*/}
+      {/*        </XStack>*/}
+      {/*        <Paragraph*/}
+      {/*          size="$6"*/}
+      {/*          color="#8B8000"*/}
+      {/*          textWrap="wrap"*/}
+      {/*          flexWrap="wrap"*/}
+      {/*          paddingRight="$3"*/}
+      {/*        >*/}
+      {/*          Your income came lower than expected for dividends.*/}
+      {/*        </Paragraph>*/}
+      {/*      </XStack>*/}
+      {/*    </Card.Header>*/}
+      {/*  </Card>*/}
+      {/*  <Card*/}
+      {/*    elevate*/}
+      {/*    borderRadius="$8"*/}
+      {/*    style={[styles.box, styles.box3]}*/}
+      {/*  >*/}
+      {/*    <Card.Header>*/}
+      {/*      <XStack*/}
+      {/*        justifyContent="space-between"*/}
+      {/*        marginHorizontal="$2"*/}
+      {/*        alignItems="center"*/}
+      {/*      >*/}
+      {/*        <XStack paddingRight="$2">*/}
+      {/*          <Check color="green"/>*/}
+      {/*        </XStack>*/}
+      {/*        <Paragraph*/}
+      {/*          size="$6"*/}
+      {/*          color="green"*/}
+      {/*          textWrap="wrap"*/}
+      {/*          flexWrap="wrap"*/}
+      {/*          paddingRight="$3"*/}
+      {/*        >*/}
+      {/*          Great job on staying within budget for subscriptions 🎉*/}
+      {/*        </Paragraph>*/}
+      {/*      </XStack>*/}
+      {/*    </Card.Header>*/}
+      {/*  </Card>*/}
+      {/*</Animated.View>*/}
+      <BannerContainer
+        data={[
+          {
+            text: 'Great job on staying within budget for subscriptions 🎉',
+            icon: <Check color="green"/>,
+            color: 'green'
+          },
+          {
+            text: 'Your income came lower than expected for dividends.',
+            icon: <Warning color="#8B8000" />,
+            color: '#8B8000'
+          },
+          {
+            text: 'You spent more than budgeted in Doordash/Uber Eats.',
+            icon: <Cross color="red" />,
+            color: 'red'
+          }
+        ]}
+      />
     </YStack>
   );
 };
 
-const createStyles = ({width, isPositionAbsolute}) => StyleSheet.create({
+const createStyles = ({width, isPositionAbsolute}: {width: number, isPositionAbsolute: boolean}) => StyleSheet.create({
   container: {
     flex: 1,
 
@@ -218,20 +237,16 @@ const createStyles = ({width, isPositionAbsolute}) => StyleSheet.create({
     position: isPositionAbsolute ? 'absolute' : undefined,
     justifyContent: 'center',
     marginHorizontal: 8,
-    // marginTop: 8,
   },
   box1: {
-    // backgroundColor: 'red',
     top: 10,
     left: 0,
   },
   box2: {
-    // backgroundColor: 'orange',
     top: 30,
     left: 0,
   },
   box3: {
-    // backgroundColor: 'green',
     top: 50,
     left: 0,
   },

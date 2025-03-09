@@ -14,8 +14,7 @@ import {PlannedBudget} from "../../screens/signedIn/PlannedBudget";
 import {EstimatedIncome} from "../../screens/signedIn/EstimatedIncome";
 import * as Haptics from "expo-haptics";
 import {ImpactFeedbackStyle} from "expo-haptics";
-import {Text} from "tamagui";
-import {Pressable} from "react-native";
+
 
 const SignedInStack = createBottomTabNavigator();
 const HistoryStack = createStackNavigator();
