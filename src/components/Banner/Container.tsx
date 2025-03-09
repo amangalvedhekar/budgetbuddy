@@ -1,7 +1,7 @@
 import {BannerContainerProps} from "./types";
 import {useWindowDimensions, XStack, YStack} from "tamagui";
 import {createStylesForBanner} from "./styles";
-import {useState} from "react";
+import {useLayoutEffect, useState} from "react";
 import {ExpandCollapse} from "./ExpandCollapse";
 import {useTheme} from "@react-navigation/native";
 import {impactAsync, ImpactFeedbackStyle} from "expo-haptics";
@@ -33,6 +33,15 @@ export const BannerContainer = ({data}: BannerContainerProps) => {
       translateYForToggle.value = withTiming(30, {duration: 300});
     }, 200);
   }
+  //#endregion
+
+  //#region sideEffects
+  useLayoutEffect(() => {
+    translateYForToggle.value = withTiming(-40, {duration: 300});
+    setTimeout(() => {
+      translateYForToggle.value = withTiming(30, {duration: 300});
+    }, 200);
+  }, []);
   //#endregion
 
   return (

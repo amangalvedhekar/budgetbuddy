@@ -10,6 +10,7 @@ export interface BannerCardProps extends CardProps{
   text: string;
   onLayout?: OnLayout;
   color: string;
+  idx?: number;
 }
 
 export interface BannerListProps {

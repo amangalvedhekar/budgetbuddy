@@ -1,6 +1,6 @@
 import React, {useLayoutEffect, useRef, useState} from 'react';
 import {StyleSheet, Pressable} from 'react-native';
-import {Button,Card, Paragraph, useWindowDimensions, View, XStack, YStack} from "tamagui";
+import {Button, Card, Paragraph, ScrollView, useWindowDimensions, View, XStack, YStack} from "tamagui";
 import {Check, ChevronDown, ChevronUp, Cross, Warning} from "../../icons";
 import Animated, {
   runOnJS,
@@ -67,7 +67,7 @@ export const Insight = () => {
     transform: [{translateX: translateX.value}],
   }));
   return (
-    <YStack style={styles.container} flex={1}>
+    <ScrollView>
       {/*<Button*/}
       {/*  onPress={async () => {*/}
       {/*    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);*/}
@@ -220,10 +220,25 @@ export const Insight = () => {
             text: 'You spent more than budgeted in Doordash/Uber Eats.',
             icon: <Cross color="red" />,
             color: 'red'
-          }
+          },
+          {
+            text: 'You spent more than budgeted in Uber/Lyft.',
+            icon: <Cross color="red" />,
+            color: 'red'
+          },
+          // {
+          //   text: 'Great job on having expenses within the income 🎉',
+          //   icon: <Check color="green"/>,
+          //   color: 'green'
+          // },
+          // {
+          //   text: 'Great job on having consistent income this year 🎉',
+          //   icon: <Check color="green"/>,
+          //   color: 'green'
+          // },
         ]}
       />
-    </YStack>
+    </ScrollView>
   );
 };
 
