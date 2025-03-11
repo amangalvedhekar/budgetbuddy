@@ -6,7 +6,7 @@ import {Delete} from "../../icons";
 import {useState} from "react";
 import {impactAsync, ImpactFeedbackStyle} from "expo-haptics";
 
-export const BannerCard = ({icon, text, color, idx = 0, ...rest}: BannerCardProps) => {
+export const BannerCard = ({icon, text, color, idx = 0, isOpen, ...rest}: BannerCardProps) => {
   const translateX = useSharedValue(0);
   const [cardHeight, setCardHeight] = useState(82);
   const [distanceFromTop, setDistanceFromTop] = useState(10);
@@ -20,17 +20,17 @@ export const BannerCard = ({icon, text, color, idx = 0, ...rest}: BannerCardProp
     await impactAsync(ImpactFeedbackStyle.Medium);
     setShowDelete(false);
   }
-
+console.log(distanceFromTop, idx, 'before render');
   const swipeGesture = Gesture
     .Pan()
     .onStart((event) => {
-      if (event.translationX < 0) {
+      if (event.translationX < 0 && !isOpen) {
         runOnJS(triggerShowDelete)();
       }
 
     })
     .onUpdate((event) => {
-      translateX.value = event.translationX < 0 ? event.translationX : 0;
+      translateX.value = event.translationX < 0 && !isOpen ? event.translationX : 0;
     })
     .onEnd(() => {
       runOnJS(triggerHideDelete)();

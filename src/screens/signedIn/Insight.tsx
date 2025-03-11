@@ -18,11 +18,6 @@ const data = [
     icon: <Cross color="red" />,
     color: 'red'
   },
-  {
-    text: 'You spent more than budgeted in Uber/Lyft.',
-    icon: <Cross color="red" />,
-    color: 'red'
-  },
 ]
 export const Insight = () => {
 

@@ -6,6 +6,7 @@ import {BudgetedData, Categories as CategoriesSchema} from "../../../schema";
 import {eq, and} from "drizzle-orm";
 
 import {KeyboardStickyView, KeyboardAvoidingView} from "react-native-keyboard-controller";
+import {DeviceEventEmitter} from "react-native";
 
 export const PlannedBudget = () => {
   const {db} = useDb();
@@ -13,6 +14,9 @@ export const PlannedBudget = () => {
   const {params} = useRoute();
   const {navigate, setOptions} = useNavigation();
   const [abc, setAbc] = useState();
+  const showSuccessToast = () => {
+    DeviceEventEmitter.emit("DISPLAY_TOAST", `Budgeted Expense updated for ${params?.selectedMonth.month}`);
+  };
   useFocusEffect(useCallback(() => {
     (async () => {
       setOptions({
@@ -113,29 +117,28 @@ export const PlannedBudget = () => {
             if (foundItem) {
               return foundItem;
             }
-          });
-        console.log(existingItem, 'what is')
+          }).filter(Boolean);
         await Promise.all(existingItem.map(async (item) => {
-          console.log(item, 'in iteration item is', ab?.userId,)
           try {
-            const x = await db.update(BudgetedData).set({
+            await db.update(BudgetedData).set({
               value: item.value,
-              month: params?.selectedMonth?.id
             }).where(and(
               eq(BudgetedData.categoryType, item.categoryType),
               eq(BudgetedData.userId, ab?.userId),
-            )).returning();
-            console.log(x, 'updated data')
+              eq(BudgetedData.month, params?.selectedMonth?.id)
+            ));
           } catch (e) {
-
+            console.warn(e, 'error')
           }
         }))
       } else {
         await db.insert(BudgetedData).values(dataToSave);
+        console.log(dataToSave, 'is')
       }
+      showSuccessToast();
       navigate('accountEntry');
     } catch (e) {
-      console.log(JSON.stringify(e), 'err happened', e)
+      console.log(JSON.stringify(e), 'err happened')
     }
   }
 

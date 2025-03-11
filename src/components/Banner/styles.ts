@@ -12,18 +12,6 @@ export const createStylesForBanner = ({width, isOpen, colors}: BannerStyleProps)
     justifyContent: 'center',
     marginHorizontal: 8,
   },
-  box1: {
-    top: 10,
-    left: 0,
-  },
-  box2: {
-    top: 30,
-    left: 0,
-  },
-  box3: {
-    top: 50,
-    left: 0,
-  },
   expandCollapse: {
     flex:1,
     flexDirection: 'row',

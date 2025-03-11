@@ -9,6 +9,8 @@ import {Text} from "tamagui";
 import {Month} from "../../screens/signedIn/Month";
 import {Details} from "../../screens/signedIn/Details";
 import {Insight} from "../../screens";
+import {ToastCard} from "../../components/Toast/components/Card";
+import React from "react";
 
 const DefaultStack = createStackNavigator();
 export const RootNavigation = ({scheme}: any) => {
@@ -49,6 +51,7 @@ export const RootNavigation = ({scheme}: any) => {
           })}/>
         </DefaultStack.Navigator>
       </NavigationContainer>
+
     </>
   );
 }

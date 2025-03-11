@@ -1,11 +1,10 @@
-import {useFocusEffect, useNavigation, useRoute, useTheme} from "@react-navigation/native";
-import {useCallback, useContext, useState} from "react";
+import {useFocusEffect, useTheme} from "@react-navigation/native";
+import {useCallback, useState} from "react";
 import {useAuth, useDb} from "../../hooks";
 import {BudgetedData, Categories as CategoriesSchema} from "../../../schema";
 import {and, eq} from "drizzle-orm";
 import {Button, H5, ScrollView, useWindowDimensions, YStack} from "tamagui";
 import {BarChart, PieChart} from "react-native-gifted-charts";
-import {ToastContext} from "../../contexts/Toast/ToastProvider";
 
 export const Home = () => {
   const {db} = useDb();
@@ -15,7 +14,7 @@ export const Home = () => {
   const [selectedPie, setSelectedPie] = useState();
   const [barData, setBarData] = useState();
   const {colors} = useTheme();
-  const {width, height} = useWindowDimensions();
+  const {width} = useWindowDimensions();
   useFocusEffect(useCallback(() => {
     (async () => {
       const abc1 = await db.select({
@@ -180,7 +179,6 @@ export const Home = () => {
                   color: colors.text
                 }}
                 data={barData}
-
                 yAxisThickness={0}
                 xAxisThickness={0}
               />

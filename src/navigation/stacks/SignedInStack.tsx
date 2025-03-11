@@ -93,6 +93,12 @@ export const SignedInScreens = () => {
                 await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
               }}
             />,
+            Insights: () => <InsightIcon
+              fill={focused ? colors.primary : colors.text}
+              onTouchStart={async () => {
+                await Haptics.impactAsync(ImpactFeedbackStyle.Medium);
+              }}
+            />
           };
           return Icon[route.name]();
         },
@@ -127,10 +133,6 @@ export const SignedInScreens = () => {
       <SignedInStack.Screen
         name="Insights"
         component={Insight}
-        options={{
-          tabBarLabelStyle: {fontWeight: '600', fontSize: 16},
-          tabBarIcon: ({focused}) => <InsightIcon fill={focused ? colors.primary : colors.text}/>,
-        }}
       />
       <SignedInStack.Screen
         name="Account"

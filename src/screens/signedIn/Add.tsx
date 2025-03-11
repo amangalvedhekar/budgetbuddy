@@ -1,10 +1,13 @@
 import {
   Button,
-  Input, Paragraph, ScrollView, Sheet,
+  Input,
+  Paragraph,
+  ScrollView,
+  Sheet,
   YStack,
 } from "tamagui";
 import React, {useCallback, useRef, useState} from "react";
-import {TextInput} from "react-native";
+import {DeviceEventEmitter, TextInput} from "react-native";
 import {useFocusEffect, useNavigation, useTheme} from "@react-navigation/native";
 import {TransactionLists, TransactionTypes} from "../../../schema";
 import {useAuth, useDb} from "../../hooks";
@@ -30,6 +33,9 @@ export const Add = () => {
   const [categories, setCategories] = useState<Array<{ name: string, transactionType: string }>>();
   const [transactionType, setTransactionType] = useState();
   const snapPoints = [50, 50, 50];
+  const showSuccessToast = () => {
+    DeviceEventEmitter.emit("DISPLAY_TOAST", `Transaction added successfully`);
+  };
   useFocusEffect(useCallback(() => {
     (async () => {
       const abc = await db.select({
@@ -59,6 +65,7 @@ export const Add = () => {
         addedBy: ab?.username,
       };
       await db.insert(TransactionLists).values(transactionToAdd);
+      showSuccessToast();
     } catch (e) {
       console.log(e, 'caught error here')
     } finally {
@@ -109,21 +116,22 @@ export const Add = () => {
           setVal={setSubCategory}
         />}
         <Button
-          icon={() => <CalendarIcon stroke="purple" />}
+          icon={() => <CalendarIcon stroke="purple"/>}
           size="$6"
           onPress={() => setShowCalendar((prevState) => !prevState)}
         >
           <Paragraph>{transactionDate}</Paragraph>
         </Button>
-        <Sheet forceRemoveScrollEnabled={showCalendar}
-               modal={true}
-               open={showCalendar}
-               onOpenChange={setShowCalendar}
-               snapPoints={snapPoints}
-               snapPointsMode="percent"
-               dismissOnSnapToBottom
-               zIndex={100_000}
-               animation="medium">
+        <Sheet
+          forceRemoveScrollEnabled={showCalendar}
+          modal={true}
+          open={showCalendar}
+          onOpenChange={setShowCalendar}
+          snapPoints={snapPoints}
+          snapPointsMode="percent"
+          dismissOnSnapToBottom
+          zIndex={100_000}
+          animation="medium">
           <Sheet.Overlay
             animation="lazy"
             enterStyle={{opacity: 0}}
@@ -138,7 +146,6 @@ export const Add = () => {
               }}
 
               onDayPress={day => {
-                console.log('selected day', day);
                 setTransactionDate(day.dateString);
                 setShowCalendar(false);
               }}

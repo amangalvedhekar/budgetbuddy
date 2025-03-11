@@ -60,6 +60,7 @@ export const BannerContainer = ({data}: BannerContainerProps) => {
             <BannerList
               data={data}
               style={styles}
+              isOpen={isOpen}
             />
             :
             (

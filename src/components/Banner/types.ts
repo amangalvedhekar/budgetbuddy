@@ -11,11 +11,13 @@ export interface BannerCardProps extends CardProps{
   onLayout?: OnLayout;
   color: string;
   idx?: number;
+  isOpen?: boolean;
 }
 
 export interface BannerListProps {
   data: Array<BannerCardProps>;
   style: Record<string, any>;
+  isOpen: boolean;
 }
 
 export interface BannerContainerProps {
