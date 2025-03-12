@@ -3,8 +3,11 @@ import {useCallback, useState} from "react";
 import {useAuth, useDb} from "../../hooks";
 import {BudgetedData, Categories as CategoriesSchema} from "../../../schema";
 import {and, eq} from "drizzle-orm";
-import {Button, H5, ScrollView, useWindowDimensions, YStack} from "tamagui";
+import {Button, Group, H5, Label, ScrollView, useWindowDimensions, XStack, YStack} from "tamagui";
 import {BarChart, PieChart} from "react-native-gifted-charts";
+import {ChevronDown} from "../../icons";
+import {DropDown} from "../../components/DropDown";
+import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
 
 export const Home = () => {
   const {db} = useDb();
@@ -14,7 +17,9 @@ export const Home = () => {
   const [selectedPie, setSelectedPie] = useState();
   const [barData, setBarData] = useState();
   const {colors} = useTheme();
+  const [month, setMonth] = useState(filterDataForDashboard[0]);
   const {width} = useWindowDimensions();
+
   useFocusEffect(useCallback(() => {
     (async () => {
       const abc1 = await db.select({
@@ -22,7 +27,7 @@ export const Home = () => {
         value: BudgetedData.value,
       }).from(BudgetedData).where(and(
         eq(BudgetedData.userId, ab?.userId ?? ''),
-        eq(BudgetedData.month, 0)
+        eq(BudgetedData.month, month.id)
       ));
       const def1 = await db.select({
         id: CategoriesSchema.id,
@@ -63,7 +68,7 @@ export const Home = () => {
         value: BudgetedData.value,
       }).from(BudgetedData).where(and(
         eq(BudgetedData.userId, ab?.userId ?? ''),
-        eq(BudgetedData.month, 0)
+        eq(BudgetedData.month, month.id)
       ));
       const def = await db.select({
         id: CategoriesSchema.id,
@@ -109,8 +114,7 @@ export const Home = () => {
         setPieData(pieD);
       }
     })();
-  }, []));
-
+  }, [month]));
   const calculateTotal = () => {
     const total = Array.isArray(abc) ? abc.reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
     return new Intl.NumberFormat('en-CA', {
@@ -119,18 +123,26 @@ export const Home = () => {
     }).format(total);
   };
   const calculateIncomeTotal = () => Array.isArray(barData) ? barData.reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
-
   const formatTotal = new Intl.NumberFormat('en-CA', {
     style: 'currency',
     currency: 'CAD'
   }).format(calculateIncomeTotal());
+
   return (
     <>
       <ScrollView>
+        <XStack marginHorizontal="$3">
+          <DropDown
+            items={filterDataForDashboard}
+            val={month}
+            setVal={setMonth}
+            placeholder="Select Duration"
+          />
+        </XStack>
         <YStack justifyContent="center" alignItems="center" marginVertical="$2">
           {pieData?.length > 0 && (<>
             <H5>
-              Budgeted Expense for January
+              Budgeted Expense for {month.name}
             </H5>
             <PieChart
               radius={(width / 2) - 64}
@@ -158,7 +170,7 @@ export const Home = () => {
           {Array.isArray(barData) && barData?.length > 0 && calculateIncomeTotal() > 0 && (
             <>
               <H5 padding="$1">
-                Expected Income for January
+                Expected Income for {month.name}
               </H5>
               <BarChart
                 showValuesAsTopLabel
@@ -186,7 +198,7 @@ export const Home = () => {
 
         </YStack>
       </ScrollView>
-      <YStack padding="$3" justifyContent="flex-end">
+      <YStack padding="$2" paddingVertical="$4" justifyContent="flex-end">
         <Button
           bordered
           elevate

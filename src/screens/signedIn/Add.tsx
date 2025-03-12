@@ -19,7 +19,6 @@ import {DropDown} from "../../components/DropDown";
 export const Add = () => {
   const amountRef = useRef<TextInput>(null);
   const {navigate,} = useNavigation();
-  const {colors} = useTheme();
   const {db} = useDb();
   const {ab} = useAuth();
 
@@ -27,15 +26,31 @@ export const Add = () => {
   const [categoryType, setCategoryType] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
-  const [transactionDate, setTransactionDate] = useState(`${new Date().getFullYear()}-0${new Date().getMonth() + 1}-${new Date().getDate()}`);
-  const [isTransactionBeingAdded, setIsTransactionBeingAdded] = useState(false);
+  const [transactionDate, setTransactionDate] = useState(() =>`${new Date().getFullYear()}-0${new Date().getMonth() + 1}-${new Date().getDate()}`);
   const [subCategory, setSubCategory] = useState('');
   const [categories, setCategories] = useState<Array<{ name: string, transactionType: string }>>();
   const [transactionType, setTransactionType] = useState();
   const snapPoints = [50, 50, 50];
   const showSuccessToast = () => {
-    DeviceEventEmitter.emit("DISPLAY_TOAST", `Transaction added successfully`);
+    DeviceEventEmitter.emit("DISPLAY_TOAST", {
+      message: `Transaction added successfully`,
+      type: 'success',
+    });
   };
+  const showWarningToast = () => {
+    DeviceEventEmitter.emit("DISPLAY_TOAST", {
+      message: `Transaction added successfully but with some issues`,
+      type: 'warning',
+    });
+  };
+
+  const showErrorWarningToast = () => {
+    DeviceEventEmitter.emit("DISPLAY_TOAST", {
+      message: `Something went wrong adding transaction`,
+      type: 'error',
+    });
+  }
+
   useFocusEffect(useCallback(() => {
     (async () => {
       const abc = await db.select({
@@ -54,7 +69,6 @@ export const Add = () => {
   }, []));
   const handleAddTransaction = async () => {
     try {
-      setIsTransactionBeingAdded(true);
       const transactionToAdd = {
         id: Math.floor(Math.random() * 9999).toString(),
         transactionType: categoryType.id,
@@ -65,17 +79,22 @@ export const Add = () => {
         addedBy: ab?.username,
       };
       await db.insert(TransactionLists).values(transactionToAdd);
-      showSuccessToast();
+      if (amount == '' || categoryType == '') {
+        showWarningToast();
+      } else {
+        showSuccessToast();
+      }
+      navigate('History');
     } catch (e) {
+      showErrorWarningToast();
       console.log(e, 'caught error here')
     } finally {
-      setIsTransactionBeingAdded(false);
       setCategoryType('');
       setAmount('');
       setDescription('');
       setSubCategory('');
       setTransactionDate(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
-      navigate('History');
+
     }
 
   }

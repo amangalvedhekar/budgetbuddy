@@ -1,12 +1,16 @@
 import {BannerCard} from "../../Banner/Card";
-import {Check} from "../../../icons";
+import {Check, Cross, Warning} from "../../../icons";
 import React, {useEffect, useState} from "react";
 import Animated, {useAnimatedStyle, useSharedValue, withSpring, withTiming} from "react-native-reanimated";
 import {DeviceEventEmitter} from "react-native";
 
+export type ToastMessageType = 'success' | 'warning' | 'error'
+const defaultToastData: Record<'message'| 'type', string | ToastMessageType> = {
+  message: '',
+  type: '',
+};
 export const ToastCard = () => {
-// const headerHeight = useHeaderHeight();
-  const [message, setMessage] = useState('');
+  const [toastData, setToastData] = useState(null);
   const translateY = useSharedValue(0);
   const opacity = useSharedValue(0);
   const animatedStyle = useAnimatedStyle(() => ({
@@ -15,7 +19,11 @@ export const ToastCard = () => {
   }))
   useEffect(() => {
     const subscription = DeviceEventEmitter.addListener("DISPLAY_TOAST", (msg) => {
-      setMessage(msg);
+      setToastData({
+        message:msg.message,
+        type: msg.type,
+      });
+      console.log(toastData, 'inside listener')
       translateY.value = withTiming(70, {duration: 300});
       opacity.value = withTiming(1, { duration: 300 });
       setTimeout(() => {
@@ -27,13 +35,23 @@ export const ToastCard = () => {
     return () => subscription.remove();
 
   }, []);
+  const toastIcon = {
+    success: <Check color="green"/>,
+    warning: <Warning color="#8B8000" />,
+    error: <Cross color="red" />,
+  };
+  const toastColor = {
+    success: 'green',
+    warning: '#8B8000',
+    error: 'red',
+  };
   return (
     <Animated.View style={[{position: 'absolute', top: 0, zIndex:99, left:10,right:10},animatedStyle]}>
-      <BannerCard
-        icon={<Check color="green"/>}
-        text={message}
-        color="green"
-      />
+      {toastData && <BannerCard
+        icon={toastIcon[toastData.type ?? 'success']}
+        text={toastData.message}
+        color={toastColor[toastData.type]}
+      />}
 
     </Animated.View>
   );

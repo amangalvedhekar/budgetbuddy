@@ -99,10 +99,14 @@ export const EstimatedIncome = () => {
         )
         .from(BudgetedData)
         .where(
-          eq(
-            BudgetedData.userId,
-            ab?.userId ?? ''
-          )
+          and(eq(
+              BudgetedData.userId,
+              ab?.userId ?? ''
+            ),
+            eq(
+              BudgetedData.month,
+              params?.selectedMonth?.id
+            ),)
         );
       console.log(existingDataForUser, 'existing')
       if(Array.isArray(existingDataForUser) && existingDataForUser.length !== 0) {
@@ -120,7 +124,6 @@ export const EstimatedIncome = () => {
             try {
               const x = await db.update(BudgetedData).set({
                 value: item.value,
-                month: params?.selectedMonth?.id
               }).where(and(
                 eq(BudgetedData.categoryType, item.categoryType),
                 eq(BudgetedData.userId, ab?.userId),

@@ -14,6 +14,7 @@ import {PlannedBudget} from "../../screens/signedIn/PlannedBudget";
 import {EstimatedIncome} from "../../screens/signedIn/EstimatedIncome";
 import * as Haptics from "expo-haptics";
 import {ImpactFeedbackStyle} from "expo-haptics";
+import {Settings} from "../../screens/signedIn/Settings";
 
 
 const SignedInStack = createBottomTabNavigator();
@@ -38,6 +39,10 @@ const AccountStackScreens = () => {
       <AccountStack.Screen name="addIncome" component={EstimatedIncome} options={{
         headerTitle: 'Estimated Income'
       }}/>
+      <AccountStack.Screen name="appSettings" component={Settings} options={{
+        headerTitle: 'Display and Haptics'
+      }}/>
+
     </AccountStack.Navigator>
   );
 }
