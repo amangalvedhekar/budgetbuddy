@@ -3,9 +3,8 @@ import {useCallback, useState} from "react";
 import {useAuth, useDb} from "../../hooks";
 import {BudgetedData, Categories as CategoriesSchema} from "../../../schema";
 import {and, eq} from "drizzle-orm";
-import {Button, Group, H2, H5, Label, ScrollView, useWindowDimensions, XStack, YStack} from "tamagui";
+import {XStack, H2, H5, ScrollView, useWindowDimensions, YStack} from "tamagui";
 import {BarChart, PieChart} from "react-native-gifted-charts";
-import {ChevronDown} from "../../icons";
 import {DropDown} from "../../components/DropDown";
 import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
 
@@ -82,7 +81,6 @@ export const Home = () => {
           };
         }
       }).filter(Boolean);
-      // console.log(dataForExpense, 'hmm')
       if (Array.isArray(dataForExpense) && dataForExpense.length === 0) {
         const freshData = def.map(d => ({
           ...d,

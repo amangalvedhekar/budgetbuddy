@@ -67,7 +67,7 @@ export const SignedInScreens = () => {
       screenOptions={({route}) => ({
         headerShown: !['History', 'Account'].includes(route.name),
         headerTitleAlign: 'center',
-        tabBarHideOnKeyboard: true,
+
         tabBarShowLabel: false,
         tabBarItemStyle: {
           alignSelf: 'center'
