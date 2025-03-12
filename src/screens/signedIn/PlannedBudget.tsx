@@ -15,7 +15,10 @@ export const PlannedBudget = () => {
   const {navigate, setOptions} = useNavigation();
   const [abc, setAbc] = useState();
   const showSuccessToast = () => {
-    DeviceEventEmitter.emit("DISPLAY_TOAST", `Budgeted Expense updated for ${params?.selectedMonth.month}`);
+    DeviceEventEmitter.emit("DISPLAY_TOAST", {
+      message: `Budgeted Expense updated for ${params?.selectedMonth.month}`,
+      type: 'success'
+    });
   };
   useFocusEffect(useCallback(() => {
     (async () => {
@@ -151,26 +154,26 @@ export const PlannedBudget = () => {
       <ScrollView>
         <KeyboardAvoidingView behavior="padding">
           {abc?.map(a => (
-            <Card key={a.name} elevate
-                  margin="$2"
-                  bordered
-                  borderRadius="$9"
-                  size="$3"
-                  animation="bouncy"
-                  scale={0.9}
-                  hoverStyle={{scale: 0.975}}
-                  pressStyle={{scale: 0.975}}>
+            <Card
+              key={a.name}
+              elevate
+              margin="$2"
+              borderRadius="$8"
+              size="$3"
+            >
               <Card.Header>
                 <XStack alignItems="center">
-                  <H5 flex={0.7}>
+                  <H5 flex={0.7} paddingLeft="$2">
                     {a.name}
                   </H5>
                   <Input
                     flex={0.3}
-                    size="$6"
+                    size="$5"
                     placeholder="0.00"
                     keyboardType="numeric"
-                    value={a?.value?.toString()}
+                    returnKeyType="done"
+                    borderWidth="$1"
+                    value={a?.value == '0' ? '':a?.value?.toString()}
                     onChangeText={handleChangeText(a.name)}
                   />
                 </XStack>
@@ -179,7 +182,7 @@ export const PlannedBudget = () => {
           ))}
         </KeyboardAvoidingView>
       </ScrollView>
-      <KeyboardStickyView offset={offset} style={{backgroundColor: useTheme().colors.background}}>
+      <KeyboardStickyView style={{backgroundColor: useTheme().colors.background}}>
         <XStack flexWrap="wrap" alignItems="center" justifyContent="space-between" margin="$2">
           <H5>
             Total Amount:

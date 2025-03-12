@@ -127,6 +127,7 @@ export const EstimatedIncome = () => {
               }).where(and(
                 eq(BudgetedData.categoryType, item.categoryType),
                 eq(BudgetedData.userId, ab?.userId),
+                eq(BudgetedData.month, params?.selectedMonth?.id),
               )).returning();
               console.log(x, 'updated data')
             } catch (e) {
@@ -151,10 +152,16 @@ export const EstimatedIncome = () => {
     <ScrollView automaticallyAdjustKeyboardInsets>
       <KeyboardAvoidingView behavior="padding">
         {Array.isArray(incomeStream) && incomeStream.map(stream => (
-          <Card key={stream.id} elevate margin="$2" size="$2" bordered>
+          <Card
+            key={stream.id}
+            elevate
+            margin="$2"
+            size="$3"
+            borderRadius="$8"
+          >
             <Card.Header>
               <XStack alignItems="center">
-                <H5 flex={0.7}>
+                <H5 flex={0.7} paddingLeft="$2">
                   {stream.name}
                 </H5>
                 <Input

@@ -3,7 +3,7 @@ import {useCallback, useState} from "react";
 import {useAuth, useDb} from "../../hooks";
 import {BudgetedData, Categories as CategoriesSchema} from "../../../schema";
 import {and, eq} from "drizzle-orm";
-import {Button, Group, H5, Label, ScrollView, useWindowDimensions, XStack, YStack} from "tamagui";
+import {Button, Group, H2, H5, Label, ScrollView, useWindowDimensions, XStack, YStack} from "tamagui";
 import {BarChart, PieChart} from "react-native-gifted-charts";
 import {ChevronDown} from "../../icons";
 import {DropDown} from "../../components/DropDown";
@@ -39,7 +39,6 @@ export const Home = () => {
           return {...d, value: found.value};
         }
       }).filter(Boolean);
-      // console.log(dataForIncome, 'hmm')
       if (Array.isArray(dataForIncome) && dataForIncome.length === 0) {
         const freshData = def1.map(d => ({
           ...d,
@@ -127,7 +126,6 @@ export const Home = () => {
     style: 'currency',
     currency: 'CAD'
   }).format(calculateIncomeTotal());
-
   return (
     <>
       <ScrollView>
@@ -140,10 +138,13 @@ export const Home = () => {
           />
         </XStack>
         <YStack justifyContent="center" alignItems="center" marginVertical="$2">
-          {pieData?.length > 0 && (<>
+          {Array.isArray(pieData) && pieData?.length > 0 && calculateTotal() != '$0.00' &&(<>
             <H5>
               Budgeted Expense for {month.name}
             </H5>
+            <H2>
+              {calculateTotal()}
+            </H2>
             <PieChart
               radius={(width / 2) - 64}
               donut
@@ -164,17 +165,20 @@ export const Home = () => {
                   </>}
                 </YStack>
               )}
-              data={pieData ?? []}
+              data={pieData}
             />
           </>)}
           {Array.isArray(barData) && barData?.length > 0 && calculateIncomeTotal() > 0 && (
             <>
-              <H5 padding="$1">
+              <H5>
                 Expected Income for {month.name}
               </H5>
+              <H2 paddingBottom="$2">
+                {formatTotal}
+              </H2>
               <BarChart
                 showValuesAsTopLabel
-                maxValue={15000}
+                maxValue={33000}
                 topLabelContainerStyle={{
                   paddingTop: 8
                 }}
@@ -198,15 +202,6 @@ export const Home = () => {
 
         </YStack>
       </ScrollView>
-      <YStack padding="$2" paddingVertical="$4" justifyContent="flex-end">
-        <Button
-          bordered
-          elevate
-          themeInverse
-        >
-          More Insights - Coming Soon
-        </Button>
-      </YStack>
     </>
   )
 };

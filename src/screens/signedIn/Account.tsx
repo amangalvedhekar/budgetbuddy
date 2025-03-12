@@ -88,7 +88,9 @@ export const Account = () => {
                 <H4 size="$6" fontWeight="bold">
                   {item.title}
                 </H4>
-                <ChevronRight color={colors.text}/>
+                <ChevronRight
+                  color={colors.text}
+                />
               </XStack>
               <Separator/>
               <Card.Footer padding="$2">
