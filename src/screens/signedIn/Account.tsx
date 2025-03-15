@@ -1,4 +1,4 @@
-import {Avatar, Button, Card, H4, H5, H6, ScrollView, Separator, XStack, YStack} from "tamagui";
+import {Avatar, Button, Card, H1, H4, H5, H6, ScrollView, Separator, XStack, YStack} from "tamagui";
 import {useAuth} from "../../hooks";
 import {useCallback,} from "react";
 import {useNavigation, useTheme} from "@react-navigation/native";
@@ -40,12 +40,12 @@ export const Account = () => {
     },
     {
       title: 'App Settings',
-      footerText: 'Haptics and display settings',
+      footerText: 'Currency, Appearance and Haptics settings',
       onPress: onAppSettingPress,
     }
   ];
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{paddingBottom: 32}}>
       <YStack justifyContent="flex-start" flex={1} padding="$4">
         <Card
           elevate

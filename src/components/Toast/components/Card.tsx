@@ -23,13 +23,13 @@ export const ToastCard = () => {
         message:msg.message,
         type: msg.type,
       });
-      console.log(toastData, 'inside listener')
       translateY.value = withTiming(70, {duration: 300});
       opacity.value = withTiming(1, { duration: 300 });
       setTimeout(() => {
         opacity.value = withTiming(0, { duration: 300 });
         translateY.value = withTiming(0, { duration: 300 });
-      }, 2400);
+        setToastData(defaultToastData);
+      }, 3400);
     });
 
     return () => subscription.remove();
@@ -51,6 +51,7 @@ export const ToastCard = () => {
         icon={toastIcon[toastData.type ?? 'success']}
         text={toastData.message}
         color={toastColor[toastData.type]}
+        themeInverse
       />}
 
     </Animated.View>

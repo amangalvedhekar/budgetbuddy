@@ -6,6 +6,7 @@ import {useAuth, useDb} from "../../hooks";
 import {Button, Card, H3, H5, Input, ScrollView, useWindowDimensions, XStack} from "tamagui";
 import {KeyboardAvoidingView, KeyboardStickyView} from "react-native-keyboard-controller";
 import {calculateTotalInputted} from "../../utils/calculateTotalInputted";
+import {DeviceEventEmitter} from "react-native";
 
 export const EstimatedIncome = () => {
   const {db} = useDb();
@@ -13,6 +14,12 @@ export const EstimatedIncome = () => {
   const {params} = useRoute();
   const {ab} = useAuth();
   const [incomeStream, setIncomeStream] = useState();
+  const showSuccessToast = () => {
+    DeviceEventEmitter.emit("DISPLAY_TOAST", {
+      message: `Expected Income updated for ${params?.selectedMonth.month}`,
+      type: 'success'
+    });
+  };
   useFocusEffect(useCallback(() => {
     (
       async () => {
@@ -141,6 +148,7 @@ export const EstimatedIncome = () => {
       } else {
         await db.insert(BudgetedData).values(dataToSave);
       }
+      showSuccessToast();
       navigate('accountEntry');
     } catch (e) {
       console.log(JSON.stringify(e), 'error while saving income')
@@ -179,7 +187,12 @@ export const EstimatedIncome = () => {
           </Card>))}
       </KeyboardAvoidingView>
     </ScrollView>
-      <KeyboardStickyView  style={{backgroundColor: useTheme().colors.background}}>
+      <KeyboardStickyView
+        offset={{
+          opened: 110
+        }}
+        style={{backgroundColor: useTheme().colors.background}}
+      >
         <XStack
           flexWrap="wrap"
           alignItems="center"

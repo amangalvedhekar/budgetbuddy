@@ -22,15 +22,7 @@ export const PlannedBudget = () => {
       type: 'success'
     });
   };
-const {height} =useWindowDimensions();
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
-  useEffect(() => {
-    Keyboard.addListener("keyboardDidShow", (e) => {
-      const height = e.endCoordinates.height;
-      setKeyboardHeight(height);
 
-    });
-  }, []);
   useFocusEffect(useCallback(() => {
     (async () => {
       setOptions({
@@ -155,7 +147,6 @@ const {height} =useWindowDimensions();
       console.log(JSON.stringify(e), 'err happened')
     }
   }
-  console.log(keyboardHeight, 'height is', height)
   return (
     <>
       <H5 textAlign="center" marginVertical="$2">

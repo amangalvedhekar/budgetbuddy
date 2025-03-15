@@ -105,8 +105,7 @@ export const Home = () => {
         const pieD = def.map((d, i) => ({
           ...d,
           text: d.name,
-          color: `#${Math.random().toString(16).slice(-6)}`
-          // color: `#8000${i}${i}`
+          color: `#${Math.random().toString(16).slice(-6)}`,
         }));
         setPieData(pieD);
       }
@@ -120,13 +119,14 @@ export const Home = () => {
     }).format(total);
   };
   const calculateIncomeTotal = () => Array.isArray(barData) ? barData.reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
+  const maxAmount = () => Array.isArray(barData) ? barData.reduce((acc, elm) => Math.max(acc, Number(elm.value)),0): 0
   const formatTotal = new Intl.NumberFormat('en-CA', {
     style: 'currency',
     currency: 'CAD'
   }).format(calculateIncomeTotal());
   return (
     <>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{paddingBottom: 72}}>
         <XStack marginHorizontal="$3">
           <DropDown
             items={filterDataForDashboard}
@@ -140,7 +140,7 @@ export const Home = () => {
             <H5>
               Budgeted Expense for {month.name}
             </H5>
-            <H2>
+            <H2 color="red">
               {calculateTotal()}
             </H2>
             <PieChart
@@ -171,12 +171,12 @@ export const Home = () => {
               <H5>
                 Expected Income for {month.name}
               </H5>
-              <H2 paddingBottom="$2">
+              <H2 paddingBottom="$2" color="green">
                 {formatTotal}
               </H2>
               <BarChart
                 showValuesAsTopLabel
-                maxValue={33000}
+                maxValue={maxAmount() + 1000}
                 topLabelContainerStyle={{
                   paddingTop: 8
                 }}
@@ -197,7 +197,6 @@ export const Home = () => {
                 xAxisThickness={0}
               />
             </>)}
-
         </YStack>
       </ScrollView>
     </>

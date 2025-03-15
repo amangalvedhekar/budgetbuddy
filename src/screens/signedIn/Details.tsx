@@ -144,12 +144,12 @@ export const Details = () => {
       {/*<Separator/>*/}
       <Card.Footer>
         <XStack flex={1} flexWrap="wrap" justifyContent="space-between" padding="$2">
-          <Button size="$6" onPress={deleteTransaction}>
+          <Button onPress={deleteTransaction}>
             <Paragraph>
               Delete
             </Paragraph>
           </Button>
-          <Button size="$6" onPress={saveChanges}>
+          <Button onPress={saveChanges}>
             <Paragraph>
               Save Changes
             </Paragraph>
