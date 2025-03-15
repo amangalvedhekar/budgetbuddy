@@ -196,8 +196,8 @@ export const History = () => {
         padding="$3"
         margin="$2"
         justifyContent="space-between"
-        borderRadius="$4"
-        borderWidth={StyleSheet.hairlineWidth}
+        borderRadius="$8"
+        borderWidth="$1"
         borderColor="purple"
       >
         <H5>{categories?.find(category => category.isActive === true)?.transactionName} Total</H5>

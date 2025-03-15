@@ -1,15 +1,16 @@
-import {Avatar, Button, Card, H4, H5, H6, ScrollView, Separator, XStack, YStack} from "tamagui";
+import {Avatar, Button, Card, H1, H4, H5, H6, ScrollView, Separator, XStack, YStack} from "tamagui";
 import {useAuth} from "../../hooks";
 import {useCallback,} from "react";
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useTheme} from "@react-navigation/native";
+import {ChevronRight, ChevronUp} from "../../icons";
 
 export const Account = () => {
   const {ab, logout} = useAuth();
   const {navigate} = useNavigation();
-
+  const {colors} = useTheme();
   const onBackPress = useCallback(async () => {
     await logout();
-  },[]);
+  }, []);
   const handlePress = () => {
     navigate('Categories');
   }
@@ -19,6 +20,7 @@ export const Account = () => {
   const onIncomePress = () => {
     navigate('Months', {transactionType: '0'});
   }
+  const onAppSettingPress = () => navigate('appSettings');
 
   const accountCardItems = [
     {
@@ -35,107 +37,71 @@ export const Account = () => {
       title: 'Categories',
       footerText: 'View, create or edit categories',
       onPress: handlePress,
+    },
+    {
+      title: 'App Settings',
+      footerText: 'Currency, Appearance and Haptics settings',
+      onPress: onAppSettingPress,
     }
   ];
-  return  (
-    <ScrollView>
-    <YStack justifyContent="flex-start" flex={1} padding="$4">
-      <Card
-        elevate
-        padded
-        borderRadius="$8"
-        animation="bouncy"
-      >
-        <Card.Header>
-          <YStack  alignItems="center">
-            <Avatar circular size="$8">
-              <Avatar.Image
-                accessibilityLabel="Cam"
-              />
-              <Avatar.Fallback backgroundColor="purple" />
-            </Avatar>
-            <H4 size="$6" fontWeight="bold" textAlign="center" style={{textTransform:'lowercase',}}>
-              {ab?.signInDetails?.loginId}
-            </H4>
-          </YStack>
-
-        </Card.Header>
-        <Button onPress={onBackPress}>
-          Logout
-        </Button>
-      </Card>
-      {
-        accountCardItems.map(item => (
-          <Card
-            key={item.title}
-            elevate
-            borderRadius="$8"
-            marginVertical="$2"
-            animation="bouncy"
-            scale={0.5}
-            hoverStyle={{ scale: 0.925 }}
-            onPress={item.onPress}
-            pressStyle={{ scale: 0.875 }}
-          >
-            <XStack marginVertical="$4" paddingHorizontal="$4">
-              <H4 size="$6" fontWeight="bold">
-                {item.title}
+  return (
+    <ScrollView contentContainerStyle={{paddingBottom: 32}}>
+      <YStack justifyContent="flex-start" flex={1} padding="$4">
+        <Card
+          elevate
+          padded
+          borderRadius="$8"
+          animation="bouncy"
+        >
+          <Card.Header>
+            <YStack alignItems="center">
+              <Avatar circular size="$8">
+                <Avatar.Image
+                  accessibilityLabel="Cam"
+                />
+                <Avatar.Fallback backgroundColor="purple"/>
+              </Avatar>
+              <H4 size="$6" fontWeight="bold" textAlign="center" style={{textTransform: 'lowercase',}}>
+                {ab?.signInDetails?.loginId}
               </H4>
-            </XStack>
-            <Separator />
-            <Card.Footer padding="$2">
-              <H6 paddingHorizontal="$3">
-                {item.footerText}
-              </H6>
-            </Card.Footer>
-          </Card>
-        ))
-      }
-      {/*<Card*/}
-      {/*  elevate*/}
-      {/*  borderRadius="$8"*/}
-      {/*  marginVertical="$2"*/}
-      {/*  animation="bouncy"*/}
-      {/*  scale={0.5}*/}
-      {/*  hoverStyle={{ scale: 0.925 }}*/}
-      {/*  onPress={handlePress}*/}
-      {/*  pressStyle={{ scale: 0.875 }}*/}
-      {/*>*/}
-      {/*  <XStack marginVertical="$4" paddingHorizontal="$4">*/}
-      {/*    <H4 size="$6" fontWeight="bold">*/}
-      {/*      Categories*/}
-      {/*    </H4>*/}
-      {/*  </XStack>*/}
-      {/*  <Separator />*/}
-      {/*  <Card.Footer padding="$2">*/}
-      {/*    <H6 paddingHorizontal="$3">*/}
-      {/*      View, create or edit categories*/}
-      {/*    </H6>*/}
-      {/*  </Card.Footer>*/}
-      {/*</Card>*/}
-      {/*<Card*/}
-      {/*  elevate*/}
-      {/*  borderRadius="$8"*/}
-      {/*  marginVertical="$2"*/}
-      {/*  animation="bouncy"*/}
-      {/*  scale={0.5}*/}
-      {/*  hoverStyle={{ scale: 0.925 }}*/}
-      {/*  onPress={onCardPress}*/}
-      {/*  pressStyle={{ scale: 0.875 }}*/}
-      {/*>*/}
-      {/*  <XStack marginVertical="$4" paddingHorizontal="$4">*/}
-      {/*    <H4 size="$6" fontWeight="bold">*/}
-      {/*      Monthly Budgeted Expenses*/}
-      {/*    </H4>*/}
-      {/*  </XStack>*/}
-      {/*  <Separator />*/}
-      {/*  <Card.Footer padding="$2">*/}
-      {/*    <H6 paddingHorizontal="$3">*/}
-      {/*      Budget expected expenses on monthly basis*/}
-      {/*    </H6>*/}
-      {/*  </Card.Footer>*/}
-      {/*</Card>*/}
-    </YStack>
+            </YStack>
+
+          </Card.Header>
+          <Button onPress={onBackPress}>
+            Logout
+          </Button>
+        </Card>
+        {
+          accountCardItems.map(item => (
+            <Card
+              key={item.title}
+              elevate
+              borderRadius="$8"
+              marginVertical="$2"
+              animation="bouncy"
+              scale={0.5}
+              hoverStyle={{scale: 0.925}}
+              onPress={item.onPress}
+              pressStyle={{scale: 0.875}}
+            >
+              <XStack marginVertical="$4" paddingHorizontal="$4" justifyContent="space-between">
+                <H4 size="$6" fontWeight="bold">
+                  {item.title}
+                </H4>
+                <ChevronRight
+                  color={colors.text}
+                />
+              </XStack>
+              <Separator/>
+              <Card.Footer padding="$2">
+                <H6 paddingHorizontal="$3">
+                  {item.footerText}
+                </H6>
+              </Card.Footer>
+            </Card>
+          ))
+        }
+      </YStack>
     </ScrollView>
   )
 };

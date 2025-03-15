@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Button, Card, Input, ScrollView, XStack, YStack} from "tamagui";
-import {KeyboardAvoidingView} from "react-native";
+import {DeviceEventEmitter, KeyboardAvoidingView} from "react-native";
 import {Categories as CategoriesSchema, Categories, TransactionTypes} from "../../../schema";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {DropDown} from "../../components/DropDown";
@@ -18,13 +18,19 @@ export const AddCategory = () => {
   const dispatch = useDispatch();
   const categories = useSelector((state: RootState) => state.categories);
   const transactionTypes = useSelector((state: RootState) => state.transactionType)
-
+  const showSuccessToast = () => {
+    DeviceEventEmitter.emit("DISPLAY_TOAST", {
+      message: `Category ${categoryName} successfully added`,
+      type: 'success'
+    });
+  };
   const handleAddCategory = async () => {
     try {
       await addCategory({
         categoryName,
         transactionName,
       }, dispatch);
+      showSuccessToast();
       setCategoryName('');
       setTransactionName('');
       navigate('Categories');
@@ -35,7 +41,7 @@ export const AddCategory = () => {
 
   const getTransactionTypes = () => transactionTypes.reduce((acc, elm) => [...acc, elm.transactionName], []);
   return (
-    <ScrollView automaticallyAdjustKeyboardInsets={true}>
+    <ScrollView automaticallyAdjustKeyboardInsets>
       <KeyboardAvoidingView>
         <Card
           elevate

@@ -6,6 +6,7 @@ import {useAuth, useDb} from "../../hooks";
 import {Button, Card, H3, H5, Input, ScrollView, useWindowDimensions, XStack} from "tamagui";
 import {KeyboardAvoidingView, KeyboardStickyView} from "react-native-keyboard-controller";
 import {calculateTotalInputted} from "../../utils/calculateTotalInputted";
+import {DeviceEventEmitter} from "react-native";
 
 export const EstimatedIncome = () => {
   const {db} = useDb();
@@ -13,6 +14,12 @@ export const EstimatedIncome = () => {
   const {params} = useRoute();
   const {ab} = useAuth();
   const [incomeStream, setIncomeStream] = useState();
+  const showSuccessToast = () => {
+    DeviceEventEmitter.emit("DISPLAY_TOAST", {
+      message: `Expected Income updated for ${params?.selectedMonth.month}`,
+      type: 'success'
+    });
+  };
   useFocusEffect(useCallback(() => {
     (
       async () => {
@@ -99,10 +106,14 @@ export const EstimatedIncome = () => {
         )
         .from(BudgetedData)
         .where(
-          eq(
-            BudgetedData.userId,
-            ab?.userId ?? ''
-          )
+          and(eq(
+              BudgetedData.userId,
+              ab?.userId ?? ''
+            ),
+            eq(
+              BudgetedData.month,
+              params?.selectedMonth?.id
+            ),)
         );
       console.log(existingDataForUser, 'existing')
       if(Array.isArray(existingDataForUser) && existingDataForUser.length !== 0) {
@@ -120,10 +131,10 @@ export const EstimatedIncome = () => {
             try {
               const x = await db.update(BudgetedData).set({
                 value: item.value,
-                month: params?.selectedMonth?.id
               }).where(and(
                 eq(BudgetedData.categoryType, item.categoryType),
                 eq(BudgetedData.userId, ab?.userId),
+                eq(BudgetedData.month, params?.selectedMonth?.id),
               )).returning();
               console.log(x, 'updated data')
             } catch (e) {
@@ -137,6 +148,7 @@ export const EstimatedIncome = () => {
       } else {
         await db.insert(BudgetedData).values(dataToSave);
       }
+      showSuccessToast();
       navigate('accountEntry');
     } catch (e) {
       console.log(JSON.stringify(e), 'error while saving income')
@@ -148,10 +160,16 @@ export const EstimatedIncome = () => {
     <ScrollView automaticallyAdjustKeyboardInsets>
       <KeyboardAvoidingView behavior="padding">
         {Array.isArray(incomeStream) && incomeStream.map(stream => (
-          <Card key={stream.id} elevate margin="$2" size="$2" bordered>
+          <Card
+            key={stream.id}
+            elevate
+            margin="$2"
+            size="$3"
+            borderRadius="$8"
+          >
             <Card.Header>
               <XStack alignItems="center">
-                <H5 flex={0.7}>
+                <H5 flex={0.7} paddingLeft="$2">
                   {stream.name}
                 </H5>
                 <Input
@@ -169,7 +187,12 @@ export const EstimatedIncome = () => {
           </Card>))}
       </KeyboardAvoidingView>
     </ScrollView>
-      <KeyboardStickyView  style={{backgroundColor: useTheme().colors.background}}>
+      <KeyboardStickyView
+        offset={{
+          opened: 110
+        }}
+        style={{backgroundColor: useTheme().colors.background}}
+      >
         <XStack
           flexWrap="wrap"
           alignItems="center"

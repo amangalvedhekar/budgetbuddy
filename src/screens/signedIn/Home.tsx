@@ -1,11 +1,12 @@
-import {useFocusEffect, useNavigation, useRoute, useTheme} from "@react-navigation/native";
-import {useCallback, useContext, useState} from "react";
+import {useFocusEffect, useTheme} from "@react-navigation/native";
+import {useCallback, useState} from "react";
 import {useAuth, useDb} from "../../hooks";
 import {BudgetedData, Categories as CategoriesSchema} from "../../../schema";
 import {and, eq} from "drizzle-orm";
-import {Button, H5, ScrollView, useWindowDimensions, YStack} from "tamagui";
+import {XStack, H2, H5, ScrollView, useWindowDimensions, YStack} from "tamagui";
 import {BarChart, PieChart} from "react-native-gifted-charts";
-import {ToastContext} from "../../contexts/Toast/ToastProvider";
+import {DropDown} from "../../components/DropDown";
+import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
 
 export const Home = () => {
   const {db} = useDb();
@@ -15,7 +16,9 @@ export const Home = () => {
   const [selectedPie, setSelectedPie] = useState();
   const [barData, setBarData] = useState();
   const {colors} = useTheme();
-  const {width, height} = useWindowDimensions();
+  const [month, setMonth] = useState(filterDataForDashboard[0]);
+  const {width} = useWindowDimensions();
+
   useFocusEffect(useCallback(() => {
     (async () => {
       const abc1 = await db.select({
@@ -23,7 +26,7 @@ export const Home = () => {
         value: BudgetedData.value,
       }).from(BudgetedData).where(and(
         eq(BudgetedData.userId, ab?.userId ?? ''),
-        eq(BudgetedData.month, 0)
+        eq(BudgetedData.month, month.id)
       ));
       const def1 = await db.select({
         id: CategoriesSchema.id,
@@ -35,7 +38,6 @@ export const Home = () => {
           return {...d, value: found.value};
         }
       }).filter(Boolean);
-      // console.log(dataForIncome, 'hmm')
       if (Array.isArray(dataForIncome) && dataForIncome.length === 0) {
         const freshData = def1.map(d => ({
           ...d,
@@ -64,7 +66,7 @@ export const Home = () => {
         value: BudgetedData.value,
       }).from(BudgetedData).where(and(
         eq(BudgetedData.userId, ab?.userId ?? ''),
-        eq(BudgetedData.month, 0)
+        eq(BudgetedData.month, month.id)
       ));
       const def = await db.select({
         id: CategoriesSchema.id,
@@ -79,7 +81,6 @@ export const Home = () => {
           };
         }
       }).filter(Boolean);
-      // console.log(dataForExpense, 'hmm')
       if (Array.isArray(dataForExpense) && dataForExpense.length === 0) {
         const freshData = def.map(d => ({
           ...d,
@@ -104,14 +105,12 @@ export const Home = () => {
         const pieD = def.map((d, i) => ({
           ...d,
           text: d.name,
-          color: `#${Math.random().toString(16).slice(-6)}`
-          // color: `#8000${i}${i}`
+          color: `#${Math.random().toString(16).slice(-6)}`,
         }));
         setPieData(pieD);
       }
     })();
-  }, []));
-
+  }, [month]));
   const calculateTotal = () => {
     const total = Array.isArray(abc) ? abc.reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
     return new Intl.NumberFormat('en-CA', {
@@ -120,19 +119,30 @@ export const Home = () => {
     }).format(total);
   };
   const calculateIncomeTotal = () => Array.isArray(barData) ? barData.reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
-
+  const maxAmount = () => Array.isArray(barData) ? barData.reduce((acc, elm) => Math.max(acc, Number(elm.value)),0): 0
   const formatTotal = new Intl.NumberFormat('en-CA', {
     style: 'currency',
     currency: 'CAD'
   }).format(calculateIncomeTotal());
   return (
     <>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{paddingBottom: 72}}>
+        <XStack marginHorizontal="$3">
+          <DropDown
+            items={filterDataForDashboard}
+            val={month}
+            setVal={setMonth}
+            placeholder="Select Duration"
+          />
+        </XStack>
         <YStack justifyContent="center" alignItems="center" marginVertical="$2">
-          {pieData?.length > 0 && (<>
+          {Array.isArray(pieData) && pieData?.length > 0 && calculateTotal() != '$0.00' &&(<>
             <H5>
-              Budgeted Expense for January
+              Budgeted Expense for {month.name}
             </H5>
+            <H2 color="red">
+              {calculateTotal()}
+            </H2>
             <PieChart
               radius={(width / 2) - 64}
               donut
@@ -153,17 +163,20 @@ export const Home = () => {
                   </>}
                 </YStack>
               )}
-              data={pieData ?? []}
+              data={pieData}
             />
           </>)}
           {Array.isArray(barData) && barData?.length > 0 && calculateIncomeTotal() > 0 && (
             <>
-              <H5 padding="$1">
-                Expected Income for January
+              <H5>
+                Expected Income for {month.name}
               </H5>
+              <H2 paddingBottom="$2" color="green">
+                {formatTotal}
+              </H2>
               <BarChart
                 showValuesAsTopLabel
-                maxValue={15000}
+                maxValue={maxAmount() + 1000}
                 topLabelContainerStyle={{
                   paddingTop: 8
                 }}
@@ -180,23 +193,12 @@ export const Home = () => {
                   color: colors.text
                 }}
                 data={barData}
-
                 yAxisThickness={0}
                 xAxisThickness={0}
               />
             </>)}
-
         </YStack>
       </ScrollView>
-      <YStack padding="$3" justifyContent="flex-end">
-        <Button
-          bordered
-          elevate
-          themeInverse
-        >
-          More Insights - Coming Soon
-        </Button>
-      </YStack>
     </>
   )
 };

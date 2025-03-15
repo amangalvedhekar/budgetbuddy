@@ -1,11 +1,13 @@
-import {Button, Card, H3, H5, Input, ScrollView, XStack} from "tamagui";
+import {Button, Card, H2, H3, H5, Input, ScrollView, useWindowDimensions, XStack} from "tamagui";
 import {useAuth, useDb} from "../../hooks";
 import {useFocusEffect, useNavigation, useRoute, useTheme} from "@react-navigation/native";
-import {useCallback, useState} from "react";
+import {createRef, useCallback, useEffect, useRef, useState} from "react";
 import {BudgetedData, Categories as CategoriesSchema} from "../../../schema";
 import {eq, and} from "drizzle-orm";
 
 import {KeyboardStickyView, KeyboardAvoidingView} from "react-native-keyboard-controller";
+import {DeviceEventEmitter, Keyboard, TextInput} from "react-native";
+import {DropDown} from "../../components/DropDown";
 
 export const PlannedBudget = () => {
   const {db} = useDb();
@@ -13,6 +15,14 @@ export const PlannedBudget = () => {
   const {params} = useRoute();
   const {navigate, setOptions} = useNavigation();
   const [abc, setAbc] = useState();
+  const inputRefList = useRef<TextInput[]>([]);
+  const showSuccessToast = () => {
+    DeviceEventEmitter.emit("DISPLAY_TOAST", {
+      message: `Budgeted Expense updated for ${params?.selectedMonth.month}`,
+      type: 'success'
+    });
+  };
+
   useFocusEffect(useCallback(() => {
     (async () => {
       setOptions({
@@ -113,70 +123,103 @@ export const PlannedBudget = () => {
             if (foundItem) {
               return foundItem;
             }
-          });
-        console.log(existingItem, 'what is')
+          }).filter(Boolean);
         await Promise.all(existingItem.map(async (item) => {
-          console.log(item, 'in iteration item is', ab?.userId,)
           try {
-            const x = await db.update(BudgetedData).set({
+            await db.update(BudgetedData).set({
               value: item.value,
-              month: params?.selectedMonth?.id
             }).where(and(
               eq(BudgetedData.categoryType, item.categoryType),
               eq(BudgetedData.userId, ab?.userId),
-            )).returning();
-            console.log(x, 'updated data')
+              eq(BudgetedData.month, params?.selectedMonth?.id)
+            ));
           } catch (e) {
-
+            console.warn(e, 'error')
           }
         }))
       } else {
         await db.insert(BudgetedData).values(dataToSave);
+        console.log(dataToSave, 'is')
       }
+      showSuccessToast();
       navigate('accountEntry');
     } catch (e) {
-      console.log(JSON.stringify(e), 'err happened', e)
+      console.log(JSON.stringify(e), 'err happened')
     }
   }
-
   return (
     <>
       <H5 textAlign="center" marginVertical="$2">
         {params?.selectedMonth.month} Budgeted Expenses
       </H5>
 
-      <ScrollView>
+      <ScrollView
+        marginBottom="$4"
+        automaticallyAdjustKeyboardInsets
+        contentContainerStyle={{
+          paddingBottom: 16,
+          marginBottom: 16,
+          flexGrow: 1
+        }}
+      >
         <KeyboardAvoidingView behavior="padding">
-          {abc?.map(a => (
-            <Card key={a.name} elevate
-                  margin="$2"
-                  bordered
-                  borderRadius="$9"
-                  size="$3"
-                  animation="bouncy"
-                  scale={0.9}
-                  hoverStyle={{scale: 0.975}}
-                  pressStyle={{scale: 0.975}}>
+          {abc?.map((a, idx) => (
+            <Card
+              key={a.name}
+              elevate
+              margin="$2"
+              borderRadius="$8"
+              size="$3"
+            >
               <Card.Header>
                 <XStack alignItems="center">
-                  <H5 flex={0.7}>
+                  <H5 flex={0.7} paddingLeft="$2">
                     {a.name}
                   </H5>
                   <Input
                     flex={0.3}
-                    size="$6"
+                    ref={(elm) => inputRefList.current[idx] = elm}
+                    size="$5"
                     placeholder="0.00"
                     keyboardType="numeric"
-                    value={a?.value?.toString()}
+                    returnKeyType="done"
+                    borderWidth="$1"
+                    value={a?.value == '0' ? '':a?.value?.toString()}
                     onChangeText={handleChangeText(a.name)}
+                    onSubmitEditing={() => {
+                      if (idx < abc?.length) {
+                        inputRefList.current[idx + 1]?.focus()
+                      }
+                    }}
                   />
                 </XStack>
               </Card.Header>
+              {/*<Card.Footer>*/}
+              {/*  <XStack*/}
+              {/*    justifyContent="center"*/}
+              {/*    paddingHorizontal="$4"*/}
+              {/*    paddingBottom="$2"*/}
+              {/*  >*/}
+              {/*  <DropDown*/}
+              {/*    items={*/}
+              {/*    ["Doesn't repeat", 'Bi-weekly', 'Monthly']*/}
+              {/*  }*/}
+              {/*    val={''}*/}
+              {/*    setVal={() => {}}*/}
+              {/*    placeholder="Frequency"*/}
+              {/*  />*/}
+              {/*  </XStack>*/}
+              {/*</Card.Footer>*/}
             </Card>
           ))}
         </KeyboardAvoidingView>
       </ScrollView>
-      <KeyboardStickyView offset={offset} style={{backgroundColor: useTheme().colors.background}}>
+      <KeyboardStickyView
+        offset={{
+          opened: 110
+        }}
+        style={{backgroundColor: useTheme().colors.background}}
+      >
         <XStack flexWrap="wrap" alignItems="center" justifyContent="space-between" margin="$2">
           <H5>
             Total Amount:
