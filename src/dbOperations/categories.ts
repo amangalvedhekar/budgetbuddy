@@ -22,11 +22,11 @@ export const fetchCategories = async (dispatch: AppDispatch) => {
 }
 
 export const addCategory = async (
-  category: Omit<CategoriesWithTransaction, 'id'| 'transactionType'>,
+  category: Omit<CategoriesWithTransaction, 'id' | 'transactionType'>,
   dispatch: AppDispatch) => {
   try {
     const id = Math.floor(Math.random() * 9999).toString();
-    if(category.transactionName != null) {
+    if (category.transactionName != null) {
 
       const transactionNameToAdd = await db
         .select({
@@ -61,3 +61,25 @@ export const addCategory = async (
     console.log(JSON.stringify(e), 'error while adding')
   }
 }
+
+export const getCategoriesForTransactionType = async ({transactionType}: {
+  transactionType: typeof Categories.transactionType
+}) => {
+  try {
+    const categoriesForTransactionType = await db
+      .select({
+        categoryId: Categories.id,
+        name: Categories.categoryName
+      })
+      .from(Categories)
+      .where(
+        eq(
+          transactionType,
+          Categories.transactionType
+        ));
+    return categoriesForTransactionType;
+  } catch (e) {
+    throw e;
+  }
+}
+

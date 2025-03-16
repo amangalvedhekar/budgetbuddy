@@ -1,41 +1,23 @@
-import {db} from '../hooks';
 import {setBudgetedExpense} from "../features/budgetedExpenseSlice";
 import {BudgetedData, Categories} from "../../schema";
-import {and, eq} from "drizzle-orm";
 
-export const getBudgetedExpenseForMonth = async ({userId, month, dispatch}) => {
+import {getBudgetedDataForUser} from "./budgetedData";
+import {getCategoriesForTransactionType} from "./categories";
+import {AppDispatch} from "../store";
+export type BudgetedExpenseForMonthProps = {
+  userId: typeof BudgetedData.userId;
+  month: typeof BudgetedData.month;
+  dispatch: AppDispatch;
+};
+
+export const getBudgetedExpenseForMonth = async ({userId, month, dispatch}: BudgetedExpenseForMonthProps) => {
   try {
-    const budgetedDataForUser = await db
-      .select({
-        categoryId: BudgetedData.categoryType,
-        value: BudgetedData.value
-      })
-      .from(BudgetedData)
-      .where(and(
-        eq(
-          userId,
-          BudgetedData.userId,
-        ),
-        eq(
-          month,
-          BudgetedData.month
-        )
-      ));
-
-    const categoriesForExpense = await db
-      .select({
-        categoryId: Categories.id,
-        name: Categories.categoryName
-      })
-      .from(Categories)
-      .where(
-        eq(
-          '1',
-          Categories.transactionType
-        ));
-
+    const budgetedDataForUser = await getBudgetedDataForUser({userId, month});
+    const categoriesForExpense = await getCategoriesForTransactionType({transactionType: ('1' as unknown as typeof Categories.transactionType)})
     const budgetedExpenseForMonth = categoriesForExpense
-      .reduce((acc, elm) => {
+      .reduce(
+        //@ts-ignore
+        (acc, elm) => {
         const foundElm = budgetedDataForUser.find(budgetElm => budgetElm.categoryId == elm.categoryId);
 
         if (foundElm) {
@@ -49,10 +31,10 @@ export const getBudgetedExpenseForMonth = async ({userId, month, dispatch}) => {
       }, []);
 
     const dataToDispatch = {
-      [month]: budgetedExpenseForMonth,
+      [(month as unknown as number)]: budgetedExpenseForMonth,
     };
     dispatch(setBudgetedExpense(dataToDispatch));
   } catch (e) {
-    console.error(JSON.stringify(e), 'error')
+    console.error(JSON.stringify(e), 'error');
   }
 };
