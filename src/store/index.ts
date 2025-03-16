@@ -3,12 +3,13 @@ import usersReducer from '../features/usersSlice';
 import categoriesReducer from '../features/categoriesSlice';
 import transactionTypeReducer from '../features/transactionTypeSlice';
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
-
+import budgetedExpenseReducer from '../features/budgetedExpenseSlice';
 export const store = configureStore({
   reducer: {
     user: usersReducer,
     categories:categoriesReducer,
     transactionType: transactionTypeReducer,
+    budgetedExpense: budgetedExpenseReducer,
   },
   enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(devToolsEnhancer()),
 });

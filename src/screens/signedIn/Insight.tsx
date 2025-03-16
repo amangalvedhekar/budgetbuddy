@@ -1,7 +1,7 @@
 import React from 'react';
 import {Check, Cross, Warning} from "../../icons";
 import {BannerContainer} from "../../components/Banner/Container";
-import {ScrollView} from "tamagui";
+import {Card, H5, Progress, ScrollView, XStack} from "tamagui";
 const data = [
   {
     text: 'Great job on staying within budget for subscriptions 🎉',
@@ -23,9 +23,11 @@ export const Insight = () => {
 
   return (
     <ScrollView>
-      <BannerContainer
-        data={data}
-      />
+      {/*<BannerContainer*/}
+      {/*  data={data}*/}
+      {/*/>*/}
+
+
     </ScrollView>
   );
 };
