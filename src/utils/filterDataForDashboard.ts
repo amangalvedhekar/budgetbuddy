@@ -20,6 +20,5 @@ export const filterDataForDashboard = [
   {name:'Oct', id:9},
   {name:'Nov', id:10},
   {name:'Dec', id:11},
-  // 'Year to Date (YTD)',
-  // 'Yearly (2025)'
+
 ]

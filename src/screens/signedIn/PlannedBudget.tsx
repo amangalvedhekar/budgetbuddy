@@ -8,14 +8,21 @@ import {eq, and} from "drizzle-orm";
 import {KeyboardStickyView, KeyboardAvoidingView} from "react-native-keyboard-controller";
 import {DeviceEventEmitter, Keyboard, TextInput} from "react-native";
 import {DropDown} from "../../components/DropDown";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../../store";
+import {getBudgetedExpenseForMonth, setBudgetedExpenseForMonth} from "../../dbOperations/budgetedExpense";
+import {setBudgetedExpense} from "../../features/budgetedExpenseSlice";
 
 export const PlannedBudget = () => {
   const {db} = useDb();
   const {ab} = useAuth();
   const {params} = useRoute();
-  const {navigate, setOptions} = useNavigation();
-  const [abc, setAbc] = useState();
+  const {navigate} = useNavigation();
   const inputRefList = useRef<TextInput[]>([]);
+  const dispatch = useDispatch();
+  const budgetedData = useSelector((state: RootState) => state.budgetedExpense);
+  const budgetedDataForSelectedMonth = budgetedData[params?.selectedMonth?.id];
+  const [updated, setUpdatedData] = useState(() => budgetedDataForSelectedMonth);
   const showSuccessToast = () => {
     DeviceEventEmitter.emit("DISPLAY_TOAST", {
       message: `Budgeted Expense updated for ${params?.selectedMonth.month}`,
@@ -25,58 +32,20 @@ export const PlannedBudget = () => {
 
   useFocusEffect(useCallback(() => {
     (async () => {
-      setOptions({
-        headerTitle: `Planned Budget for ${params?.selectedMonth.month}`
-      })
-      const abc = await db.select({
-        id: BudgetedData.categoryType,
-        value: BudgetedData.value,
-      }).from(BudgetedData).where(and(
-        eq(BudgetedData.userId, ab?.userId ?? ''),
-        eq(BudgetedData.month, params?.selectedMonth?.id)
-      ));
-      const def = await db.select({
-        id: CategoriesSchema.id,
-        name: CategoriesSchema.categoryName
-      }).from(CategoriesSchema).where(eq(CategoriesSchema.transactionType, "1"));
-      const dataForExpense = def.map(d => {
-        const found = abc.find(b => b.id == d.id);
-        if (found) {
-          return {
-            ...d,
-            value: found.value,
-          };
-        }
-      }).filter(Boolean);
-      console.log(dataForExpense, 'hmm')
-      if (Array.isArray(dataForExpense) && dataForExpense.length === 0) {
-        const freshData = def.map(d => ({
-          ...d,
-          value: '',
-        }));
-        setAbc(freshData)
-      } else {
-        const def = await Promise.all(dataForExpense.map(async (d) => {
-          try {
-            const h = await db.select({
-              name: CategoriesSchema.categoryName
-            }).from(CategoriesSchema).where(eq(CategoriesSchema.id, d.id));
-            return {
-              ...d,
-              name: h[0].name
-            };
-          } catch (e) {
-
-          }
-        }));
-        setAbc(def);
+      try {
+        await getBudgetedExpenseForMonth({
+          userId: (ab?.userId as unknown as typeof BudgetedData.userId),
+          month: (params?.selectedMonth?.id as unknown as typeof BudgetedData.month),
+          dispatch
+        });
+      }catch (e) {
+        console.log(JSON.stringify(e), 'error while retrieving budgeted data')
       }
     })();
   }, []));
-  const offset = {closed: 0, opened: 80};
 
   const handleChangeText = (a) => (b) => {
-    const newData = abc.map(d => {
+    const newData = updated.map(d => {
       if (d.name == a) {
         return {
           ...d,
@@ -86,11 +55,11 @@ export const PlannedBudget = () => {
         return d;
       }
     });
-    setAbc(newData);
+    setUpdatedData(newData);
   }
 
   const calculateTotal = () => {
-    const total = Array.isArray(abc) ? abc.reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
+    const total = Array.isArray(updated) ? updated.reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
     return new Intl.NumberFormat('en-CA', {
       style: 'currency',
       currency: 'CAD'
@@ -99,60 +68,21 @@ export const PlannedBudget = () => {
 
   const saveBudgetedData = async () => {
     try {
-      const dataToSave = abc.map(d => (
-        {
-          categoryType: d.id,
-          userId: ab?.userId,
-          value: Number(d.value) ?? 0,
-          month: params?.selectedMonth?.id
-        }
-      ));
-      const def = await db.select({
-        id: BudgetedData.categoryType,
-        value: BudgetedData.value,
-        userId: BudgetedData.userId,
-      }).from(BudgetedData).where(and(
-        eq(BudgetedData.userId, ab?.userId ?? ''),
-        eq(BudgetedData.month, params?.selectedMonth?.id)
-      ));
-      if (Array.isArray(def) && def.length !== 0) {
-        const existingItem = def
-          .map(d => {
-            const foundItem = dataToSave
-              .find(f => f.categoryType == d.id && d.userId == ab?.userId)
-            if (foundItem) {
-              return foundItem;
-            }
-          }).filter(Boolean);
-        await Promise.all(existingItem.map(async (item) => {
-          try {
-            await db.update(BudgetedData).set({
-              value: item.value,
-            }).where(and(
-              eq(BudgetedData.categoryType, item.categoryType),
-              eq(BudgetedData.userId, ab?.userId),
-              eq(BudgetedData.month, params?.selectedMonth?.id)
-            ));
-          } catch (e) {
-            console.warn(e, 'error')
-          }
-        }))
-      } else {
-        await db.insert(BudgetedData).values(dataToSave);
-        console.log(dataToSave, 'is')
-      }
+      await setBudgetedExpenseForMonth({
+        dataToSet: updated,
+        userId: ab?.userId,
+        month: params?.selectedMonth?.id,
+        dispatch,
+      })
       showSuccessToast();
       navigate('accountEntry');
     } catch (e) {
       console.log(JSON.stringify(e), 'err happened')
     }
   }
+
   return (
     <>
-      <H5 textAlign="center" marginVertical="$2">
-        {params?.selectedMonth.month} Budgeted Expenses
-      </H5>
-
       <ScrollView
         marginBottom="$4"
         automaticallyAdjustKeyboardInsets
@@ -163,7 +93,7 @@ export const PlannedBudget = () => {
         }}
       >
         <KeyboardAvoidingView behavior="padding">
-          {abc?.map((a, idx) => (
+          {updated?.map((a, idx) => (
             <Card
               key={a.name}
               elevate
@@ -184,10 +114,10 @@ export const PlannedBudget = () => {
                     keyboardType="numeric"
                     returnKeyType="done"
                     borderWidth="$1"
-                    value={a?.value == '0' ? '':a?.value?.toString()}
+                    value={a?.value == '0' ? '' : a?.value?.toString()}
                     onChangeText={handleChangeText(a.name)}
                     onSubmitEditing={() => {
-                      if (idx < abc?.length) {
+                      if (idx < updated?.length) {
                         inputRefList.current[idx + 1]?.focus()
                       }
                     }}
@@ -204,7 +134,7 @@ export const PlannedBudget = () => {
               {/*    items={*/}
               {/*    ["Doesn't repeat", 'Bi-weekly', 'Monthly']*/}
               {/*  }*/}
-              {/*    val={''}*/}
+              {/*    val='Bi-weekly'*/}
               {/*    setVal={() => {}}*/}
               {/*    placeholder="Frequency"*/}
               {/*  />*/}
