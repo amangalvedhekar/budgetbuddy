@@ -10,9 +10,9 @@ import {addCategory} from "../../dbOperations/categories";
 import {RootState} from "../../store";
 
 export const AddCategory = () => {
-  const {navigate} = useNavigation();
+  const {goBack} = useNavigation();
   const {params} = useRoute();
-  // @ts-ignore
+
   const [transactionName, setTransactionName] = useState<string>(() => params?.name);
   const [categoryName, setCategoryName] = useState("");
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ export const AddCategory = () => {
       showSuccessToast();
       setCategoryName('');
       setTransactionName('');
-      navigate('Categories');
+      goBack();
     } catch (e) {
       console.log(JSON.stringify(e), 'what is it')
     }

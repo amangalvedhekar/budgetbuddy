@@ -29,8 +29,13 @@ export const getExpectedIncomeForMonth = async ({userId, month, dispatch}:Expect
               value: foundElm.value,
             };
             return [...acc, updatedData]
+          } else {
+            const data = {
+              ...elm,
+              value: ''
+            };
+            return [...acc, data];
           }
-          return acc;
         }, []);
 
     const dataToDispatch = {

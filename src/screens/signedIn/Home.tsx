@@ -1,9 +1,6 @@
-import {useFocusEffect, useScrollToTop, useTheme} from "@react-navigation/native";
-import {useCallback, useRef, useState} from "react";
-import {useAuth, useDb} from "../../hooks";
-import {BudgetedData, Categories as CategoriesSchema} from "../../../schema";
-import {and, eq} from "drizzle-orm";
-import {XStack, H2, H5, ScrollView, useWindowDimensions, YStack} from "tamagui";
+import { useScrollToTop, useTheme} from "@react-navigation/native";
+import { useRef, useState} from "react";
+import {XStack, H2, H5, ScrollView, useWindowDimensions, YStack, Paragraph} from "tamagui";
 import {BarChart, PieChart} from "react-native-gifted-charts";
 import {DropDown} from "../../components/DropDown";
 import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
@@ -15,11 +12,14 @@ export const Home = () => {
   const [selectedPie, setSelectedPie] = useState();
   const {colors} = useTheme();
   const budgetedExpense = useSelector((state: RootState) => state.budgetedExpense);
-  const expectedIncome = useSelector((state: RootState) => state.expectedIncome)
-  const [month, setMonth] = useState(() => filterDataForDashboard[0]);
-  const {width} = useWindowDimensions();
+  const expectedIncome = useSelector((state: RootState) => state.expectedIncome);
+  const [month, setMonth] = useState<Record<'name'| 'id', number | string>>(() => filterDataForDashboard[0]);
+  const {height, width} = useWindowDimensions();
   const scrollViewRef = useRef<ScrollView>();
   useScrollToTop(scrollViewRef);
+
+  const budgetExpenseForMonth = month ? budgetedExpense[month.id] : [];
+
   const calculateTotal = () => {
     const total = Array.isArray(budgetedExpense[month.id]) ? budgetedExpense[month.id].reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
     return new Intl.NumberFormat('en-CA', {
@@ -33,6 +33,7 @@ export const Home = () => {
     style: 'currency',
     currency: 'CAD'
   }).format(calculateIncomeTotal());
+
   return (
     <>
       <ScrollView
@@ -56,7 +57,7 @@ export const Home = () => {
               {calculateTotal()}
             </H2>
             <PieChart
-              radius={(width / 2) - 64}
+              radius={height > width ? ((width-64) / 2) : ((height-64) / 2)}
               donut
               showTooltip
               innerCircleColor={colors.card}
@@ -64,7 +65,7 @@ export const Home = () => {
               centerLabelComponent={() => (
                 <YStack flex={1} textWrap="wrap" alignItems="center" justifyContent="center">
                   {selectedPie != undefined ? <>
-                    <H5>{selectedPie?.name}</H5>
+                    <H5 textWrap="wrap">{selectedPie?.name}</H5>
                     <H5 color="red">{new Intl.NumberFormat('en-CA', {
                       style: 'currency',
                       currency: 'CAD'
@@ -75,7 +76,8 @@ export const Home = () => {
                   </>}
                 </YStack>
               )}
-              data={budgetedExpense[month.id]}
+              labelsPosition="outward"
+              data={budgetExpenseForMonth}
             />
           </>)}
           {Array.isArray(expectedIncome[month.id]) && expectedIncome[month.id]?.length > 0 && calculateIncomeTotal() > 0 && (
