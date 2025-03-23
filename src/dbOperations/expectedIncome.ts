@@ -3,6 +3,10 @@ import {BudgetedData, Categories} from "../../schema";
 import {getBudgetedDataForUser} from "./budgetedData";
 import {getCategoriesForTransactionType} from "./categories";
 import {setExpectedIncome} from "../features/expectedIncomeSlice";
+import {db} from "../hooks";
+import {and, eq} from "drizzle-orm";
+import {setBudgetedExpense} from "../features/budgetedExpenseSlice";
+import {SetBudgetedExpenseForMonthProps} from "./budgetedExpense";
 
 export type ExpectedIncomeForMonthProps = {
   userId: typeof BudgetedData.userId;
@@ -32,7 +36,8 @@ export const getExpectedIncomeForMonth = async ({userId, month, dispatch}:Expect
           } else {
             const data = {
               ...elm,
-              value: ''
+              label: elm.name,
+              value: 0
             };
             return [...acc, data];
           }
@@ -44,5 +49,72 @@ export const getExpectedIncomeForMonth = async ({userId, month, dispatch}:Expect
     dispatch(setExpectedIncome(dataToDispatch));
   }catch (e) {
     console.error(JSON.stringify(e), 'error');
+  }
+}
+
+export const setExpectedIncomeForMonth = async ({userId, month, dispatch, dataToSet}: SetBudgetedExpenseForMonthProps) => {
+  try {
+    if(Array.isArray(dataToSet)) {
+      const dispatchData =[];
+      for(const item of dataToSet) {
+        const isPresent = await db.query.BudgetedData.findFirst({
+          where: and(
+            eq(
+              BudgetedData.userId,
+              userId
+            ),
+            eq(
+              BudgetedData.month,
+              month,
+            ),
+            eq(
+              BudgetedData.categoryType,
+              item.categoryId,
+            )
+          )
+        })
+        if (isPresent) {
+          await db
+            .update(BudgetedData)
+            .set({
+              value: Number(item.value) ?? 0,
+            })
+            .where(
+              and(
+                eq(
+                  BudgetedData.userId,
+                  userId
+                ),
+                eq(
+                  BudgetedData.month,
+                  month,
+                ),
+                eq(
+                  BudgetedData.categoryType,
+                  item.categoryId,
+                )
+              )
+            )
+        } else {
+          await db.insert(BudgetedData).values({
+            categoryType: item.categoryId,
+            userId,
+            value: Number(item.value) ?? 0,
+            month,
+          })
+        }
+        dispatchData.push({
+          ...item,
+          value: Number(item.value),
+          label: item.name,
+        })
+      }
+      const dataToDispatch = {
+        [(month as unknown as number)]: dispatchData,
+      }
+      dispatch(setExpectedIncome(dataToDispatch));
+    }
+  } catch (e) {
+    console.error(e, 'error while saving expected income')
   }
 }

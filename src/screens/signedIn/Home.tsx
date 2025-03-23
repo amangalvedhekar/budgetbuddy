@@ -21,7 +21,7 @@ export const Home = () => {
   const budgetExpenseForMonth = month ? budgetedExpense[month.id] : [];
 
   const calculateTotal = () => {
-    const total = Array.isArray(budgetedExpense[month.id]) ? budgetedExpense[month.id].reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
+    const total = Array.isArray(budgetExpenseForMonth) ? budgetExpenseForMonth.reduce((acc, elm) => acc + Number(elm.value), 0) : 0;
     return new Intl.NumberFormat('en-CA', {
       style: 'currency',
       currency: 'CAD'
@@ -38,7 +38,7 @@ export const Home = () => {
     <>
       <ScrollView
         ref={scrollViewRef}
-        contentContainerStyle={{paddingBottom: 72}}
+        contentContainerStyle={{paddingBottom: 72, marginBottom: 24}}
       >
         <XStack marginHorizontal="$3">
           <DropDown
@@ -49,7 +49,7 @@ export const Home = () => {
           />
         </XStack>
         <YStack justifyContent="center" alignItems="center" marginVertical="$2">
-          {Array.isArray(budgetedExpense[month.id]) && budgetedExpense[month.id]?.length > 0 && calculateTotal() != '$0.00' && (<>
+          {Array.isArray(budgetExpenseForMonth) && budgetExpenseForMonth?.length > 0 && calculateTotal() != '$0.00' && (<>
             <H5>
               Budgeted Expense for {month.name}
             </H5>
@@ -92,9 +92,10 @@ export const Home = () => {
                 showValuesAsTopLabel
                 maxValue={maxAmount() + 1000}
                 topLabelContainerStyle={{
-                  paddingTop: 8,
+                  paddingTop: 16,
                   marginTop: 16,
                 }}
+                rotateLabel
                 topLabelTextStyle={{color: colors.text}}
                 barWidth={(width - 200) / expectedIncome[month.id]?.length}
                 noOfSections={4}
@@ -105,11 +106,16 @@ export const Home = () => {
                   color: colors.text
                 }}
                 xAxisLabelTextStyle={{
-                  color: colors.text
+                  color: colors.text,
                 }}
                 data={expectedIncome[month.id]}
                 yAxisThickness={0}
                 xAxisThickness={0}
+                autoCenterTooltip
+                renderTooltip={(item) => <Paragraph color="green">{new Intl.NumberFormat('en-CA', {
+                  style: 'currency',
+                  currency: 'CAD'
+                }).format(item.value)}</Paragraph>}
               />
             </>)}
         </YStack>

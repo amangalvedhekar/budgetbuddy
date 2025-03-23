@@ -7,13 +7,19 @@ import {Button, Card, H3, H5, Input, ScrollView, useWindowDimensions, XStack} fr
 import {KeyboardAvoidingView, KeyboardStickyView} from "react-native-keyboard-controller";
 import {calculateTotalInputted} from "../../utils/calculateTotalInputted";
 import {DeviceEventEmitter} from "react-native";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../../store";
+import {getExpectedIncomeForMonth, setExpectedIncomeForMonth} from "../../dbOperations/expectedIncome";
 
 export const EstimatedIncome = () => {
   const {db} = useDb();
-  const {setOptions, navigate} = useNavigation();
+  const { navigate} = useNavigation();
   const {params} = useRoute();
   const {ab} = useAuth();
-  const [incomeStream, setIncomeStream] = useState();
+  const dispatch = useDispatch();
+  const expectedIncome = useSelector((state: RootState) => state.expectedIncome);
+  const expectedIncomeForSelectedMonth = expectedIncome[params?.selectedMonth?.id];
+  const [incomeStream, setIncomeStream] = useState(() => expectedIncomeForSelectedMonth);
   const showSuccessToast = () => {
     DeviceEventEmitter.emit("DISPLAY_TOAST", {
       message: `Expected Income updated for ${params?.selectedMonth.month}`,
@@ -21,53 +27,17 @@ export const EstimatedIncome = () => {
     });
   };
   useFocusEffect(useCallback(() => {
-    (
-      async () => {
-        setOptions({
-          headerTitle: `Estimated Income  for ${params?.selectedMonth.month}`
-        });
-        const abc = await db.select({
-          id: BudgetedData.categoryType,
-          value: BudgetedData.value,
-        }).from(BudgetedData).where(and(
-          eq(BudgetedData.userId, ab?.userId ?? ''),
-          eq(BudgetedData.month, params?.selectedMonth?.id)
-        ));
-        const def = await db.select({
-          id: CategoriesSchema.id,
-          name: CategoriesSchema.categoryName
-        }).from(CategoriesSchema).where(eq(CategoriesSchema.transactionType, "0"));
-        const dataForIncome = def.map(d => {
-          const found = abc.find(b => b.id == d.id)
-          if (found) {
-            return {...d, value: found.value};
-          }
-        }).filter(Boolean);
-        console.log(dataForIncome, 'hmm')
-        if (Array.isArray(dataForIncome) && dataForIncome.length === 0) {
-          const freshData = def.map(d => ({
-            ...d,
-            value: '',
-          }));
-          setIncomeStream(freshData)
-        } else {
-          const defd = await Promise.all(dataForIncome.map(async (d) => {
-            try {
-              const h = await db.select({
-                name: CategoriesSchema.categoryName
-              }).from(CategoriesSchema).where(eq(CategoriesSchema.id, d.id));
-              return {
-                ...d,
-                name: h[0].name
-              };
-            } catch (e) {
-
-            }
-          }));
-          setIncomeStream(defd);
-        }
+    (async () => {
+      try {
+        await getExpectedIncomeForMonth({
+          userId: ab?.userId,
+          month: (params?.selectedMonth?.id as unknown as typeof BudgetedData.month),
+          dispatch
+        })
+      }catch (e) {
+        console.error(JSON.stringify(e), 'err happened')
       }
-
+      }
     )();
   }, []));
 
@@ -87,67 +57,12 @@ export const EstimatedIncome = () => {
 
   const saveEstimatedIncomeData = async () => {
     try {
-      const dataToSave = incomeStream?.map(d => (
-        {
-          categoryType: d.id,
-          userId: ab?.userId,
-          value: Number(d.value) ?? 0,
-          month: params?.selectedMonth?.id
-        }
-      ));
-      console.log(dataToSave, 'is');
-      const existingDataForUser = await db
-        .select(
-          {
-            id: BudgetedData.categoryType,
-            value: BudgetedData.value,
-            userId: BudgetedData.userId,
-          }
-        )
-        .from(BudgetedData)
-        .where(
-          and(eq(
-              BudgetedData.userId,
-              ab?.userId ?? ''
-            ),
-            eq(
-              BudgetedData.month,
-              params?.selectedMonth?.id
-            ),)
-        );
-      console.log(existingDataForUser, 'existing')
-      if(Array.isArray(existingDataForUser) && existingDataForUser.length !== 0) {
-        const existingItems = existingDataForUser
-          .map(item => {
-            const foundItem = dataToSave
-              .find(data => data.categoryType == item.id && item.userId == ab?.userId);
-            if(foundItem)
-              return foundItem;
-          }).filter(Boolean);
-        console.log(existingItems, 'existin')
-        if(Array.isArray(existingItems) && existingItems.length > 0) {
-          await Promise.all(existingItems.map(async (item) => {
-            console.log(item, 'in iteration item is', ab?.userId,)
-            try {
-              const x = await db.update(BudgetedData).set({
-                value: item.value,
-              }).where(and(
-                eq(BudgetedData.categoryType, item.categoryType),
-                eq(BudgetedData.userId, ab?.userId),
-                eq(BudgetedData.month, params?.selectedMonth?.id),
-              )).returning();
-              console.log(x, 'updated data')
-            } catch (e) {
-
-            }
-          }))
-        } else {
-          await db.insert(BudgetedData).values(dataToSave);
-        }
-
-      } else {
-        await db.insert(BudgetedData).values(dataToSave);
-      }
+      await setExpectedIncomeForMonth({
+        dataToSet: incomeStream,
+        userId: ab?.userId,
+        month: params?.selectedMonth?.id,
+        dispatch,
+      })
       showSuccessToast();
       navigate('accountEntry');
     } catch (e) {
@@ -161,7 +76,7 @@ export const EstimatedIncome = () => {
       <KeyboardAvoidingView behavior="padding">
         {Array.isArray(incomeStream) && incomeStream.map(stream => (
           <Card
-            key={stream.id}
+            key={stream.categoryId}
             elevate
             margin="$2"
             size="$3"
@@ -178,7 +93,7 @@ export const EstimatedIncome = () => {
                   placeholder="0.00"
                   keyboardType="numeric"
                   returnKeyType="done"
-                  value={stream?.value?.toString()}
+                  value={stream?.value ?stream?.value?.toString(): ''}
                   onChangeText={handleChangeText(stream?.name)}
                   borderWidth="$1"
                 />
