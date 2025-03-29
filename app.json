@@ -28,8 +28,12 @@
       "bundleIdentifier": "com.anirudhm.budgetbuddy"
     },
     "android": {
-
       "package": "com.anirudhm.budgetbuddy"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "32a54d4d-ec03-4f47-b8e3-bc72fb02dc00"
+      }
     }
   }
 }
