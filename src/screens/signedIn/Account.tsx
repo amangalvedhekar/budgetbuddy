@@ -1,12 +1,13 @@
 import {Avatar, Button, Card, H1, H4, H5, H6, ScrollView, Separator, XStack, YStack} from "tamagui";
 import {useAuth} from "../../hooks";
-import {useCallback,} from "react";
-import {useNavigation, useTheme} from "@react-navigation/native";
+import {useCallback, useEffect,} from "react";
+import {useNavigation, useRoute, useTheme} from "@react-navigation/native";
 import {ChevronRight, ChevronUp} from "../../icons";
 
 export const Account = () => {
   const {ab, logout} = useAuth();
-  const {navigate} = useNavigation();
+  const {navigate, } = useNavigation();
+  const {params} = useRoute();
   const {colors} = useTheme();
   const onBackPress = useCallback(async () => {
     await logout();
@@ -22,6 +23,16 @@ export const Account = () => {
   }
   const onAppSettingPress = () => navigate('appSettings');
 
+  useEffect(() => {
+    console.log(params, 'are params coming here')
+    if(params) {
+      if(params.name!='') {
+        navigate('addCategory', {
+          name: params.name, id: params.id
+        })
+      }
+    }
+  }, [params]);
   const accountCardItems = [
     {
       title: 'Monthly Budgeted Expenses',

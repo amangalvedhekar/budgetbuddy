@@ -10,7 +10,7 @@ import {and, desc, eq} from "drizzle-orm";
 import {getTransactionForUser} from "../../dbOperations/transactionList";
 
 const getColorForTransaction = (transactionType: number) => {
-  const colorMap = {
+  const colorMap: Record<number, string> = {
     0: '#0d7c02',
     1: '#ec0b0b',
     2: '#ecbf0b',
@@ -20,13 +20,12 @@ const getColorForTransaction = (transactionType: number) => {
   return colorMap[transactionType];
 }
 // ToDo - Add types
-// yellow for investment and transfer transactions
 const RenderItem = ({item, onPress}: any) => {
   return (
     <Card elevate
           marginHorizontal="$2"
           marginVertical="$1"
-          padding="$2"
+          padding="$1"
           size="$1"
           bordered
           borderRadius="$8"
@@ -53,7 +52,10 @@ const RenderItem = ({item, onPress}: any) => {
             {item.transactionTypeName}
           </H5>
           <H5>
-            {item?.createdDate}
+            {new Intl.DateTimeFormat("en-CA",{
+              dateStyle: 'long',
+
+            }).format(new Date(item?.createdDate))}
           </H5>
         </XStack>
       </Card.Footer>

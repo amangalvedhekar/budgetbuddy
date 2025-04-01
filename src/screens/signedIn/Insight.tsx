@@ -2,11 +2,11 @@ import React, {useRef, useState} from 'react';
 import {Check, Cross, Warning} from "../../icons";
 import {BannerContainer} from "../../components/Banner/Container";
 import {
-  Card,
+  Card, Checkbox,
   Circle,
   H1, H3,
   H4,
-  H5,
+  H5, Label,
   Paragraph,
   Progress,
   ScrollView,
@@ -129,11 +129,11 @@ export const Insight = () => {
                 width={width - 16}
                 alignSelf="center"
               >
-                <Card.Header>
-                  <H5>
+
+                  <H5 paddingHorizontal="$4" paddingVertical="$2">
                     {i.name}
                   </H5>
-                </Card.Header>
+
                 <Card.Footer paddingHorizontal="$3" paddingVertical="$1">
                   <YStack>
                     <H4 color="red">
@@ -189,6 +189,7 @@ export const Insight = () => {
           yAxisTextStyle={{color: colors.text}}
           xAxisLabelTextStyle={{color: colors.text}}
           maxValue={7500}
+          frontColor={colors.text}
         />
       </XStack>
 
@@ -210,9 +211,25 @@ export const Insight = () => {
                 width={width - 16}
                 alignSelf="center">
                 <Card.Header>
-                  <H5>
+                  <XStack justifyContent="space-between" alignItems="center">
+                  <H5 flex={0.2}>
                     {i.name}
                   </H5>
+                  {/*<XStack flex={0.8} textWrap="wrap" alignItems="center" paddingHorizontal="$1">*/}
+                  {/*  <Checkbox size="$4" id={`hide-zero-categories=${i.name}`}>*/}
+                  {/*    <Checkbox.Indicator>*/}
+                  {/*      <Check color="purple" />*/}
+                  {/*    </Checkbox.Indicator>*/}
+                  {/*  </Checkbox>*/}
+                  {/*  <Label*/}
+                  {/*    htmlFor={`hide-zero-categories=${i.name}`}*/}
+                  {/*    marginHorizontal="$1"*/}
+                  {/*    paddingHorizontal="$1"*/}
+                  {/*  >*/}
+                  {/*    Hide categories with zero  amount*/}
+                  {/*  </Label>*/}
+                  {/*</XStack>*/}
+                  </XStack>
                 </Card.Header>
                 <Separator borderWidth="$1" borderColor="darkgrey"/>
                 <YStack marginVertical="$2" justifyContent="center">

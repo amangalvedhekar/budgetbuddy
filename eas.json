@@ -12,12 +12,15 @@
     },
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "environment": "production"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "environment": "production"
     },
     "production": {
+      "environment": "production",
       "extends": "base",
       "autoIncrement": true
     }
