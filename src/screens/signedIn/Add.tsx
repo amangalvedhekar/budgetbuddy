@@ -15,22 +15,10 @@ import {CalendarIcon, Plus} from "../../icons";
 import {Calendar} from "react-native-calendars";
 import {Categories as CategoriesSchema} from "../../../schema";
 import {DropDown} from "../../components/DropDown";
+import {useSelector} from "react-redux";
+import {RootState} from "../../store";
 
 export const Add = () => {
-  const amountRef = useRef<TextInput>(null);
-  const {navigate,} = useNavigation();
-  const {db} = useDb();
-  const {ab} = useAuth();
-
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [categoryType, setCategoryType] = useState('');
-  const [amount, setAmount] = useState('');
-  const [description, setDescription] = useState('');
-  const [transactionDate, setTransactionDate] = useState(() =>`${new Date().getFullYear()}-0${new Date().getMonth() + 1}-${new Date().getDate()}`);
-  const [subCategory, setSubCategory] = useState('');
-  const [categories, setCategories] = useState<Array<{ name: string, transactionType: string }>>();
-  const [transactionType, setTransactionType] = useState();
-  const snapPoints = [50, 50, 50];
   const showSuccessToast = () => {
     DeviceEventEmitter.emit("DISPLAY_TOAST", {
       message: `Transaction added successfully`,
@@ -43,30 +31,37 @@ export const Add = () => {
       type: 'warning',
     });
   };
-
-  const showErrorWarningToast = () => {
+  const showErrorToast = () => {
     DeviceEventEmitter.emit("DISPLAY_TOAST", {
       message: `Something went wrong adding transaction`,
       type: 'error',
     });
   }
+  const amountRef = useRef<TextInput>(null);
+  const descriptionRef = useRef<TextInput>(null);
+  const {navigate,} = useNavigation();
+  const {db} = useDb();
+  const {ab} = useAuth();
 
-  useFocusEffect(useCallback(() => {
-    (async () => {
-      const abc = await db.select({
-        name: CategoriesSchema.categoryName,
-        transactionType: CategoriesSchema.transactionType,
-      }).from(CategoriesSchema);
+  const snapPoints = [50, 50, 50];
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [categoryType, setCategoryType] = useState('');
+  const [amount, setAmount] = useState('');
+  const [description, setDescription] = useState('');
+  const [transactionDate, setTransactionDate] = useState(() => `${new Date().getFullYear()}-0${new Date().getMonth() + 1}-${new Date().getDate()}`);
+  const [subCategory, setSubCategory] = useState('');
 
-      setCategories(abc);
-      const def = await db.select({
-        name: TransactionTypes.transactionName,
-        id: TransactionTypes.id,
-      }).from(TransactionTypes);
-      setTransactionType(def);
+  // const [categories, setCategories] = useState<Array<{ name: string, transactionType: string }>>();
+  const categories = useSelector((state: RootState) => state.categories);
+  const transactionTypes = useSelector((state: RootState) => state.transactionType);
+  const transactionBasedCategories = categories.filter(category => category.transactionName == categoryType.transactionName);
 
-    })();
-  }, []));
+  const handleNavigation = () => navigate('Account', {
+    screen: 'accountEntry',
+    params: {
+      name: categoryType.transactionName, id: categoryType.id
+    }
+  })
   const handleAddTransaction = async () => {
     try {
       const transactionToAdd = {
@@ -74,7 +69,7 @@ export const Add = () => {
         transactionType: categoryType.id,
         amount: Number(amount),
         createdDate: transactionDate,
-        categoryType: subCategory.name,
+        categoryType: subCategory.categoryName,
         description,
         addedBy: ab?.username,
       };
@@ -86,14 +81,14 @@ export const Add = () => {
       }
       navigate('History');
     } catch (e) {
-      showErrorWarningToast();
+      showErrorToast();
       console.log(e, 'caught error here')
     } finally {
       setCategoryType('');
       setAmount('');
       setDescription('');
       setSubCategory('');
-      setTransactionDate(() =>`${new Date().getFullYear()}-0${new Date().getMonth() + 1}-${new Date().getDate()}`);
+      setTransactionDate(() => `${new Date().getFullYear()}-0${new Date().getMonth() + 1}-${new Date().getDate()}`);
 
     }
 
@@ -110,6 +105,7 @@ export const Add = () => {
           returnKeyType="next"
           value={amount}
           onChangeText={setAmount}
+          onSubmitEditing={() => descriptionRef?.current?.focus()}
           ref={amountRef}
         />
         <Input
@@ -120,20 +116,31 @@ export const Add = () => {
           returnKeyType="next"
           value={description}
           onChangeText={setDescription}
-          ref={amountRef}
+          ref={descriptionRef}
         />
         <DropDown
-          items={transactionType}
+          items={transactionTypes}
           placeholder="Transaction Type"
           val={categoryType}
           setVal={setCategoryType}
+          keyName='transactionName'
+
         />
         {categoryType !== '' && <DropDown
-          items={categories}
+          items={categoryType !== '' ? transactionBasedCategories : categories}
           placeholder="Categories"
           val={subCategory}
           setVal={setSubCategory}
+          keyName='categoryName'
+          emptyItemOnPress={handleNavigation}
         />}
+        {/*<DropDown*/}
+        {/*  items={["Doesn't Repeat",'Weekly', 'Bi-Weekly', 'Monthly', 'Semi-Annually', 'Annually']}*/}
+        {/*  placeholder="Transaction Frequency"*/}
+        {/*  // val={}*/}
+        {/*  setVal={console.log}*/}
+        {/*  defaultValue="Doesn't Repeat"*/}
+        {/*/>*/}
         <Button
           icon={() => <CalendarIcon stroke="purple"/>}
           size="$6"
@@ -143,14 +150,14 @@ export const Add = () => {
         </Button>
         <Sheet
           forceRemoveScrollEnabled={showCalendar}
-          modal={true}
+          modal
           open={showCalendar}
           onOpenChange={setShowCalendar}
           snapPoints={snapPoints}
           snapPointsMode="percent"
           dismissOnSnapToBottom
           zIndex={100_000}
-          animation="medium">
+          animation="fast">
           <Sheet.Overlay
             animation="lazy"
             enterStyle={{opacity: 0}}

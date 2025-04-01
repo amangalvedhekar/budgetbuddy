@@ -13,25 +13,28 @@ export const StoreInitializer = ({children}:{children: ReactNode}) => {
   const {ab} = useAuth();
   useEffect(() => {
     (async () => {
-      await fetchTransactionType(dispatch);
-      await fetchCategories(dispatch);
-      await addUser({dispatch, userId: ab?.userId ?? ''});
-      const monthList = Array
-        .from({ length: 12 }, (v, i) => i);
-      for(const month of monthList) {
-        await getBudgetedExpenseForMonth({
-          userId: (ab?.userId as unknown as typeof BudgetedData.userId),
-          month: (month as unknown as typeof BudgetedData.month),
-          dispatch
-        });
-        await getExpectedIncomeForMonth({
-          userId: (ab?.userId as unknown as typeof BudgetedData.userId),
-          month: (month as unknown as typeof BudgetedData.month),
-          dispatch
-        });
+      if (ab != null) {
+        await fetchTransactionType(dispatch);
+        await fetchCategories(dispatch);
+        await addUser({dispatch, userId: ab?.userId ?? ''});
+        const monthList = Array
+          .from({ length: 12 }, (v, i) => i);
+        for(const month of monthList) {
+          await getBudgetedExpenseForMonth({
+            userId: (ab?.userId as unknown as typeof BudgetedData.userId),
+            month: (month as unknown as typeof BudgetedData.month),
+            dispatch
+          });
+          await getExpectedIncomeForMonth({
+            userId: (ab?.userId as unknown as typeof BudgetedData.userId),
+            month: (month as unknown as typeof BudgetedData.month),
+            dispatch
+          });
+        }
+
       }
 
     })();
-  }, [dispatch]);
+  }, [dispatch, ab]);
   return children;
 }

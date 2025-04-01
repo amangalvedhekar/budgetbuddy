@@ -88,6 +88,7 @@ export const Home = () => {
               <H2 paddingBottom="$2" color="green">
                 {formatTotal}
               </H2>
+
               <BarChart
                 showValuesAsTopLabel
                 maxValue={maxAmount() + 1000}
@@ -96,6 +97,9 @@ export const Home = () => {
                   marginTop: 16,
                 }}
                 rotateLabel
+                labelWidth={48}
+                labelsExtraHeight={40}
+                labelsDistanceFromXaxis={16}
                 topLabelTextStyle={{color: colors.text}}
                 barWidth={(width - 200) / expectedIncome[month.id]?.length}
                 noOfSections={4}

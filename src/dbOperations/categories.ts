@@ -82,4 +82,3 @@ export const getCategoriesForTransactionType = async ({transactionType}: {
     throw e;
   }
 }
-

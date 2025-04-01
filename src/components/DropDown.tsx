@@ -1,19 +1,23 @@
 import React from "react";
-import {Adapt, Button, H4, H5, Select, Sheet, YStack} from "tamagui";
-import {Check, ChevronDown} from "../icons";
+import {Adapt, Button, H4, H5, Select, Sheet, XStack, YStack} from "tamagui";
+import {Check, ChevronDown, Plus} from "../icons";
+import {QuestionMark} from "../icons/QuestionMark";
+import {useTheme} from "@react-navigation/native";
 
 export interface DropDownProps {
   buttonText: string | React.ReactNode,
   children: React.ReactNode
 }
 
-export const DropDown = ({items, placeholder, val,setVal}) => {
+export const DropDown = ({items, placeholder, val, setVal, keyName = 'name', emptyItemOnPress, ...rest}) => {
+  const {colors} = useTheme();
   return (
     <Select
       value={val}
       onValueChange={setVal}
       disablePreventBodyScroll
       size="$5"
+      {...rest}
     >
       <Select.Trigger size="$5" iconAfter={() => <ChevronDown color="purple" width={32}/>} marginVertical="$2">
         <Select.Value placeholder={placeholder}/>
@@ -60,29 +64,42 @@ export const DropDown = ({items, placeholder, val,setVal}) => {
           minWidth={200}
         >
           <Select.Group>
-            <Select.Label>
-              <H5>
-                {placeholder}
-              </H5>
+            <Select.Label backgroundColor={colors.border}>
+              <XStack justifyContent="space-between" flex={1} alignItems="center">
+                <H5>
+                  {placeholder}
+                </H5>
+                {/*<QuestionMark/>*/}
+              </XStack>
             </Select.Label>
             {React.useMemo(
               () =>
-                items?.map((item, i) => {
+                Array.isArray(items) && items.length > 0 ? items?.map((item, i) => {
 
                   return (
                     <Select.Item
                       index={i}
-                      key={item?.name ? item.name : item}
+                      key={typeof item == 'object' ? item[keyName] : item}
                       value={item}
 
                     >
-                      <Select.ItemText size="$6">{item?.name ? item.name : item}</Select.ItemText>
+                      <Select.ItemText size="$6">{typeof item == 'object' ? item[keyName] : item}</Select.ItemText>
                       <Select.ItemIndicator marginLeft="auto">
                         <Check color="purple" height={32} width={32}/>
                       </Select.ItemIndicator>
                     </Select.Item>
                   )
-                }),
+                }) : <YStack justifyContent="center" alignItems="center">
+                  <H5>No Categories found! </H5>
+                  <Button
+                    themeInverse
+                    size="$4"
+                    marginVertical="$2"
+                    onPress={emptyItemOnPress}
+                  >
+                    Add New Category
+                  </Button>
+                </YStack>,
               [items, val]
             )}
           </Select.Group>
