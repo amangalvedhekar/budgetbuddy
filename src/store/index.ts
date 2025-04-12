@@ -4,6 +4,7 @@ import categoriesReducer from '../features/categoriesSlice';
 import transactionTypeReducer from '../features/transactionTypeSlice';
 import budgetedExpenseReducer from '../features/budgetedExpenseSlice';
 import expectedIncomeReducer from '../features/expectedIncomeSlice';
+import transactionListReducer from '../features/transactionListSlice';
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
 
 export const store = configureStore({
@@ -13,6 +14,7 @@ export const store = configureStore({
     transactionType: transactionTypeReducer,
     budgetedExpense: budgetedExpenseReducer,
     expectedIncome: expectedIncomeReducer,
+    transactionList: transactionListReducer,
   },
   enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(devToolsEnhancer()),
 });

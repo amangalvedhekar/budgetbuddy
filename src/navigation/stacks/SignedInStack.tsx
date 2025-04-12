@@ -5,7 +5,7 @@ import {
   Home as HomeIcon,
   History as HistoryIcon,
   Insights as InsightIcon,
-  Plus,
+  Plus, Filter,
 } from "../../icons";
 import {Home, Account, History, Insight, Add} from "../../screens";
 import {createStackNavigator} from "@react-navigation/stack";
@@ -15,6 +15,8 @@ import {EstimatedIncome} from "../../screens/signedIn/EstimatedIncome";
 import * as Haptics from "expo-haptics";
 import {ImpactFeedbackStyle} from "expo-haptics";
 import {Settings} from "../../screens/signedIn/Settings";
+import {XStack} from "tamagui";
+import React from "react";
 
 
 const SignedInStack = createBottomTabNavigator();
@@ -54,7 +56,10 @@ const HistoryTabScreens = () => {
       headerBackTitleVisible: false,
     }}>
       <HistoryStack.Screen name='historyEntry' component={History} options={{
-        headerTitle: 'Transactions'
+        headerTitle: 'Transactions',
+        headerRight: () => <XStack marginHorizontal="$3">
+          <Filter fill="green" height={40} width={40} />
+        </XStack>
       }}/>
       {/*<HistoryStack.Screen name='historyEntryDetails' component={Details} />*/}
     </HistoryStack.Navigator>

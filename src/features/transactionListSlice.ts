@@ -10,13 +10,20 @@ export type TransactionList = {
   description: string;
   transactionType: string;
 };
+export type TransactionListKey = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
+export type TransactionListSliceProps = Record<TransactionListKey, Array<TransactionList>>
 
 const transactionListSlice = createSlice({
   name: 'transactionList',
-  initialState: [] as TransactionList[],
+  initialState: {} as TransactionListSliceProps,
   reducers: {
     setTransactionList:(state, action) => {
-      return action.payload;
+      return (
+        {
+          ...state,
+          ...action.payload
+        }
+      );
     }
   },
 });

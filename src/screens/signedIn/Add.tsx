@@ -12,11 +12,12 @@ import {useFocusEffect, useNavigation, useTheme} from "@react-navigation/native"
 import {TransactionLists, TransactionTypes} from "../../../schema";
 import {useAuth, useDb} from "../../hooks";
 import {CalendarIcon, Plus} from "../../icons";
-import {Calendar} from "react-native-calendars";
+import {Calendar, DateData} from "react-native-calendars";
 import {Categories as CategoriesSchema} from "../../../schema";
 import {DropDown} from "../../components/DropDown";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../store";
+import {insertTransactionForUser} from "../../dbOperations/transactionList";
 
 export const Add = () => {
   const showSuccessToast = () => {
@@ -36,22 +37,36 @@ export const Add = () => {
       message: `Something went wrong adding transaction`,
       type: 'error',
     });
-  }
+  };
+
   const amountRef = useRef<TextInput>(null);
   const descriptionRef = useRef<TextInput>(null);
   const {navigate,} = useNavigation();
+  const dispatch = useDispatch();
   const {db} = useDb();
   const {ab} = useAuth();
+  const getDefaultDate = () => {
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const date = today.getDate();
+    const year = today.getFullYear();
+
+
+
+    const formattedMonth = month <=9 ? `0${month}`: month;
+    const formattedDate = date <=9 ? `0${date}`: date;
+
+    return `${year}-${formattedMonth}-${formattedDate}`;
+  }
 
   const snapPoints = [50, 50, 50];
   const [showCalendar, setShowCalendar] = useState(false);
   const [categoryType, setCategoryType] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
-  const [transactionDate, setTransactionDate] = useState(() => `${new Date().getFullYear()}-0${new Date().getMonth() + 1}-${new Date().getDate()}`);
+  const [transactionDate, setTransactionDate] = useState(getDefaultDate);
   const [subCategory, setSubCategory] = useState('');
 
-  // const [categories, setCategories] = useState<Array<{ name: string, transactionType: string }>>();
   const categories = useSelector((state: RootState) => state.categories);
   const transactionTypes = useSelector((state: RootState) => state.transactionType);
   const transactionBasedCategories = categories.filter(category => category.transactionName == categoryType.transactionName);
@@ -61,11 +76,13 @@ export const Add = () => {
     params: {
       name: categoryType.transactionName, id: categoryType.id
     }
-  })
+  });
+
+
   const handleAddTransaction = async () => {
     try {
       const transactionToAdd = {
-        id: Math.floor(Math.random() * 9999).toString(),
+
         transactionType: categoryType.id,
         amount: Number(amount),
         createdDate: transactionDate,
@@ -73,7 +90,10 @@ export const Add = () => {
         description,
         addedBy: ab?.username,
       };
-      await db.insert(TransactionLists).values(transactionToAdd);
+      await insertTransactionForUser({
+        ...transactionToAdd,
+dispatch
+      });
       if (amount == '' || categoryType == '') {
         showWarningToast();
       } else {
@@ -88,7 +108,7 @@ export const Add = () => {
       setAmount('');
       setDescription('');
       setSubCategory('');
-      setTransactionDate(() => `${new Date().getFullYear()}-0${new Date().getMonth() + 1}-${new Date().getDate()}`);
+      setTransactionDate(getDefaultDate);
 
     }
 
@@ -118,6 +138,13 @@ export const Add = () => {
           onChangeText={setDescription}
           ref={descriptionRef}
         />
+        {/*<DropDown*/}
+        {/*  items={["Doesn't Repeat",'Weekly', 'Bi-Weekly', 'Monthly', 'Semi-Annually', 'Annually']}*/}
+        {/*  placeholder="Transaction Frequency"*/}
+        {/*  // val={}*/}
+        {/*  setVal={console.log}*/}
+        {/*  defaultValue="Doesn't Repeat"*/}
+        {/*/>*/}
         <DropDown
           items={transactionTypes}
           placeholder="Transaction Type"
@@ -134,13 +161,6 @@ export const Add = () => {
           keyName='categoryName'
           emptyItemOnPress={handleNavigation}
         />}
-        {/*<DropDown*/}
-        {/*  items={["Doesn't Repeat",'Weekly', 'Bi-Weekly', 'Monthly', 'Semi-Annually', 'Annually']}*/}
-        {/*  placeholder="Transaction Frequency"*/}
-        {/*  // val={}*/}
-        {/*  setVal={console.log}*/}
-        {/*  defaultValue="Doesn't Repeat"*/}
-        {/*/>*/}
         <Button
           icon={() => <CalendarIcon stroke="purple"/>}
           size="$6"
@@ -170,20 +190,9 @@ export const Add = () => {
                 borderRadius: 16,
                 paddingBottom: 8
               }}
-
-              onDayPress={day => {
+              onDayPress={(day: DateData) => {
                 setTransactionDate(day.dateString);
                 setShowCalendar(false);
-              }}
-              theme={{
-                // backgroundColor: colors.primary,
-                // calendarBackground: colors.primary,
-                // textSectionTitleColor: colors.text,
-                // selectedDayBackgroundColor: '#0d4dc5',
-                // selectedDayTextColor: '#cf4f4f',
-                // todayTextColor: colors.border,
-                // dayTextColor: '#0d4dc5',
-                // textDisabledColor: '#cf4f4f'
               }}
             />
           </Sheet.Frame>
@@ -198,7 +207,6 @@ export const Add = () => {
         >
           Add
         </Button>
-
       </YStack>
     </ScrollView>
   );

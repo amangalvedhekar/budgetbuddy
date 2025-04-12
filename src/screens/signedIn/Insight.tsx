@@ -26,6 +26,7 @@ import {StyleSheet} from "react-native";
 export const Insight = () => {
   const budgetedExpense = useSelector((state: RootState) => state.budgetedExpense);
   const expectedIncome = useSelector((state: RootState) => state.expectedIncome);
+  const actualTransactions = useSelector((state: RootState) => state.transactionList);
   const categories = useSelector((state: RootState) => state.categories);
   const categoriesForExpense = categories.filter(elm => elm.transactionName == 'Expense')
   const [coordinates, setCoordinates] = useState([]);
@@ -45,7 +46,7 @@ export const Insight = () => {
 
     };
     const actualData = {
-      value: Math.random() * (900 - 100) + 100,
+      value: (data?.id in actualTransactions) ? actualTransactions[data.id].reduce((acc, elm) => elm.transactionTypeName == 'Expense' ? acc + Number(elm.amount) : acc, 0) : 0,
       frontColor: '#3251c7'
     };
     return [
@@ -130,9 +131,9 @@ export const Insight = () => {
                 alignSelf="center"
               >
 
-                  <H5 paddingHorizontal="$4" paddingVertical="$2">
-                    {i.name}
-                  </H5>
+                <H5 paddingHorizontal="$4" paddingVertical="$2">
+                  {i.name}
+                </H5>
 
                 <Card.Footer paddingHorizontal="$3" paddingVertical="$1">
                   <YStack>
@@ -212,23 +213,9 @@ export const Insight = () => {
                 alignSelf="center">
                 <Card.Header>
                   <XStack justifyContent="space-between" alignItems="center">
-                  <H5 flex={0.2}>
-                    {i.name}
-                  </H5>
-                  {/*<XStack flex={0.8} textWrap="wrap" alignItems="center" paddingHorizontal="$1">*/}
-                  {/*  <Checkbox size="$4" id={`hide-zero-categories=${i.name}`}>*/}
-                  {/*    <Checkbox.Indicator>*/}
-                  {/*      <Check color="purple" />*/}
-                  {/*    </Checkbox.Indicator>*/}
-                  {/*  </Checkbox>*/}
-                  {/*  <Label*/}
-                  {/*    htmlFor={`hide-zero-categories=${i.name}`}*/}
-                  {/*    marginHorizontal="$1"*/}
-                  {/*    paddingHorizontal="$1"*/}
-                  {/*  >*/}
-                  {/*    Hide categories with zero  amount*/}
-                  {/*  </Label>*/}
-                  {/*</XStack>*/}
+                    <H5 flex={0.2}>
+                      {i.name}
+                    </H5>
                   </XStack>
                 </Card.Header>
                 <Separator borderWidth="$1" borderColor="darkgrey"/>
@@ -249,24 +236,32 @@ export const Insight = () => {
                           alignItems="center"
                         >
                           <Check color="green"/>
-                          <H4 marginLeft="$2">{item.categoryName}</H4>
+                          <H4 marginLeft="$1" textWrap="wrap" wordWrap="break-word"
+                              flexWrap="wrap">{item.categoryName}</H4>
                         </XStack>
 
                       </XStack>
-                      <H3
-                        flex={0.35}
+                      <XStack justifyContent="flex-end" flex={0.3}>
+                        <H3>
+                          {new Intl.NumberFormat('en-CA', {
+                            style: 'currency',
+                            currency: 'CAD'
+                          }).format(budgetedExpense[i.id].find(elm => elm.name == item.categoryName).value)}
+                        </H3>
+                      </XStack>
+                      <XStack
+                        flex={0.3}
+                        justifyContent="flex-end"
                       >
-                        {new Intl.NumberFormat('en-CA', {
-                          style: 'currency',
-                          currency: 'CAD'
-                        }).format(budgetedExpense[i.id].find(elm => elm.name == item.categoryName).value)}
-                      </H3>
-                      <H3
-                        flex={0.2}
-                        color="#3251c7"
-                      >
-                        $430
-                      </H3>
+                        <H3 color="#3251c7">
+                          {
+                            new Intl.NumberFormat('en-CA', {
+                              style: 'currency',
+                              currency: 'CAD'
+                            }).format((i.id in actualTransactions) ? actualTransactions[i.id].reduce((acc, elm) => (elm.transactionTypeName == 'Expense' && elm.categoryType == item.categoryName) ? acc + Number(elm.amount) : acc, 0) : 0,)
+                          }
+                        </H3>
+                      </XStack>
                     </XStack>
                     {index < categoriesForExpense.length - 1 &&
                       <Separator borderWidth={StyleSheet.hairlineWidth} borderColor="darkgrey"/>}
