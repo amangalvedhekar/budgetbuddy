@@ -200,7 +200,7 @@ export const History = () => {
         renderSectionHeader={({section: {title, data}}) => <YStack marginVertical="$3" marginHorizontal="$2"
                                                                    padding="$2">
           <H2>
-            {filterDataForDashboard[title].name} {new Date().getFullYear()}
+            {filterDataForDashboard[title].name} {new Date().getFullYear()} {title}
           </H2>
 
           <XStack justifyContent="space-between">

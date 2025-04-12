@@ -17,6 +17,7 @@ export const getTransactionMonthIndexed = async ({userId, dispatch}) => {
   const transactionList = await getTransactionForUser({userId});
   const transactionMonthBasis = transactionList.reduce((acc, elm) => {
     const createdDate = new Date(elm.createdDate);
+    const modified = createdDate.setTime(createdDate.getTime() + 955 * 60 *1000)
     const month = createdDate.getMonth();
     if (month in acc) {
       acc[month] = [...acc[month], elm]
