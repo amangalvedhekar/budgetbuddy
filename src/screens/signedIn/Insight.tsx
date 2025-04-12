@@ -22,7 +22,7 @@ import {RootState} from "../../store";
 import {BarChart} from "react-native-gifted-charts";
 import {useTheme} from "@react-navigation/native";
 import {StyleSheet} from "react-native";
-//play-console-service-account@budgetgenie-455211.iam.gserviceaccount.com
+
 export const Insight = () => {
   const budgetedExpense = useSelector((state: RootState) => state.budgetedExpense);
   const expectedIncome = useSelector((state: RootState) => state.expectedIncome);
@@ -30,7 +30,9 @@ export const Insight = () => {
   const categories = useSelector((state: RootState) => state.categories);
   const categoriesForExpense = categories.filter(elm => elm.transactionName == 'Expense')
   const [coordinates, setCoordinates] = useState([]);
+  const [coordinatesForExpense, setCoordinatesForExpense] = useState([]);
   const scrollRef = useRef();
+  const budgetedVsActualScrollRef = useRef();
   const closerStackData = filterDataForDashboard.map(data => ({
     label: data.name,
     stacks: [
@@ -164,7 +166,7 @@ export const Insight = () => {
           Legend :
         </H5>
         <XStack alignItems="center">
-          <Circle size="$1" backgroundColor="black" marginHorizontal="$3"/>
+          <Circle size="$1" backgroundColor={colors.text} marginHorizontal="$3"/>
           <Paragraph>
             Budgeted Expense
           </Paragraph>
@@ -191,6 +193,9 @@ export const Insight = () => {
           xAxisLabelTextStyle={{color: colors.text}}
           maxValue={7500}
           frontColor={colors.text}
+          onPress={(a, idx) => {
+            budgetedVsActualScrollRef?.current?.scrollTo({x: coordinatesForExpense[filterDataForDashboard[Math.floor(idx/2)].id]})
+          }}
         />
       </XStack>
 
@@ -199,12 +204,17 @@ export const Insight = () => {
         showsHorizontalScrollIndicator={false}
         pagingEnabled
         snapToAlignment="center"
+        ref={budgetedVsActualScrollRef}
 
       >
         {filterDataForDashboard.map((i, idx) => (
             <XStack
               key={i.id}
               marginVertical="$6"
+              onLayout={e => {
+                const layout = e.nativeEvent.layout;
+                coordinatesForExpense[i.id] = layout.x;
+              }}
             >
               <Card
                 marginHorizontal="$2"
@@ -235,9 +245,15 @@ export const Insight = () => {
                           flexGrow={1}
                           alignItems="center"
                         >
-                          <Check color="green"/>
+                          {budgetedExpense[i.id].find(elm => elm.name == item.categoryName).value >= ((i.id in actualTransactions) ?
+                            actualTransactions[i.id]
+                              .reduce((acc, elm) => (elm.transactionTypeName == 'Expense' && elm.categoryType == item.categoryName) ? acc + Number(elm.amount) : acc, 0) : 0) ? <Check color="green"/>: <Cross color="red"/>}
                           <H4 marginLeft="$1" textWrap="wrap" wordWrap="break-word"
-                              flexWrap="wrap">{item.categoryName}</H4>
+                              flexWrap="wrap" color={
+                            budgetedExpense[i.id].find(elm => elm.name == item.categoryName).value >= ((i.id in actualTransactions) ?
+                              actualTransactions[i.id]
+                                .reduce((acc, elm) => (elm.transactionTypeName == 'Expense' && elm.categoryType == item.categoryName) ? acc + Number(elm.amount) : acc, 0) : 0) ? 'green' : 'red'
+                          }>{item.categoryName}</H4>
                         </XStack>
 
                       </XStack>
@@ -258,7 +274,12 @@ export const Insight = () => {
                             new Intl.NumberFormat('en-CA', {
                               style: 'currency',
                               currency: 'CAD'
-                            }).format((i.id in actualTransactions) ? actualTransactions[i.id].reduce((acc, elm) => (elm.transactionTypeName == 'Expense' && elm.categoryType == item.categoryName) ? acc + Number(elm.amount) : acc, 0) : 0,)
+                            })
+                              .format(
+                                (i.id in actualTransactions) ?
+                                  actualTransactions[i.id]
+                                    .reduce((acc, elm) => (elm.transactionTypeName == 'Expense' && elm.categoryType == item.categoryName) ? acc + Number(elm.amount) : acc, 0) : 0,
+                              )
                           }
                         </H3>
                       </XStack>
