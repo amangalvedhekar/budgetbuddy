@@ -5,6 +5,9 @@ import {useDb} from "../../hooks/useDb";
 import {Categories as CategoriesSchema, TransactionLists, TransactionTypes} from "../../../schema";
 import {eq} from "drizzle-orm";
 import {DropDown} from "../../components/DropDown";
+import {DeviceEventEmitter} from "react-native";
+import {useSelector} from "react-redux";
+import {RootState} from "../../store";
 
 
 export const Details = () => {
@@ -13,31 +16,42 @@ export const Details = () => {
   const {params} = useRoute();
   const [transactionDetail, setTransactionDetail] = useState();
   const [subCategory, setSubCategory] = useState('');
-  const [categories, setCategories] = useState<Array<{ name: string, transactionType: string }>>();
-  const [transactionType, setTransactionType] = useState();
+  // const [categories, setCategories] = useState<Array<{ name: string, transactionType: string }>>();
+  // const [transactionType, setTransactionType] = useState();
   const [categoryType, setCategoryType] = useState('');
+const categories = useSelector((state: RootState)=> state.categories);
+const transactionType = useSelector((state: RootState) => state.transactionType)
+  const showSuccessToastForUpdate = () => {
+    DeviceEventEmitter.emit("DISPLAY_TOAST", {
+      message: `Transaction updated successfully`,
+      type: 'success',
+    });
+  };
+
+  const showFailureToastForUpdate = () => {
+    DeviceEventEmitter.emit("DISPLAY_TOAST", {
+      message: `Something went wrong. Please try again later`,
+      type: 'error',
+    });
+  };
+
+  const showSuccessToastForDelete = () => {
+    DeviceEventEmitter.emit("DISPLAY_TOAST", {
+      message: `Transaction deleted successfully`,
+      type: 'success',
+    });
+  };
+
   useFocusEffect(useCallback(() => {
     (async () => {
-      const abcd = await db.select({
-        name: CategoriesSchema.categoryName,
-        transactionType: CategoriesSchema.transactionType,
-      }).from(CategoriesSchema);
-
-      setCategories(abcd);
-      const defd = await db.select({
-        name: TransactionTypes.transactionName,
-        id: TransactionTypes.id,
-      }).from(TransactionTypes);
-      setTransactionType(defd);
-
       const abc = await db.select().from(TransactionLists).where(eq(TransactionLists.id, params?.entryId));
 
       setTransactionDetail(abc[0]);
-      const currentTransactionType = defd.find(d => d.id == abc[0].transactionType);
-      const currentCategoryType = abcd.find(b => b.name == abc[0].categoryType);
+      const currentTransactionType = transactionType.find(d => d.id == abc[0].transactionType);
+      const currentCategoryType = categories.find(b => b.categoryName == abc[0].categoryType);
       setSubCategory(currentCategoryType);
       setCategoryType(currentTransactionType)
-      setOptions({headerTitle: abc[0].description})
+      setOptions({headerTitle: abc[0].description});
     })();
   }, [params]));
 
@@ -49,11 +63,17 @@ export const Details = () => {
       transactionType: categoryType.id,
       modifiedDate: `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
     };
-    await db.update(TransactionLists).set(dataToSave).where(eq(
-      TransactionLists.id, params?.entryId
-    ));
-    if(canGoBack()){
-      goBack();
+    try {
+
+      await db.update(TransactionLists).set(dataToSave).where(eq(
+        TransactionLists.id, params?.entryId
+      ));
+      if(canGoBack()){
+        goBack();
+      }
+      showSuccessToastForUpdate();
+    } catch (e) {
+      showFailureToastForUpdate();
     }
   }
 
@@ -71,6 +91,7 @@ export const Details = () => {
     if(canGoBack()){
       goBack();
     }
+    showSuccessToastForDelete();
   }
 
   return (
@@ -119,6 +140,7 @@ export const Details = () => {
           placeholder="Transaction Type"
           val={categoryType}
           setVal={setCategoryType}
+          keyName="transactionName"
         />
       </XStack>
 
@@ -128,6 +150,7 @@ export const Details = () => {
           placeholder="Categories"
           val={subCategory}
           setVal={setSubCategory}
+          keyName="categoryName"
         />
       </XStack>
       <XStack justifyContent="space-between" margin="$3">

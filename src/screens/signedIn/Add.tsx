@@ -43,15 +43,12 @@ export const Add = () => {
   const descriptionRef = useRef<TextInput>(null);
   const {navigate,} = useNavigation();
   const dispatch = useDispatch();
-  const {db} = useDb();
   const {ab} = useAuth();
   const getDefaultDate = () => {
     const today = new Date();
     const month = today.getMonth() + 1;
     const date = today.getDate();
     const year = today.getFullYear();
-
-
 
     const formattedMonth = month <=9 ? `0${month}`: month;
     const formattedDate = date <=9 ? `0${date}`: date;
