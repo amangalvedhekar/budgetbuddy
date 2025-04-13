@@ -1,4 +1,4 @@
-import {Button, Card, H1, H3, H5, Input, Label, Paragraph, Separator, XStack} from "tamagui";
+import {Button, Card, H1, H3, H4, H5, Input, Label, Paragraph, Separator, XStack} from "tamagui";
 import {useFocusEffect, useNavigation, useRoute} from "@react-navigation/native";
 import {useCallback, useState} from "react";
 import {useDb} from "../../hooks/useDb";
@@ -16,11 +16,11 @@ export const Details = () => {
   const {params} = useRoute();
   const [transactionDetail, setTransactionDetail] = useState();
   const [subCategory, setSubCategory] = useState('');
-  // const [categories, setCategories] = useState<Array<{ name: string, transactionType: string }>>();
-  // const [transactionType, setTransactionType] = useState();
   const [categoryType, setCategoryType] = useState('');
-const categories = useSelector((state: RootState)=> state.categories);
-const transactionType = useSelector((state: RootState) => state.transactionType)
+  const [formattedDate, setFormattedDate] = useState();
+  const categories = useSelector((state: RootState) => state.categories);
+  const transactionType = useSelector((state: RootState) => state.transactionType)
+
   const showSuccessToastForUpdate = () => {
     DeviceEventEmitter.emit("DISPLAY_TOAST", {
       message: `Transaction updated successfully`,
@@ -45,12 +45,18 @@ const transactionType = useSelector((state: RootState) => state.transactionType)
   useFocusEffect(useCallback(() => {
     (async () => {
       const abc = await db.select().from(TransactionLists).where(eq(TransactionLists.id, params?.entryId));
+      const dateObject = new Date(abc[0]?.createdDate);
+      const modified = dateObject.setTime(dateObject.getTime() + 955 * 60 * 1000);
 
+      const formattedDate = new Intl.DateTimeFormat("en-CA", {
+        dateStyle: 'long',
+      }).format(modified);
       setTransactionDetail(abc[0]);
       const currentTransactionType = transactionType.find(d => d.id == abc[0].transactionType);
       const currentCategoryType = categories.find(b => b.categoryName == abc[0].categoryType);
       setSubCategory(currentCategoryType);
-      setCategoryType(currentTransactionType)
+      setCategoryType(currentTransactionType);
+      setFormattedDate(formattedDate);
       setOptions({headerTitle: abc[0].description});
     })();
   }, [params]));
@@ -68,7 +74,7 @@ const transactionType = useSelector((state: RootState) => state.transactionType)
       await db.update(TransactionLists).set(dataToSave).where(eq(
         TransactionLists.id, params?.entryId
       ));
-      if(canGoBack()){
+      if (canGoBack()) {
         goBack();
       }
       showSuccessToastForUpdate();
@@ -88,7 +94,7 @@ const transactionType = useSelector((state: RootState) => state.transactionType)
       )
     );
 
-    if(canGoBack()){
+    if (canGoBack()) {
       goBack();
     }
     showSuccessToastForDelete();
@@ -157,14 +163,12 @@ const transactionType = useSelector((state: RootState) => state.transactionType)
         <Label flex={0.4}>
           Created Date:
         </Label>
-       <H3>
-         {transactionDetail?.createdDate}
-       </H3>
+        <H4>
+          {formattedDate}
+        </H4>
       </XStack>
-      {/*<H4>*/}
-      {/*  Date Added - {transactionDetail?.createdDate}*/}
-      {/*</H4>*/}
-      {/*<Separator/>*/}
+
+      <Separator/>
       <Card.Footer>
         <XStack flex={1} flexWrap="wrap" justifyContent="space-between" padding="$2">
           <Button onPress={deleteTransaction}>
