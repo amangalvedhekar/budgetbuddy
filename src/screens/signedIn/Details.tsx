@@ -107,10 +107,6 @@ export const Details = () => {
       size="$2"
       bordered
       borderRadius="$8"
-      animation="bouncy"
-      scale={0.9}
-      hoverStyle={{scale: 0.975}}
-      pressStyle={{scale: 0.975}}
     >
       <XStack justifyContent="space-between" margin="$3">
         <Label flex={0.3}>
@@ -171,15 +167,19 @@ export const Details = () => {
       <Separator/>
       <Card.Footer>
         <XStack flex={1} flexWrap="wrap" justifyContent="space-between" padding="$2">
-          <Button onPress={deleteTransaction}>
-            <Paragraph>
-              Delete
-            </Paragraph>
+          <Button
+            onPress={deleteTransaction}
+            backgroundColor="#ec0b0b"
+            size="$4"
+          >
+            Delete
           </Button>
-          <Button onPress={saveChanges}>
-            <Paragraph>
-              Save Changes
-            </Paragraph>
+          <Button
+            onPress={saveChanges}
+            themeInverse
+            size="$4"
+          >
+            Save Changes
           </Button>
         </XStack>
       </Card.Footer>

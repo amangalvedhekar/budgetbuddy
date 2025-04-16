@@ -12,7 +12,8 @@
           },
           "resizeMode": "cover"
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
     "developmentClient": {
       "silentLaunch": true
