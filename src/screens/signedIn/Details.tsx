@@ -1,10 +1,13 @@
-import {Button, Card, H1, H3, H5, Input, Label, Paragraph, Separator, XStack} from "tamagui";
+import {Button, Card, H1, H3, H4, H5, Input, Label, Paragraph, Separator, XStack} from "tamagui";
 import {useFocusEffect, useNavigation, useRoute} from "@react-navigation/native";
 import {useCallback, useState} from "react";
 import {useDb} from "../../hooks/useDb";
 import {Categories as CategoriesSchema, TransactionLists, TransactionTypes} from "../../../schema";
 import {eq} from "drizzle-orm";
 import {DropDown} from "../../components/DropDown";
+import {DeviceEventEmitter} from "react-native";
+import {useSelector} from "react-redux";
+import {RootState} from "../../store";
 
 
 export const Details = () => {
@@ -13,31 +16,48 @@ export const Details = () => {
   const {params} = useRoute();
   const [transactionDetail, setTransactionDetail] = useState();
   const [subCategory, setSubCategory] = useState('');
-  const [categories, setCategories] = useState<Array<{ name: string, transactionType: string }>>();
-  const [transactionType, setTransactionType] = useState();
   const [categoryType, setCategoryType] = useState('');
+  const [formattedDate, setFormattedDate] = useState();
+  const categories = useSelector((state: RootState) => state.categories);
+  const transactionType = useSelector((state: RootState) => state.transactionType)
+
+  const showSuccessToastForUpdate = () => {
+    DeviceEventEmitter.emit("DISPLAY_TOAST", {
+      message: `Transaction updated successfully`,
+      type: 'success',
+    });
+  };
+
+  const showFailureToastForUpdate = () => {
+    DeviceEventEmitter.emit("DISPLAY_TOAST", {
+      message: `Something went wrong. Please try again later`,
+      type: 'error',
+    });
+  };
+
+  const showSuccessToastForDelete = () => {
+    DeviceEventEmitter.emit("DISPLAY_TOAST", {
+      message: `Transaction deleted successfully`,
+      type: 'success',
+    });
+  };
+
   useFocusEffect(useCallback(() => {
     (async () => {
-      const abcd = await db.select({
-        name: CategoriesSchema.categoryName,
-        transactionType: CategoriesSchema.transactionType,
-      }).from(CategoriesSchema);
-
-      setCategories(abcd);
-      const defd = await db.select({
-        name: TransactionTypes.transactionName,
-        id: TransactionTypes.id,
-      }).from(TransactionTypes);
-      setTransactionType(defd);
-
       const abc = await db.select().from(TransactionLists).where(eq(TransactionLists.id, params?.entryId));
+      const dateObject = new Date(abc[0]?.createdDate);
+      const modified = dateObject.setTime(dateObject.getTime() + 955 * 60 * 1000);
 
+      const formattedDate = new Intl.DateTimeFormat("en-CA", {
+        dateStyle: 'long',
+      }).format(modified);
       setTransactionDetail(abc[0]);
-      const currentTransactionType = defd.find(d => d.id == abc[0].transactionType);
-      const currentCategoryType = abcd.find(b => b.name == abc[0].categoryType);
+      const currentTransactionType = transactionType.find(d => d.id == abc[0].transactionType);
+      const currentCategoryType = categories.find(b => b.categoryName == abc[0].categoryType);
       setSubCategory(currentCategoryType);
-      setCategoryType(currentTransactionType)
-      setOptions({headerTitle: abc[0].description})
+      setCategoryType(currentTransactionType);
+      setFormattedDate(formattedDate);
+      setOptions({headerTitle: abc[0].description});
     })();
   }, [params]));
 
@@ -49,11 +69,17 @@ export const Details = () => {
       transactionType: categoryType.id,
       modifiedDate: `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
     };
-    await db.update(TransactionLists).set(dataToSave).where(eq(
-      TransactionLists.id, params?.entryId
-    ));
-    if(canGoBack()){
-      goBack();
+    try {
+
+      await db.update(TransactionLists).set(dataToSave).where(eq(
+        TransactionLists.id, params?.entryId
+      ));
+      if (canGoBack()) {
+        goBack();
+      }
+      showSuccessToastForUpdate();
+    } catch (e) {
+      showFailureToastForUpdate();
     }
   }
 
@@ -68,9 +94,10 @@ export const Details = () => {
       )
     );
 
-    if(canGoBack()){
+    if (canGoBack()) {
       goBack();
     }
+    showSuccessToastForDelete();
   }
 
   return (
@@ -80,10 +107,6 @@ export const Details = () => {
       size="$2"
       bordered
       borderRadius="$8"
-      animation="bouncy"
-      scale={0.9}
-      hoverStyle={{scale: 0.975}}
-      pressStyle={{scale: 0.975}}
     >
       <XStack justifyContent="space-between" margin="$3">
         <Label flex={0.3}>
@@ -119,6 +142,7 @@ export const Details = () => {
           placeholder="Transaction Type"
           val={categoryType}
           setVal={setCategoryType}
+          keyName="transactionName"
         />
       </XStack>
 
@@ -128,31 +152,34 @@ export const Details = () => {
           placeholder="Categories"
           val={subCategory}
           setVal={setSubCategory}
+          keyName="categoryName"
         />
       </XStack>
       <XStack justifyContent="space-between" margin="$3">
         <Label flex={0.4}>
           Created Date:
         </Label>
-       <H3>
-         {transactionDetail?.createdDate}
-       </H3>
+        <H4>
+          {formattedDate}
+        </H4>
       </XStack>
-      {/*<H4>*/}
-      {/*  Date Added - {transactionDetail?.createdDate}*/}
-      {/*</H4>*/}
-      {/*<Separator/>*/}
+
+      <Separator/>
       <Card.Footer>
         <XStack flex={1} flexWrap="wrap" justifyContent="space-between" padding="$2">
-          <Button onPress={deleteTransaction}>
-            <Paragraph>
-              Delete
-            </Paragraph>
+          <Button
+            onPress={deleteTransaction}
+            backgroundColor="#ec0b0b"
+            size="$4"
+          >
+            Delete
           </Button>
-          <Button onPress={saveChanges}>
-            <Paragraph>
-              Save Changes
-            </Paragraph>
+          <Button
+            onPress={saveChanges}
+            themeInverse
+            size="$4"
+          >
+            Save Changes
           </Button>
         </XStack>
       </Card.Footer>

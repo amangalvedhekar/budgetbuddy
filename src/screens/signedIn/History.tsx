@@ -147,6 +147,14 @@ export const History = () => {
     }).format(total);
   }
 
+  const calculateTotalInvestment = (data) => {
+    const total = Array.isArray(data) ? data.reduce((acc, elm) => elm.transactionTypeName == 'Investment' ? acc + Number(elm.amount) : acc, 0) : 0;
+    return new Intl.NumberFormat('en-CA', {
+      style: 'currency',
+      currency: 'CAD'
+    }).format(total);
+  }
+
   return (
     <>
       <XStack justifyContent="space-evenly" alignItems="center" marginVertical="$1" flexWrap="wrap">
@@ -205,15 +213,15 @@ export const History = () => {
 
           <XStack justifyContent="space-between">
             <YStack>
-              {['  ', 'Transaction', 'Expense', 'Income', 'Transfer'].map(elm => <H5 key={elm}>{elm}</H5>)}
+              {['  ', 'Transaction', 'Expense', 'Income', 'Transfer', 'Investment'].map(elm => <H5 key={elm}>{elm}</H5>)}
             </YStack>
 
             <YStack flex={0.8} alignItems="flex-start" justifyContent="flex-start">
-              {['Total', data.length, calculateTotalExpense(data), calculateTotalIncome(data), calculateTotalTransfer(data)].map((elm, idx) =>
+              {['Total', data.length, calculateTotalExpense(data), calculateTotalIncome(data), calculateTotalTransfer(data), calculateTotalInvestment(data)].map((elm, idx) =>
                 <H5
                   key={`${elm}-${idx}`}
                   opacity={elm == 'Total' ? 0.6 : 1}
-                  color={{0: theme.colors.text, 1: theme.colors.text, 2: '#ec0b0b', 3: '#0d7c02', 4: '#9b800c'}[idx]}
+                  color={{0: theme.colors.text, 1: theme.colors.text, 2: '#ec0b0b', 3: '#0d7c02', 4: '#9b800c', 5: '#0d7c02'}[idx]}
                 >
                   {elm}
                 </H5>)}
