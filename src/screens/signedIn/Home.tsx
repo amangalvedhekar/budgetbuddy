@@ -10,10 +10,11 @@ import {RootState} from "../../store";
 
 export const Home = () => {
   const [selectedPie, setSelectedPie] = useState();
+  const currentDate = new Date();
   const {colors} = useTheme();
   const budgetedExpense = useSelector((state: RootState) => state.budgetedExpense);
   const expectedIncome = useSelector((state: RootState) => state.expectedIncome);
-  const [month, setMonth] = useState<Record<'name'| 'id', number | string>>(() => filterDataForDashboard[0]);
+  const [month, setMonth] = useState<Record<'name'| 'id', number | string>>(() => filterDataForDashboard[currentDate.getMonth()]);
   const {height, width} = useWindowDimensions();
   const scrollViewRef = useRef<ScrollView>();
   useScrollToTop(scrollViewRef);

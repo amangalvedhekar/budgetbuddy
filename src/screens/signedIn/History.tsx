@@ -1,12 +1,10 @@
-import {FlatList, SectionList} from "react-native";
+import {SectionList} from "react-native";
 import {useNavigation, useTheme,} from "@react-navigation/native";
 import {Button, Card, H2, H3, H4, H5, Paragraph, ScrollView, Sheet, XStack, YStack,} from "tamagui";
 import * as Haptics from 'expo-haptics';
 import {ImpactFeedbackStyle} from 'expo-haptics';
-import React, {useCallback, useEffect, useState} from "react";
-import {useAuth, useDb} from "../../hooks";
-import {TransactionLists} from "../../../schema";
-import {and, desc, eq} from "drizzle-orm";
+import React, {useEffect, useState} from "react";
+
 import {Filter} from "../../icons";
 import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
 import {useSelector} from "react-redux";
@@ -208,12 +206,13 @@ export const History = () => {
         renderSectionHeader={({section: {title, data}}) => <YStack marginVertical="$3" marginHorizontal="$2"
                                                                    padding="$2">
           <H2>
-            {filterDataForDashboard[title].name} {new Date().getFullYear()}
+            {filterDataForDashboard[title].name} {' '} {data[0]?.createdDate.split('-')[0]}
           </H2>
 
           <XStack justifyContent="space-between">
             <YStack>
-              {['  ', 'Transaction', 'Expense', 'Income', 'Transfer', 'Investment'].map(elm => <H5 key={elm}>{elm}</H5>)}
+              {['  ', 'Transaction', 'Expense', 'Income', 'Transfer', 'Investment'].map(elm => <H5
+                key={elm}>{elm}</H5>)}
             </YStack>
 
             <YStack flex={0.8} alignItems="flex-start" justifyContent="flex-start">
@@ -221,7 +220,14 @@ export const History = () => {
                 <H5
                   key={`${elm}-${idx}`}
                   opacity={elm == 'Total' ? 0.6 : 1}
-                  color={{0: theme.colors.text, 1: theme.colors.text, 2: '#ec0b0b', 3: '#0d7c02', 4: '#9b800c', 5: '#0d7c02'}[idx]}
+                  color={{
+                    0: theme.colors.text,
+                    1: theme.colors.text,
+                    2: '#ec0b0b',
+                    3: '#0d7c02',
+                    4: '#9b800c',
+                    5: '#0d7c02'
+                  }[idx]}
                 >
                   {elm}
                 </H5>)}
@@ -232,20 +238,7 @@ export const History = () => {
         </YStack>
         }
       />
-      {/*{categories?.find(category => category.isActive === true)?.id !== 'all' && <XStack*/}
-      {/*  marginTop="auto"*/}
-      {/*  padding="$3"*/}
-      {/*  margin="$2"*/}
-      {/*  justifyContent="space-between"*/}
-      {/*  borderRadius="$8"*/}
-      {/*  borderWidth="$1"*/}
-      {/*  borderColor="purple"*/}
-      {/*>*/}
-      {/*  <H5>{categories?.find(category => category.isActive === true)?.transactionName} Total</H5>*/}
-      {/*  <H5>*/}
-      {/*    {calculateTotal()}*/}
-      {/*  </H5>*/}
-      {/*</XStack>}*/}
+
       <Sheet
         forceRemoveScrollEnabled={showCalendar}
         modal

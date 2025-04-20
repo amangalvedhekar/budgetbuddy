@@ -105,9 +105,9 @@ export const Account = () => {
               </XStack>
               <Separator/>
               <Card.Footer padding="$2">
-                <H6 paddingHorizontal="$3">
+                <H5 paddingHorizontal="$3">
                   {item.footerText}
-                </H6>
+                </H5>
               </Card.Footer>
             </Card>
           ))

@@ -82,7 +82,7 @@ export const Month = () => {
   useFocusEffect(useCallback(() => {
     (async () => {
       setOptions({
-        headerTitle: params.transactionType == '0' ? 'Select month to estimate income': 'Select month to budget',
+        headerTitle: params.transactionType == '0' ? 'Select month to estimate income' : 'Select month to budget',
       })
       try {
         const categories = await db.query.Categories
@@ -91,18 +91,17 @@ export const Month = () => {
               where: eq(Categories.transactionType, params.transactionType)
             }
           );
-        // console.log(categories, 'categories')
         const results = await Promise.all(MONTH_LIST.map(async (month) => {
           const result = await db
             .query.BudgetedData.findMany({
               where: and(
                 eq(BudgetedData.month, month.id),
-                eq(BudgetedData.userId, ab?.userId??'')
+                eq(BudgetedData.userId, ab?.userId ?? '')
               )
             })
           if (Array.isArray(result) && result.length > 0) {
             const isCategoryAdded = categories.filter(category => {
-              if (result.find(r => r.categoryType == category.id)){
+              if (result.find(r => r.categoryType == category.id)) {
                 return category
               }
             });
@@ -129,20 +128,21 @@ export const Month = () => {
         </H5>
         <Separator/>
         {monthData.map(month => (
-          <Card key={month.id}
-                elevate
-                size="$2"
-                margin="$2"
+          <Card
+            key={month.id}
+            elevate
+            size="$2"
+            margin="$2"
           >
             <Card.Header>
               <XStack justifyContent="space-between" onPress={() => {
-                if(params.transactionType == '0'){
+                if (params.transactionType == '0') {
                   navigate('addIncome', {selectedMonth: month})
                 } else {
-                  navigate('plannedBudget' , {selectedMonth: month})
+                  navigate('plannedBudget', {selectedMonth: month})
                 }
               }}>
-                <H5 {...month.isBudgeted ? {color: "purple"}: null}>
+                <H5>
                   {month.month}
                 </H5>
                 {month.isBudgeted ? <Check color="purple"/> : <></>}

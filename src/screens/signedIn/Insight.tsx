@@ -85,7 +85,11 @@ export const Insight = () => {
           </Paragraph>
         </XStack>
       </XStack>
-      <XStack flex={1} justifyContent="center" marginVertical="$3">
+      <XStack
+        flex={1}
+        justifyContent="center"
+        marginVertical="$3"
+      >
         <BarChart
           noOfSections={4}
           stackData={closerStackData}
@@ -93,12 +97,10 @@ export const Insight = () => {
           yAxisTextStyle={{
             color: colors.text
           }}
-
           barWidth={48}
           xAxisLabelTextStyle={{
             color: colors.text,
           }}
-
           yAxisThickness={0}
           xAxisThickness={0}
           yAxisLabelWidth={64}
@@ -126,19 +128,22 @@ export const Insight = () => {
                 coordinates[i.id] = layout.x;
               }}
             >
-
               <Card
                 marginHorizontal="$2"
                 borderRadius="$8"
                 width={width - 16}
                 alignSelf="center"
               >
-
-                <H5 paddingHorizontal="$4" paddingVertical="$2">
+                <H5
+                  paddingHorizontal="$4"
+                  paddingVertical="$2"
+                >
                   {i.name}
                 </H5>
-
-                <Card.Footer paddingHorizontal="$3" paddingVertical="$1">
+                <Card.Footer
+                  paddingHorizontal="$3"
+                  paddingVertical="$1"
+                >
                   <YStack>
                     <H4 color="red">
                       Expense - {new Intl.NumberFormat('en-CA', {
@@ -195,10 +200,13 @@ export const Insight = () => {
           maxValue={7500}
           frontColor={colors.text}
           onPress={(a, idx) => {
-            budgetedVsActualScrollRef?.current?.scrollTo({x: coordinatesForExpense[filterDataForDashboard[Math.floor(idx/2)].id]})
+            budgetedVsActualScrollRef?.current?.scrollTo({x: coordinatesForExpense[filterDataForDashboard[Math.floor(idx / 2)].id]})
           }}
           autoCenterTooltip
-          renderTooltip={(item) => <Paragraph color={item?.data ? '#3251c7': colors.text}>{new Intl.NumberFormat('en-CA', {
+          renderTooltip={(item) => <Paragraph
+            color={item?.data ? 'purple' : colors.text}
+            marginLeft="$2"
+          >{new Intl.NumberFormat('en-CA', {
             style: 'currency',
             currency: 'CAD'
           }).format(item.value)}</Paragraph>}
@@ -253,7 +261,8 @@ export const Insight = () => {
                         >
                           {budgetedExpense[i.id].find(elm => elm.name == item.categoryName).value >= ((i.id in actualTransactions) ?
                             actualTransactions[i.id]
-                              .reduce((acc, elm) => (elm.transactionTypeName == 'Expense' && elm.categoryType == item.categoryName) ? acc + Number(elm.amount) : acc, 0) : 0) ? <Check color="green"/>: <Cross color="red"/>}
+                              .reduce((acc, elm) => (elm.transactionTypeName == 'Expense' && elm.categoryType == item.categoryName) ? acc + Number(elm.amount) : acc, 0) : 0) ?
+                            <Check color="green"/> : <Cross color="red"/>}
                           <H4 marginLeft="$1" textWrap="wrap" wordWrap="break-word"
                               flexWrap="wrap" color={
                             budgetedExpense[i.id].find(elm => elm.name == item.categoryName).value >= ((i.id in actualTransactions) ?
@@ -290,33 +299,37 @@ export const Insight = () => {
                         </H3>
                       </XStack>
                     </XStack>
-
-                      <Separator borderWidth={StyleSheet.hairlineWidth} borderColor="darkgrey"/>
+                    <Separator
+                      borderWidth={StyleSheet.hairlineWidth}
+                      borderColor="darkgrey"
+                    />
                   </YStack>
                 ))}
                 <Card.Footer>
-                    <XStack
-                      marginVertical="$2"
-                      marginHorizontal="$2"
-                      flex={1}
-                      textWrap="wrap"
-                      alignItems="center"
-                      justifyContent="space-around"
-                    >
-                      <H5 flex={0.3}>Total</H5>
-                      <H4 flex={0.3} textAlign="right">
-                        {new Intl.NumberFormat('en-CA', {
-                          style: 'currency',
-                          currency: 'CAD'
-                        }).format(closerStackData[idx].stacks[1].value)}
-                      </H4>
-                      <H4 flex={0.3} textAlign="right">
-                        {new Intl.NumberFormat('en-CA', {
-                          style: 'currency',
-                          currency: 'CAD'
-                        }).format(closerBarData.find(elm => elm?.data?.id == i.id)?.value)}
-                      </H4>
-                    </XStack>
+                  <XStack
+                    marginVertical="$2"
+                    marginHorizontal="$2"
+                    flex={1}
+                    textWrap="wrap"
+                    alignItems="center"
+                    justifyContent="space-around"
+                  >
+                    <H4 flex={0.3}>Total</H4>
+                    <H4 flex={0.3} textAlign="right"
+                        color={closerStackData[idx].stacks[1].value < closerBarData.find(elm => elm?.data?.id == i.id)?.value ? 'red' : 'green'}>
+                      {new Intl.NumberFormat('en-CA', {
+                        style: 'currency',
+                        currency: 'CAD'
+                      }).format(closerStackData[idx].stacks[1].value)}
+                    </H4>
+                    <H4 flex={0.3} textAlign="right"
+                        color={closerStackData[idx].stacks[1].value < closerBarData.find(elm => elm?.data?.id == i.id)?.value ? 'red' : 'green'}>
+                      {new Intl.NumberFormat('en-CA', {
+                        style: 'currency',
+                        currency: 'CAD'
+                      }).format(closerBarData.find(elm => elm?.data?.id == i.id)?.value)}
+                    </H4>
+                  </XStack>
                 </Card.Footer>
               </Card>
 
@@ -327,5 +340,3 @@ export const Insight = () => {
     </ScrollView>
   );
 };
-
-//closerBarData.find(elm => elm?.data?.id == i.id)?.value
