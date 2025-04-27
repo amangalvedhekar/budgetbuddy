@@ -1,5 +1,5 @@
 import {SectionList} from "react-native";
-import {useNavigation, useTheme,} from "@react-navigation/native";
+import {useNavigation, useRoute, useTheme,} from "@react-navigation/native";
 import {Button, Card, H2, H3, H4, H5, Paragraph, ScrollView, Sheet, XStack, YStack,} from "tamagui";
 import * as Haptics from 'expo-haptics';
 import {ImpactFeedbackStyle} from 'expo-haptics';
@@ -75,10 +75,13 @@ const defaultCategory = {
 
 export const History = () => {
   const snapPoints = [70, 70, 70];
+  const currentDate = new Date();
+  const currentYear = currentDate.getUTCFullYear();
   const [showCalendar, setShowCalendar] = useState(false);
   const [activeFilter, setActiveFilter] = useState(() => defaultCategory);
   const allCategories = useSelector((state: RootState) => state.categories);
-  const transactionListByMonth = useSelector((state: RootState) => state.transactionList);
+  const transactionListByYear = useSelector((state: RootState) => state.transactionList);
+  const transactionListByMonth = transactionListByYear[currentYear] ?? {};
   const transactionType = useSelector((state: RootState) => state.transactionType)
   const filterForTransactionType = transactionType.map(type => ({
     ...type,

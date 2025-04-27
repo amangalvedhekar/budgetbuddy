@@ -12,17 +12,29 @@ export interface InsertTransactionProps {
   addedBy: typeof TransactionLists.addedBy;
   id: typeof TransactionLists.id;
 }
-
+/*
+const transactionList = {
+2025: {
+0: [],
+1: []
+}
+};
+* */
 export const getTransactionMonthIndexed = async ({userId, dispatch}) => {
   const transactionList = await getTransactionForUser({userId});
   const transactionMonthBasis = transactionList.reduce((acc, elm) => {
     const createdDate = new Date(elm.createdDate);
-    const modified = createdDate.setTime(createdDate.getTime() + 955 * 60 *1000)
+    createdDate.setTime(createdDate.getTime() + 955 * 60 *1000)
     const month = createdDate.getMonth();
-    if (month in acc) {
-      acc[month] = [...acc[month], elm]
+    const year = createdDate.getFullYear();
+    if (year in acc) {
+      if(month in acc[year]) {
+        acc[year][month] = [...acc[year][month], elm];
+      }else {
+        acc[year][month] = [elm]
+      }
     } else {
-      acc[month] = [elm];
+      acc[year] = {[month]: [elm]};
     }
     return acc;
   }, {});
@@ -78,6 +90,7 @@ export const insertTransactionForUser = async (
     await db.insert(TransactionLists).values(dataToInsert);
     await getTransactionMonthIndexed({userId: addedBy, dispatch});
   } catch (e) {
-    console.log(JSON.stringify(e), 'error while inserting record')
+    console.log(JSON.stringify(e), 'error while inserting record');
+    throw e;
   }
 }

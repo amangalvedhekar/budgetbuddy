@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {Check, Cross, Warning} from "../../icons";
 import {BannerContainer} from "../../components/Banner/Container";
 import {
@@ -20,13 +20,16 @@ import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
 import {BarChart} from "react-native-gifted-charts";
-import {useTheme} from "@react-navigation/native";
+import {useFocusEffect, useNavigation, useTheme} from "@react-navigation/native";
 import {StyleSheet} from "react-native";
 
 export const Insight = () => {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
   const budgetedExpense = useSelector((state: RootState) => state.budgetedExpense);
   const expectedIncome = useSelector((state: RootState) => state.expectedIncome);
-  const actualTransactions = useSelector((state: RootState) => state.transactionList);
+  const transactionLists = useSelector((state: RootState) => state.transactionList);
+  const actualTransactions = transactionLists[currentYear] ?? {};
   const categories = useSelector((state: RootState) => state.categories);
   const categoriesForExpense = categories.filter(elm => elm.transactionName == 'Expense')
   const [coordinates, setCoordinates] = useState([]);
@@ -50,6 +53,7 @@ export const Insight = () => {
     const actualData = {
       value: (data?.id in actualTransactions) ? actualTransactions[data.id].reduce((acc, elm) => elm.transactionTypeName == 'Expense' ? acc + Number(elm.amount) : acc, 0) : 0,
       frontColor: '#3251c7',
+
       data
     };
     return [
@@ -60,6 +64,10 @@ export const Insight = () => {
 
   const {width} = useWindowDimensions();
   const {colors} = useTheme();
+
+  useFocusEffect(useCallback(() => {
+    budgetedVsActualScrollRef?.current?.scrollTo({x: coordinatesForExpense[filterDataForDashboard[3].id]})
+  },[scrollRef, budgetedVsActualScrollRef]))
 
   return (
     <ScrollView
@@ -92,6 +100,7 @@ export const Insight = () => {
       >
         <BarChart
           noOfSections={4}
+          isAnimated
           stackData={closerStackData}
           frontColor={colors.text}
           yAxisTextStyle={{
@@ -188,6 +197,7 @@ export const Insight = () => {
         <BarChart
           data={closerBarData}
           rotateLabel
+          isAnimated
           labelWidth={40}
           barBorderRadius={8}
           noOfSections={4}
