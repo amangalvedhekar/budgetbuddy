@@ -92,6 +92,7 @@ export const Add = () => {
       if (frequency.id == 'neverRepeat') {
         await insertTransactionForUser({
           ...transactionToAdd,
+          isRecurringTransaction: '',
           dispatch
         });
         if (amount == '' || categoryType == '') {
@@ -112,9 +113,10 @@ export const Add = () => {
         const remainingMonthData = filterDataForDashboard
           .slice(currentMonth)
           .map((data) => {
-            const formattedMonth = data.id <= 9 ? `0${data.id + 1}` : data.id + 1;
+            const formattedMonth = data.id < 9 ? `0${data.id + 1}` : data.id + 1;
             return ({
               ...transactionToAdd,
+              isRecurringTransaction: frequency.id,
               createdDate: `${currentYear}-${formattedMonth}-${formattedDate}`
             })
           });

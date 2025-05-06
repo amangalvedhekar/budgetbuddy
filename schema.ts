@@ -29,6 +29,7 @@ export const TransactionLists = sqliteTable('TransactionLists',{
   transactionType: text('transactionType').references(() => TransactionTypes.id),
   isDeleted: integer('isDeleted',{mode: 'boolean'}).default(false),
   deletedDate: text('deletedDate'),
+  isRecurringTransaction: text('isRecurringTransaction').default(''),
 });
 
 export const BudgetedData = sqliteTable('BudgetedData', {

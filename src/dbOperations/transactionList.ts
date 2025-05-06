@@ -11,6 +11,7 @@ export interface InsertTransactionProps {
   description: typeof TransactionLists.description;
   addedBy: typeof TransactionLists.addedBy;
   id: typeof TransactionLists.id;
+  isRecurringTransaction: typeof TransactionLists.isRecurringTransaction;
 }
 /*
 const transactionList = {
@@ -54,6 +55,7 @@ export const getTransactionForUser = async ({userId}: { userId: string }) => {
         transactionTypeName: TransactionTypes.transactionName,
         description: TransactionLists.description,
         transactionType: TransactionLists.transactionType,
+        isRecurringTransaction: TransactionLists.isRecurringTransaction,
       })
       .from(TransactionLists)
       .where(
@@ -75,7 +77,7 @@ export const getTransactionForUser = async ({userId}: { userId: string }) => {
 };
 
 export const insertTransactionForUser = async (
-  {transactionType, categoryType, createdDate, amount, addedBy, description, dispatch}: InsertTransactionProps) => {
+  {transactionType, categoryType, createdDate, amount, addedBy, description,isRecurringTransaction, dispatch}: InsertTransactionProps) => {
   try {
     const id = (Math.floor(Math.random() * 9999).toString() as unknown as typeof TransactionLists.id);
     const dataToInsert: InsertTransactionProps = {
@@ -86,6 +88,7 @@ export const insertTransactionForUser = async (
       categoryType,
       description,
       addedBy,
+      isRecurringTransaction,
     };
     await db.insert(TransactionLists).values(dataToInsert);
     await getTransactionMonthIndexed({userId: addedBy, dispatch});

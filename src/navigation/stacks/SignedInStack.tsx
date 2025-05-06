@@ -17,6 +17,7 @@ import {ImpactFeedbackStyle} from "expo-haptics";
 import {Settings} from "../../screens/signedIn/Settings";
 import {XStack} from "tamagui";
 import React from "react";
+import {RecurringTransaction} from "../../screens/signedIn/RecurringTransaction";
 
 
 const SignedInStack = createBottomTabNavigator();
@@ -44,7 +45,9 @@ const AccountStackScreens = () => {
       <AccountStack.Screen name="appSettings" component={Settings} options={{
         headerTitle: 'Display and Haptics'
       }}/>
-
+      <AccountStack.Screen name="recurringTransactions" component={RecurringTransaction} options={{
+        headerTitle: 'Recurring Transactions'
+      }}/>
     </AccountStack.Navigator>
   );
 }

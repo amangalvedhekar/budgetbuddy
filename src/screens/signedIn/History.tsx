@@ -5,7 +5,7 @@ import * as Haptics from 'expo-haptics';
 import {ImpactFeedbackStyle} from 'expo-haptics';
 import React, {useEffect, useState} from "react";
 
-import {Filter} from "../../icons";
+import {ChevronRight, Filter} from "../../icons";
 import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
@@ -81,6 +81,7 @@ export const History = () => {
   const [activeFilter, setActiveFilter] = useState(() => defaultCategory);
   const allCategories = useSelector((state: RootState) => state.categories);
   const transactionListByYear = useSelector((state: RootState) => state.transactionList);
+  const {colors} = useTheme();
   const transactionListByMonth = transactionListByYear[currentYear] ?? {};
   const transactionType = useSelector((state: RootState) => state.transactionType)
   const filterForTransactionType = transactionType.map(type => ({
@@ -186,9 +187,25 @@ export const History = () => {
             </Button>
           ))}
         </ScrollView>
+
       </XStack>
-
-
+      <YStack marginVertical="$2" marginHorizontal="$2">
+      <Card onPress={() => navigation.navigate('Account', {
+        screen: 'accountEntry',
+        params: {
+          screen: 'recurringTransaction'
+        }
+      })}>
+        <Card.Header>
+          <XStack justifyContent="space-between" alignItems="center">
+          <H5>
+            See recurring transactions
+          </H5>
+          <ChevronRight color={colors.text}/>
+          </XStack>
+        </Card.Header>
+      </Card>
+      </YStack>
       {/* <FlatList*/}
       {/*  data={flatListData}*/}
       {/*  renderItem={({item}) => <RenderItem*/}
