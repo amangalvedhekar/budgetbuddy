@@ -13,6 +13,8 @@ import m0008 from './0008_broken_odin.sql';
 import m0009 from './0009_confused_sharon_carter.sql';
 import m0010 from './0010_white_veda.sql';
 import m0011 from './0011_military_sersi.sql';
+import m0012 from './0012_sloppy_medusa.sql';
+import m0013 from './0013_cute_imperial_guard.sql';
 
   export default {
     journal,
@@ -28,7 +30,9 @@ m0007,
 m0008,
 m0009,
 m0010,
-m0011
+m0011,
+m0012,
+m0013
     }
   }
   

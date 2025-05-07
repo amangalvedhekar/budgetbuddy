@@ -11,18 +11,31 @@ export interface InsertTransactionProps {
   description: typeof TransactionLists.description;
   addedBy: typeof TransactionLists.addedBy;
   id: typeof TransactionLists.id;
+  isRecurringTransaction: typeof TransactionLists.isRecurringTransaction;
 }
-
+/*
+const transactionList = {
+2025: {
+0: [],
+1: []
+}
+};
+* */
 export const getTransactionMonthIndexed = async ({userId, dispatch}) => {
   const transactionList = await getTransactionForUser({userId});
   const transactionMonthBasis = transactionList.reduce((acc, elm) => {
     const createdDate = new Date(elm.createdDate);
-    const modified = createdDate.setTime(createdDate.getTime() + 955 * 60 *1000)
+    createdDate.setTime(createdDate.getTime() + 955 * 60 *1000)
     const month = createdDate.getMonth();
-    if (month in acc) {
-      acc[month] = [...acc[month], elm]
+    const year = createdDate.getFullYear();
+    if (year in acc) {
+      if(month in acc[year]) {
+        acc[year][month] = [...acc[year][month], elm];
+      }else {
+        acc[year][month] = [elm]
+      }
     } else {
-      acc[month] = [elm];
+      acc[year] = {[month]: [elm]};
     }
     return acc;
   }, {});
@@ -42,6 +55,7 @@ export const getTransactionForUser = async ({userId}: { userId: string }) => {
         transactionTypeName: TransactionTypes.transactionName,
         description: TransactionLists.description,
         transactionType: TransactionLists.transactionType,
+        isRecurringTransaction: TransactionLists.isRecurringTransaction,
       })
       .from(TransactionLists)
       .where(
@@ -63,7 +77,7 @@ export const getTransactionForUser = async ({userId}: { userId: string }) => {
 };
 
 export const insertTransactionForUser = async (
-  {transactionType, categoryType, createdDate, amount, addedBy, description, dispatch}: InsertTransactionProps) => {
+  {transactionType, categoryType, createdDate, amount, addedBy, description,isRecurringTransaction, dispatch}: InsertTransactionProps) => {
   try {
     const id = (Math.floor(Math.random() * 9999).toString() as unknown as typeof TransactionLists.id);
     const dataToInsert: InsertTransactionProps = {
@@ -74,10 +88,12 @@ export const insertTransactionForUser = async (
       categoryType,
       description,
       addedBy,
+      isRecurringTransaction,
     };
     await db.insert(TransactionLists).values(dataToInsert);
     await getTransactionMonthIndexed({userId: addedBy, dispatch});
   } catch (e) {
-    console.log(JSON.stringify(e), 'error while inserting record')
+    console.log(JSON.stringify(e), 'error while inserting record');
+    throw e;
   }
 }

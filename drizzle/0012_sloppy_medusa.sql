@@ -1,0 +1,1 @@
+ALTER TABLE `TransactionLists` ADD `isRecurringTransaction` integer DEFAULT false;

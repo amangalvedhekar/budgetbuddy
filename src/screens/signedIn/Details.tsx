@@ -19,7 +19,12 @@ export const Details = () => {
   const [categoryType, setCategoryType] = useState('');
   const [formattedDate, setFormattedDate] = useState();
   const categories = useSelector((state: RootState) => state.categories);
-  const transactionType = useSelector((state: RootState) => state.transactionType)
+  const transactionType = useSelector((state: RootState) => state.transactionType);
+  const transactionList = useSelector((state: RootState) => state.transactionList);
+  const transactionData = Object
+    .values(transactionList)
+    .flatMap(transaction => transaction)
+    .find(data => data.id == params?.entryId)
 
   const showSuccessToastForUpdate = () => {
     DeviceEventEmitter.emit("DISPLAY_TOAST", {

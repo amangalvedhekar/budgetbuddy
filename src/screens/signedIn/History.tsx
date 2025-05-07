@@ -1,11 +1,11 @@
 import {SectionList} from "react-native";
-import {useNavigation, useTheme,} from "@react-navigation/native";
+import {useNavigation, useRoute, useTheme,} from "@react-navigation/native";
 import {Button, Card, H2, H3, H4, H5, Paragraph, ScrollView, Sheet, XStack, YStack,} from "tamagui";
 import * as Haptics from 'expo-haptics';
 import {ImpactFeedbackStyle} from 'expo-haptics';
 import React, {useEffect, useState} from "react";
 
-import {Filter} from "../../icons";
+import {ChevronRight, Filter} from "../../icons";
 import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
@@ -75,10 +75,14 @@ const defaultCategory = {
 
 export const History = () => {
   const snapPoints = [70, 70, 70];
+  const currentDate = new Date();
+  const currentYear = currentDate.getUTCFullYear();
   const [showCalendar, setShowCalendar] = useState(false);
   const [activeFilter, setActiveFilter] = useState(() => defaultCategory);
   const allCategories = useSelector((state: RootState) => state.categories);
-  const transactionListByMonth = useSelector((state: RootState) => state.transactionList);
+  const transactionListByYear = useSelector((state: RootState) => state.transactionList);
+  const {colors} = useTheme();
+  const transactionListByMonth = transactionListByYear[currentYear] ?? {};
   const transactionType = useSelector((state: RootState) => state.transactionType)
   const filterForTransactionType = transactionType.map(type => ({
     ...type,
@@ -183,9 +187,25 @@ export const History = () => {
             </Button>
           ))}
         </ScrollView>
+
       </XStack>
-
-
+      <YStack marginVertical="$2" marginHorizontal="$2">
+      <Card onPress={() => navigation.navigate('Account', {
+        screen: 'accountEntry',
+        params: {
+          screen: 'recurringTransaction'
+        }
+      })}>
+        <Card.Header>
+          <XStack justifyContent="space-between" alignItems="center">
+          <H5>
+            See recurring transactions
+          </H5>
+          <ChevronRight color={colors.text}/>
+          </XStack>
+        </Card.Header>
+      </Card>
+      </YStack>
       {/* <FlatList*/}
       {/*  data={flatListData}*/}
       {/*  renderItem={({item}) => <RenderItem*/}

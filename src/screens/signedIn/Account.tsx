@@ -23,13 +23,20 @@ export const Account = () => {
   }
   const onAppSettingPress = () => navigate('appSettings');
 
+  const onRecurringTransactionPress = () => navigate('recurringTransactions');
+
   useEffect(() => {
     console.log(params, 'are params coming here')
     if(params) {
-      if(params.name!='') {
+      if(params.name && params.name!='') {
         navigate('addCategory', {
           name: params.name, id: params.id
-        })
+        });
+        return;
+      }
+      if(params.screen == 'recurringTransaction') {
+        navigate('recurringTransactions');
+        return;
       }
     }
   }, [params]);
@@ -48,6 +55,11 @@ export const Account = () => {
       title: 'Categories',
       footerText: 'View, create or edit categories',
       onPress: handlePress,
+    },
+    {
+      title: 'Recurring Transactions',
+      footerText: 'View, create or edit recurring transactions',
+      onPress: onRecurringTransactionPress,
     },
     {
       title: 'App Settings',
@@ -89,11 +101,7 @@ export const Account = () => {
               elevate
               borderRadius="$8"
               marginVertical="$2"
-              animation="bouncy"
-              scale={0.5}
-              hoverStyle={{scale: 0.925}}
               onPress={item.onPress}
-              pressStyle={{scale: 0.875}}
             >
               <XStack marginVertical="$4" paddingHorizontal="$4" justifyContent="space-between">
                 <H4 size="$6" fontWeight="bold">

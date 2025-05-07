@@ -1,5 +1,5 @@
 import {
-  Button,
+  Button, H5,
   Input,
   Paragraph,
   ScrollView,
@@ -18,6 +18,8 @@ import {DropDown} from "../../components/DropDown";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../store";
 import {insertTransactionForUser} from "../../dbOperations/transactionList";
+import {frequencyList} from "../../utils/frequency";
+import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
 
 export const Add = () => {
   const showSuccessToast = () => {
@@ -50,8 +52,8 @@ export const Add = () => {
     const date = today.getDate();
     const year = today.getFullYear();
 
-    const formattedMonth = month <=9 ? `0${month}`: month;
-    const formattedDate = date <=9 ? `0${date}`: date;
+    const formattedMonth = month <= 9 ? `0${month}` : month;
+    const formattedDate = date <= 9 ? `0${date}` : date;
 
     return `${year}-${formattedMonth}-${formattedDate}`;
   }
@@ -63,6 +65,7 @@ export const Add = () => {
   const [description, setDescription] = useState('');
   const [transactionDate, setTransactionDate] = useState(getDefaultDate);
   const [subCategory, setSubCategory] = useState('');
+  const [frequency, setFrequency] = useState(() => frequencyList[0]);
 
   const categories = useSelector((state: RootState) => state.categories);
   const transactionTypes = useSelector((state: RootState) => state.transactionType);
@@ -79,7 +82,6 @@ export const Add = () => {
   const handleAddTransaction = async () => {
     try {
       const transactionToAdd = {
-
         transactionType: categoryType.id,
         amount: Number(amount),
         createdDate: transactionDate,
@@ -87,16 +89,66 @@ export const Add = () => {
         description,
         addedBy: ab?.username,
       };
-      await insertTransactionForUser({
-        ...transactionToAdd,
-dispatch
-      });
-      if (amount == '' || categoryType == '') {
-        showWarningToast();
-      } else {
-        showSuccessToast();
+      if (frequency.id == 'neverRepeat') {
+        await insertTransactionForUser({
+          ...transactionToAdd,
+          isRecurringTransaction: '',
+          dispatch
+        });
+        if (amount == '' || categoryType == '') {
+          showWarningToast();
+        } else {
+          showSuccessToast();
+        }
+        navigate('History');
+      } else if (frequency.id == 'monthly') {
+        const date = new Date(transactionDate);
+        date.setTime(date.getTime() + 955 * 60 * 1000);
+        const currentMonth = date.getMonth();
+        const currentDate = date.getDate();
+        const currentYear = date.getFullYear();
+
+        const formattedDate = currentDate <= 9 ? `0${currentDate}` : currentDate;
+
+        const remainingMonthData = filterDataForDashboard
+          .slice(currentMonth)
+          .map((data) => {
+            const formattedMonth = data.id < 9 ? `0${data.id + 1}` : data.id + 1;
+            return ({
+              ...transactionToAdd,
+              isRecurringTransaction: frequency.id,
+              createdDate: `${currentYear}-${formattedMonth}-${formattedDate}`
+            })
+          });
+        console.log(remainingMonthData, 'data')
+        let showWarning = false;
+        for (const monthData of remainingMonthData) {
+          await insertTransactionForUser({
+            ...monthData,
+            dispatch
+          });
+          if(!showWarning) {
+            if(monthData.amount == '' || categoryType == '') {
+              showWarning =  true;
+            }
+          }
+
+        }
+        if(showWarning) {
+          showWarningToast();
+        } else {
+          showSuccessToast();
+        }
+        navigate('History');
       }
-      navigate('History');
+
+      /*
+      monthly -> get current month and subtract it from total month and loop
+      quarterly -> 4 - current quarter and loop
+
+      * */
+
+
     } catch (e) {
       showErrorToast();
       console.log(e, 'caught error here')
@@ -106,7 +158,7 @@ dispatch
       setDescription('');
       setSubCategory('');
       setTransactionDate(getDefaultDate);
-
+      setFrequency(frequencyList[0]);
     }
 
   }
@@ -135,13 +187,6 @@ dispatch
           onChangeText={setDescription}
           ref={descriptionRef}
         />
-        {/*<DropDown*/}
-        {/*  items={["Doesn't Repeat",'Weekly', 'Bi-Weekly', 'Monthly', 'Semi-Annually', 'Annually']}*/}
-        {/*  placeholder="Transaction Frequency"*/}
-        {/*  // val={}*/}
-        {/*  setVal={console.log}*/}
-        {/*  defaultValue="Doesn't Repeat"*/}
-        {/*/>*/}
         <DropDown
           items={transactionTypes}
           placeholder="Transaction Type"
@@ -158,6 +203,14 @@ dispatch
           keyName='categoryName'
           emptyItemOnPress={handleNavigation}
         />}
+        <DropDown
+          items={frequencyList}
+          placeholder="Transaction Frequency for future transactions"
+          val={frequency}
+          keyName='name'
+          setVal={setFrequency}
+          defaultValue="Never Repeat"
+        />
         <Button
           icon={() => <CalendarIcon stroke="purple"/>}
           size="$6"
