@@ -1,24 +1,64 @@
-import { useScrollToTop, useTheme} from "@react-navigation/native";
-import { useRef, useState} from "react";
-import {XStack, H2, H5, ScrollView, useWindowDimensions, YStack, Paragraph} from "tamagui";
+import {useScrollToTop, useTheme} from "@react-navigation/native";
+import React, {Fragment, useRef, useState} from "react";
+import {
+  XStack,
+  H2,
+  H5,
+  ScrollView,
+  useWindowDimensions,
+  YStack,
+  Paragraph,
+  Card,
+  H4,
+  H3,
+  Separator,
+  Progress,
+  Accordion,
+  Square
+} from "tamagui";
 import {BarChart, PieChart} from "react-native-gifted-charts";
 import {DropDown} from "../../components/DropDown";
 import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
+import {ChevronDown, ChevronRight, ChevronUp} from "../../icons";
+import {StyleSheet} from "react-native";
+import {CardWithProgress} from "../../components/CardWithProgress";
 
+
+const dummyData = [
+  {
+    id: '1',
+    actualSpent: 350,
+    categoryName: 'Grocery',
+    budgetedAmount: 450,
+  },
+  {
+    id: '2',
+    actualSpent: 250,
+    categoryName: 'Uber Eats/Doordash',
+    budgetedAmount: 550,
+  },
+  {
+    id: '3',
+    actualSpent: 44.9,
+    categoryName: 'Lyft',
+    budgetedAmount: 55,
+  }
+];
 
 export const Home = () => {
-  const [selectedPie, setSelectedPie] = useState();
   const currentDate = new Date();
-  const {colors} = useTheme();
+  const currentYear = currentDate.getFullYear();
   const budgetedExpense = useSelector((state: RootState) => state.budgetedExpense);
+  const transactionLists = useSelector((state: RootState) => state.transactionList);
+  const actualTransactions = transactionLists[currentYear] ?? {};
   const expectedIncome = useSelector((state: RootState) => state.expectedIncome);
-  const [month, setMonth] = useState<Record<'name'| 'id', number | string>>(() => filterDataForDashboard[currentDate.getMonth()]);
-  const {height, width} = useWindowDimensions();
+  const [month, setMonth] = useState<Record<'name' | 'id', number | string>>(() => filterDataForDashboard[currentDate.getMonth()]);
   const scrollViewRef = useRef<ScrollView>();
   useScrollToTop(scrollViewRef);
-
+  const {width} = useWindowDimensions();
+  const {colors} = useTheme();
   const budgetExpenseForMonth = month ? budgetedExpense[month.id] : [];
 
   const calculateTotal = () => {
@@ -35,6 +75,8 @@ export const Home = () => {
     currency: 'CAD'
   }).format(calculateIncomeTotal());
 
+
+
   return (
     <>
       <ScrollView
@@ -46,84 +88,35 @@ export const Home = () => {
             items={filterDataForDashboard}
             val={month}
             setVal={setMonth}
-            placeholder="Select Duration"
+            placeholder="Select Month"
           />
         </XStack>
-        <YStack justifyContent="center" alignItems="center" marginVertical="$2">
-          {Array.isArray(budgetExpenseForMonth) && budgetExpenseForMonth?.length > 0 && calculateTotal() != '$0.00' && (<>
-            <H5>
-              Budgeted Expense for {month.name}
-            </H5>
-            <H2 color="red">
-              {calculateTotal()}
-            </H2>
-            <PieChart
-              radius={height > width ? ((width-64) / 2) : ((height-64) / 2)}
-              donut
-              showTooltip
-              innerCircleColor={colors.card}
-              onPress={setSelectedPie}
-              centerLabelComponent={() => (
-                <YStack flex={1} textWrap="wrap" alignItems="center" justifyContent="center">
-                  {selectedPie != undefined ? <>
-                    <H5 textWrap="wrap">{selectedPie?.name}</H5>
-                    <H5 color="red">{new Intl.NumberFormat('en-CA', {
-                      style: 'currency',
-                      currency: 'CAD'
-                    }).format(selectedPie?.value)}</H5>
-                  </> : <>
-                    <H5 textWrap="balance">Total expense</H5>
-                    <H5 color="red">{calculateTotal()}</H5>
-                  </>}
-                </YStack>
-              )}
-              labelsPosition="outward"
-              data={budgetExpenseForMonth}
-            />
-          </>)}
-          {Array.isArray(expectedIncome[month.id]) && expectedIncome[month.id]?.length > 0 && calculateIncomeTotal() > 0 && (
-            <>
-              <H5 paddingTop="$2">
-                Expected Income for {month.name}
-              </H5>
-              <H2 paddingBottom="$2" color="green">
-                {formatTotal}
-              </H2>
-
-              <BarChart
-                showValuesAsTopLabel
-                maxValue={maxAmount() + 1000}
-                topLabelContainerStyle={{
-                  paddingTop: 16,
-                  marginTop: 16,
-                }}
-                rotateLabel
-                labelWidth={48}
-                labelsExtraHeight={40}
-                labelsDistanceFromXaxis={16}
-                topLabelTextStyle={{color: colors.text}}
-                barWidth={(width - 200) / expectedIncome[month.id]?.length}
-                noOfSections={4}
-                yAxisLabelWidth={64}
-                barBorderRadius={8}
-                frontColor={colors.text}
-                yAxisTextStyle={{
-                  color: colors.text
-                }}
-                xAxisLabelTextStyle={{
-                  color: colors.text,
-                }}
-                data={expectedIncome[month.id]}
-                yAxisThickness={0}
-                xAxisThickness={0}
-                autoCenterTooltip
-                renderTooltip={(item) => <Paragraph color="green">{new Intl.NumberFormat('en-CA', {
-                  style: 'currency',
-                  currency: 'CAD'
-                }).format(item.value)}</Paragraph>}
-              />
-            </>)}
-        </YStack>
+        <XStack
+          marginHorizontal="$3"
+          marginVertical="$2"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <H4>
+            Expense
+          </H4>
+          <H4 color="green">
+            $200 left to spend
+          </H4>
+          <ChevronUp
+            color={colors.text}
+            height={32}
+            width={32}
+          />
+        </XStack>
+        {dummyData.map(data => (
+          <CardWithProgress
+            key={data.id}
+            headingTitle={data.categoryName}
+            actualSpent={data.actualSpent}
+            budgetedAmount={data.budgetedAmount}
+          />
+        ))}
       </ScrollView>
     </>
   )
