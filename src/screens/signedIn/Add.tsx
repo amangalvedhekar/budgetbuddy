@@ -5,6 +5,7 @@ import {
   ScrollView,
   Sheet,
   YStack,
+  Spinner,
 } from "tamagui";
 import React, {useCallback, useRef, useState} from "react";
 import {DeviceEventEmitter, TextInput} from "react-native";
@@ -66,7 +67,7 @@ export const Add = () => {
   const [transactionDate, setTransactionDate] = useState(getDefaultDate);
   const [subCategory, setSubCategory] = useState('');
   const [frequency, setFrequency] = useState(() => frequencyList[0]);
-
+  const [isLoading, setIsLoading] = useState(false);
   const categories = useSelector((state: RootState) => state.categories);
   const transactionTypes = useSelector((state: RootState) => state.transactionType);
   const transactionBasedCategories = categories.filter(category => category.transactionName == categoryType.transactionName);
@@ -81,6 +82,7 @@ export const Add = () => {
 
   const handleAddTransaction = async () => {
     try {
+      setIsLoading(true);
       const transactionToAdd = {
         transactionType: categoryType.id,
         amount: Number(amount),
@@ -127,14 +129,14 @@ export const Add = () => {
             ...monthData,
             dispatch
           });
-          if(!showWarning) {
-            if(monthData.amount == '' || categoryType == '') {
-              showWarning =  true;
+          if (!showWarning) {
+            if (monthData.amount == '' || categoryType == '') {
+              showWarning = true;
             }
           }
 
         }
-        if(showWarning) {
+        if (showWarning) {
           showWarningToast();
         } else {
           showSuccessToast();
@@ -159,104 +161,108 @@ export const Add = () => {
       setSubCategory('');
       setTransactionDate(getDefaultDate);
       setFrequency(frequencyList[0]);
+      setIsLoading(false);
     }
 
   }
-
   return (
     <ScrollView>
       <YStack paddingHorizontal="$4">
-        <Input
-          marginVertical="$3"
-          size="$6"
-          placeholder="amount"
-          keyboardType="numeric"
-          returnKeyType="next"
-          value={amount}
-          onChangeText={setAmount}
-          onSubmitEditing={() => descriptionRef?.current?.focus()}
-          ref={amountRef}
-        />
-        <Input
-          marginVertical="$2"
-          size="$6"
-          placeholder="description"
-          keyboardType="default"
-          returnKeyType="next"
-          value={description}
-          onChangeText={setDescription}
-          ref={descriptionRef}
-        />
-        <DropDown
-          items={transactionTypes}
-          placeholder="Transaction Type"
-          val={categoryType}
-          setVal={setCategoryType}
-          keyName='transactionName'
-
-        />
-        {categoryType !== '' && <DropDown
-          items={categoryType !== '' ? transactionBasedCategories : categories}
-          placeholder="Categories"
-          val={subCategory}
-          setVal={setSubCategory}
-          keyName='categoryName'
-          emptyItemOnPress={handleNavigation}
-        />}
-        <DropDown
-          items={frequencyList}
-          placeholder="Transaction Frequency for future transactions"
-          val={frequency}
-          keyName='name'
-          setVal={setFrequency}
-          defaultValue="Never Repeat"
-        />
-        <Button
-          icon={() => <CalendarIcon stroke="purple"/>}
-          size="$6"
-          onPress={() => setShowCalendar((prevState) => !prevState)}
-        >
-          <Paragraph>{transactionDate}</Paragraph>
-        </Button>
-        <Sheet
-          forceRemoveScrollEnabled={showCalendar}
-          modal
-          open={showCalendar}
-          onOpenChange={setShowCalendar}
-          snapPoints={snapPoints}
-          snapPointsMode="percent"
-          dismissOnSnapToBottom
-          zIndex={100_000}
-          animation="fast">
-          <Sheet.Overlay
-            animation="lazy"
-            enterStyle={{opacity: 0}}
-            exitStyle={{opacity: 0}}
+        {!isLoading ? <>
+          <Input
+            marginVertical="$3"
+            size="$6"
+            placeholder="amount"
+            keyboardType="numeric"
+            returnKeyType="next"
+            value={amount}
+            onChangeText={setAmount}
+            onSubmitEditing={() => descriptionRef?.current?.focus()}
+            ref={amountRef}
           />
-          <Sheet.Frame>
-            <Calendar
-              style={{
-                marginVertical: 16,
-                borderRadius: 16,
-                paddingBottom: 8
-              }}
-              onDayPress={(day: DateData) => {
-                setTransactionDate(day.dateString);
-                setShowCalendar(false);
-              }}
-            />
-          </Sheet.Frame>
-        </Sheet>
+          <Input
+            marginVertical="$2"
+            size="$6"
+            placeholder="description"
+            keyboardType="default"
+            returnKeyType="next"
+            value={description}
+            onChangeText={setDescription}
+            ref={descriptionRef}
+          />
+          <DropDown
+            items={transactionTypes}
+            placeholder="Transaction Type"
+            val={categoryType}
+            setVal={setCategoryType}
+            keyName='transactionName'
 
-        <Button
-          size="$6"
-          elevate
-          marginVertical="$2"
-          onPress={handleAddTransaction}
-          icon={() => <Plus color="purple"/>}
-        >
-          Add
-        </Button>
+          />
+          {categoryType !== '' && <DropDown
+            items={categoryType !== '' ? transactionBasedCategories : categories}
+            placeholder="Categories"
+            val={subCategory}
+            setVal={setSubCategory}
+            keyName='categoryName'
+            emptyItemOnPress={handleNavigation}
+          />}
+          <DropDown
+            items={frequencyList}
+            placeholder="Transaction Frequency for future transactions"
+            val={frequency}
+            keyName='name'
+            setVal={setFrequency}
+            defaultValue="Never Repeat"
+          />
+          <Button
+            icon={() => <CalendarIcon stroke="purple"/>}
+            size="$6"
+            onPress={() => setShowCalendar((prevState) => !prevState)}
+          >
+            <Paragraph>{transactionDate}</Paragraph>
+          </Button>
+          <Sheet
+            forceRemoveScrollEnabled={showCalendar}
+            modal
+            open={showCalendar}
+            onOpenChange={setShowCalendar}
+            snapPoints={snapPoints}
+            snapPointsMode="percent"
+            dismissOnSnapToBottom
+            zIndex={100_000}
+            animation="fast">
+            <Sheet.Overlay
+              animation="lazy"
+              enterStyle={{opacity: 0}}
+              exitStyle={{opacity: 0}}
+            />
+            <Sheet.Frame>
+              <Calendar
+                style={{
+                  marginVertical: 16,
+                  borderRadius: 16,
+                  paddingBottom: 8
+                }}
+                onDayPress={(day: DateData) => {
+                  setTransactionDate(day.dateString);
+                  setShowCalendar(false);
+                }}
+              />
+            </Sheet.Frame>
+          </Sheet>
+
+          <Button
+            size="$6"
+            elevate
+            marginVertical="$2"
+            onPress={handleAddTransaction}
+            icon={() => <Plus color="purple"/>}
+          >
+            Add
+          </Button>
+        </> : <YStack alignItems="center" marginVertical="$4">
+          <Spinner size="large"/>
+        </YStack>}
       </YStack>
     </ScrollView>
   );
