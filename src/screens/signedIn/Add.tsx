@@ -165,7 +165,6 @@ export const Add = () => {
     }
 
   }
-console.log(isLoading, 'is it loading')
   return (
     <ScrollView>
       <YStack paddingHorizontal="$4">
