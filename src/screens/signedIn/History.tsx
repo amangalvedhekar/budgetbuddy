@@ -77,6 +77,7 @@ export const History = () => {
   const snapPoints = [70, 70, 70];
   const currentDate = new Date();
   const currentYear = currentDate.getUTCFullYear();
+  const currentMonth = currentDate.getUTCMonth() + 1;
   const [showCalendar, setShowCalendar] = useState(false);
   const [activeFilter, setActiveFilter] = useState(() => defaultCategory);
   const allCategories = useSelector((state: RootState) => state.categories);
@@ -105,8 +106,8 @@ export const History = () => {
       }
       return acc;
     }, [])
+    .slice(0,currentMonth)
     .reverse();
-
   const navigation = useNavigation();
   const theme = useTheme();
 
