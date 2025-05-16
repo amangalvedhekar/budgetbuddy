@@ -14,10 +14,11 @@ export const CardWithProgress = (
     budgetedAmount,
   }: CardWithProgressProps) => {
   const progress = () => {
-    console.log(budgetedAmount, actualSpent, 'inside progress fun', actualSpent/budgetedAmount);
     if (budgetedAmount <= 0) {
       return 0;
-    } else {
+    } else if(actualSpent > budgetedAmount) {
+      return 100;
+    }else {
       return Math.round((actualSpent/budgetedAmount)*100);
     }
   };
@@ -35,14 +36,12 @@ export const CardWithProgress = (
     <YStack
       marginHorizontal="$3"
       marginVertical="$2"
-
     >
       <Card
         elevate
         bordered
         marginVertical="$2"
-        paddingVertical="$1"
-        paddingHorizontal="$2"
+        padding="$2"
       >
         <H3>
           {headingTitle}

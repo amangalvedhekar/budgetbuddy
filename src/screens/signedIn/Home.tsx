@@ -1,51 +1,36 @@
 import {useScrollToTop, useTheme} from "@react-navigation/native";
-import React, {Fragment, useRef, useState} from "react";
+import React, {useLayoutEffect, useRef, useState} from "react";
 import {
   XStack,
-  H2,
-  H5,
-  ScrollView,
-  useWindowDimensions,
-  YStack,
-  Paragraph,
-  Card,
-  H4,
-  H3,
-  Separator,
-  Progress,
-  Accordion,
-  Square
+  ScrollView, H5,
+  H4, YStack,
 } from "tamagui";
-import {BarChart, PieChart} from "react-native-gifted-charts";
 import {DropDown} from "../../components/DropDown";
 import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
-import {ChevronDown, ChevronRight, ChevronUp} from "../../icons";
-import {StyleSheet} from "react-native";
-import {CardWithProgress} from "../../components/CardWithProgress";
+import {Check, Cross, Warning} from "../../icons";
 
+import {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
+import {BannerContainer} from "../../components/Banner/Container";
+import {getBudgetedAndActualAmount} from "../../utils/getExpensesForMonth";
 
-const dummyData = [
+const data = [
   {
-    id: '1',
-    actualSpent: 350,
-    categoryName: 'Grocery',
-    budgetedAmount: 450,
+    text: 'Great job on staying within budget for subscriptions 🎉',
+    icon: <Check color="green"/>,
+    color: 'green'
   },
   {
-    id: '2',
-    actualSpent: 250,
-    categoryName: 'Uber Eats/Doordash',
-    budgetedAmount: 550,
+    text: 'Your income came lower than expected for dividends.',
+    icon: <Warning color="#8B8000"/>,
+    color: '#8B8000'
   },
   {
-    id: '3',
-    actualSpent: 44.9,
-    categoryName: 'Lyft',
-    budgetedAmount: 55,
-  }
-];
+    text: 'You spent more than budgeted in Doordash/Uber Eats.',
+    icon: <Cross color="red"/>,
+    color: 'red'
+  },];
 
 export const Home = () => {
   const currentDate = new Date();
@@ -57,7 +42,6 @@ export const Home = () => {
   const [month, setMonth] = useState<Record<'name' | 'id', number | string>>(() => filterDataForDashboard[currentDate.getMonth()]);
   const scrollViewRef = useRef<ScrollView>();
   useScrollToTop(scrollViewRef);
-  const {width} = useWindowDimensions();
   const {colors} = useTheme();
   const budgetExpenseForMonth = month ? budgetedExpense[month.id] : [];
 
@@ -74,49 +58,41 @@ export const Home = () => {
     style: 'currency',
     currency: 'CAD'
   }).format(calculateIncomeTotal());
-
-
-
+  const [height, setHeight] = useState<number>(0);
+  const budgetedToActual = getBudgetedAndActualAmount({budgetedExpense, actualTransactions});
+  console.log(budgetedToActual[month.id], 'what is this', height);
+  const handleLayout = (e) => {
+    setHeight(e.nativeEvent.layout.height);
+  }
   return (
     <>
+      <XStack marginHorizontal="$3" onLayout={e => console.log(e.nativeEvent.layout.height, 'heigh of dropdown')}>
+        <DropDown
+          items={filterDataForDashboard}
+          val={month}
+          setVal={setMonth}
+          placeholder="Select Month"
+        />
+      </XStack>
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={{paddingBottom: 72, marginBottom: 24}}
       >
-        <XStack marginHorizontal="$3">
-          <DropDown
-            items={filterDataForDashboard}
-            val={month}
-            setVal={setMonth}
-            placeholder="Select Month"
-          />
-        </XStack>
-        <XStack
-          marginHorizontal="$3"
-          marginVertical="$2"
-          justifyContent="space-between"
-          alignItems="center"
-        >
+
+        <XStack marginHorizontal="$3" marginVertical="$2">
           <H4>
-            Expense
+            Budgeted to Actual Expense
           </H4>
-          <H4 color="green">
-            $200 left to spend
-          </H4>
-          <ChevronUp
-            color={colors.text}
-            height={32}
-            width={32}
-          />
         </XStack>
-        {dummyData.map(data => (
-          <CardWithProgress
-            key={data.id}
-            headingTitle={data.categoryName}
-            actualSpent={data.actualSpent}
-            budgetedAmount={data.budgetedAmount}
-          />
-        ))}
+
+        <BannerContainer
+          data={data}
+          titleHeader="Expense"
+          titleMiddleHeader={budgetedToActual[month.id]}
+          onLayout={handleLayout}
+        />
+
+
       </ScrollView>
     </>
   )

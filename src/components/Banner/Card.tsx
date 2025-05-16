@@ -1,9 +1,9 @@
 import {BannerCardProps} from "./types";
-import {Card, Paragraph, XStack} from "tamagui";
+import {Card, H3, H5, Paragraph, Progress, XStack, YStack} from "tamagui";
 import Animated, {runOnJS, useAnimatedStyle, useSharedValue, withSpring} from "react-native-reanimated";
 import {Gesture, GestureDetector} from "react-native-gesture-handler";
 import {Delete} from "../../icons";
-import {useState} from "react";
+import React, {useState} from "react";
 import {impactAsync, ImpactFeedbackStyle} from "expo-haptics";
 
 export const BannerCard = ({icon, text, color, idx = 0, isOpen, ...rest}: BannerCardProps) => {
@@ -51,34 +51,36 @@ console.log(distanceFromTop, idx, 'before render');
         <Animated.View style={animatedStyleForSwipe}>
           <Card
             elevate
-            borderRadius="$8"
+            marginVertical="$2"
+            padding="$2"
             onLayout={e => {
               setCardHeight(e.nativeEvent.layout.height);
               setDistanceFromTop(e.nativeEvent.layout.y);
             }}
             {...rest}
           >
-            <Card.Header>
-              <XStack
-                justifyContent="space-evenly"
-                marginHorizontal="$2"
-                alignItems="center"
-              >
-                <XStack paddingRight="$2">
-                  {icon}
-                </XStack>
-
-                <Paragraph
-                  size="$6"
-                  color={color}
-                  textWrap="wrap"
-                  flexWrap="wrap"
-                  paddingRight="$3"
-                >
-                  {text}
-                </Paragraph>
-              </XStack>
-            </Card.Header>
+            <H3>
+              Grocery
+            </H3>
+            {/*<Card.Header>*/}
+              {/*<XStack*/}
+              {/*  justifyContent="space-evenly"*/}
+              {/*  marginHorizontal="$2"*/}
+              {/*  alignItems="flex-start"*/}
+              {/*>*/}
+              {/*  <XStack paddingRight="$2">*/}
+              {/*    {icon}*/}
+              {/*  </XStack>*/}
+              {/*</XStack>*/}
+              <Progress value={80} size="$6" themeInverse>
+                <Progress.Indicator animation="bouncy" backgroundColor="green" />
+              </Progress>
+            <YStack paddingHorizontal="$2">
+              <H5>
+                Spent $44 of $55. you have -$390 left
+              </H5>
+            </YStack>
+            {/*</Card.Header>*/}
           </Card>
         </Animated.View>
       </GestureDetector>

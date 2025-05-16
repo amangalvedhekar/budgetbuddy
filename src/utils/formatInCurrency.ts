@@ -1,0 +1,7 @@
+const formattedNumber = (
+  {
+    amount,
+    currencyType
+  }) => {
+
+}
