@@ -1,27 +1,25 @@
-import React, {useCallback, useRef, useState} from 'react';
-import {Check, Cross, Warning} from "../../icons";
-import {BannerContainer} from "../../components/Banner/Container";
+import React, {useRef, useState} from 'react';
+import {Check, Cross} from "../../icons";
 import {
-  Card, Checkbox,
+  Card,
   Circle,
   H1, H3,
   H4,
-  H5, Label,
+  H5,
   Paragraph,
-  Progress,
   ScrollView,
   Separator,
   useWindowDimensions,
   XStack,
   YStack
 } from "tamagui";
-import {DropDown} from "../../components/DropDown";
 import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../store";
 import {BarChart} from "react-native-gifted-charts";
-import {useFocusEffect, useNavigation, useTheme} from "@react-navigation/native";
+import {useNavigation, useTheme} from "@react-navigation/native";
 import {StyleSheet} from "react-native";
+import {setSelectedCategory, setSelectedMonth} from "../../features/transactionFilterSlice";
 
 export const Insight = () => {
   const currentDate = new Date();
@@ -31,8 +29,10 @@ export const Insight = () => {
   const transactionLists = useSelector((state: RootState) => state.transactionList);
   const actualTransactions = transactionLists[currentYear] ?? {};
   const categories = useSelector((state: RootState) => state.categories);
-  const categoriesForExpense = categories.filter(elm => elm.transactionName == 'Expense')
+  const categoriesForExpense = categories.filter(elm => elm.transactionName == 'Expense');
+  const dispatch = useDispatch();
   const [coordinates, setCoordinates] = useState([]);
+  const {navigate} = useNavigation();
   const [coordinatesForExpense, setCoordinatesForExpense] = useState([]);
   const scrollRef = useRef();
   const budgetedVsActualScrollRef = useRef();
@@ -65,9 +65,6 @@ export const Insight = () => {
   const {width} = useWindowDimensions();
   const {colors} = useTheme();
 
-  useFocusEffect(useCallback(() => {
-    budgetedVsActualScrollRef?.current?.scrollTo({x: coordinatesForExpense[filterDataForDashboard[3].id]})
-  },[scrollRef, budgetedVsActualScrollRef]))
 
   return (
     <ScrollView
@@ -207,7 +204,7 @@ export const Insight = () => {
           yAxisThickness={0}
           yAxisTextStyle={{color: colors.text}}
           xAxisLabelTextStyle={{color: colors.text}}
-          maxValue={7500}
+
           frontColor={colors.text}
           onPress={(a, idx) => {
             budgetedVsActualScrollRef?.current?.scrollTo({x: coordinatesForExpense[filterDataForDashboard[Math.floor(idx / 2)].id]})
@@ -263,7 +260,23 @@ export const Insight = () => {
                 <Separator borderWidth="$1" borderColor="darkgrey"/>
                 {categoriesForExpense.map((item, index) => (
                   <YStack marginHorizontal="$2" marginVertical="$2" key={item.categoryName} justifyContent="center">
-                    <XStack justifyContent="space-between" alignItems="center" flexDirection="row">
+                    <XStack
+                      justifyContent="space-between"
+                      alignItems="center"
+                      flexDirection="row"
+                      onPress={() => {
+                        const {categoryName} = item;
+                        dispatch(setSelectedCategory({
+                          isSelected: true,
+                          categoryName,
+                        }));
+                        dispatch(setSelectedMonth({
+                          isSelected: true,
+                          month: i
+                        }));
+                        navigate('historyEntry');
+                      }}
+                    >
                       <XStack flex={0.4}>
                         <XStack
                           flexGrow={1}
@@ -342,7 +355,6 @@ export const Insight = () => {
                   </XStack>
                 </Card.Footer>
               </Card>
-
             </XStack>
           )
         )}
