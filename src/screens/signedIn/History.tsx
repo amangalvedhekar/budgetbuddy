@@ -1,5 +1,5 @@
 import {SectionList} from "react-native";
-import {useNavigation, useRoute, useTheme,} from "@react-navigation/native";
+import {useNavigation, useTheme,} from "@react-navigation/native";
 import {Button, Card, H2, H3, H4, H5, Paragraph, ScrollView, Sheet, XStack, YStack,} from "tamagui";
 import * as Haptics from 'expo-haptics';
 import {ImpactFeedbackStyle} from 'expo-haptics';
@@ -7,8 +7,9 @@ import React, {useEffect, useState} from "react";
 
 import {ChevronRight, Filter} from "../../icons";
 import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {RootState} from "../../store";
+import {resetFilters} from "../../features/transactionFilterSlice";
 
 
 const getColorForTransaction = (transactionType: number) => {
@@ -74,43 +75,53 @@ const defaultCategory = {
 };
 
 export const History = () => {
-  const snapPoints = [70, 70, 70];
   const currentDate = new Date();
   const currentYear = currentDate.getUTCFullYear();
   const currentMonth = currentDate.getUTCMonth() + 1;
-  const [showCalendar, setShowCalendar] = useState(false);
   const [activeFilter, setActiveFilter] = useState(() => defaultCategory);
-  const allCategories = useSelector((state: RootState) => state.categories);
+
   const transactionListByYear = useSelector((state: RootState) => state.transactionList);
+  const dispatch = useDispatch();
   const {colors} = useTheme();
   const transactionListByMonth = transactionListByYear[currentYear] ?? {};
-  const transactionType = useSelector((state: RootState) => state.transactionType)
+  const transactionType = useSelector((state: RootState) => state.transactionType);
+  const {selectedMonth, selectedCategory} = useSelector((state: RootState) => state.transactionFilter);
+
   const filterForTransactionType = transactionType.map(type => ({
     ...type,
     isActive: false
   }));
+
   const allFilters = [defaultCategory, ...filterForTransactionType];
   // const flatListData = Object.values(transactionListByMonth).flatMap(transaction => transaction);
   const sectionData = Object
     .keys(transactionListByMonth)
     .reduce((acc, elm) => {
-      const isElmPresent = acc.find(el => elm == el?.title)
+      const isElmPresent = acc.find(el => elm == el?.title);
+      const filterPredicate = selectedCategory.length > 0
+        ? transaction => activeFilter.transactionName !== 'ALL'
+          ? transaction.transactionTypeName == activeFilter.transactionName && selectedCategory.some(cate => cate == transaction.categoryType)
+          : selectedCategory.some(cate => cate == transaction.categoryType)
+        : transaction => transaction.transactionTypeName == activeFilter.transactionName
+
       if (!isElmPresent) {
         const elementToAdd = {
           title: elm,
-          data: activeFilter.transactionName == 'ALL' ? transactionListByMonth[elm] : transactionListByMonth[elm].filter(transaction => transaction.transactionTypeName == activeFilter.transactionName)
+          data: activeFilter.transactionName == 'ALL' && selectedCategory.length == 0 ?
+            transactionListByMonth[elm] :
+            transactionListByMonth[elm]
+              .filter(filterPredicate)
         };
         return acc.concat(elementToAdd);
-      } else {
-
       }
       return acc;
     }, [])
-    .slice(0,currentMonth)
+    .filter(data => selectedMonth.length > 0 ? selectedMonth.some(month => month.id == data.title) : data)
+    .slice(0, currentMonth)
     .reverse();
+
   const navigation = useNavigation();
   const theme = useTheme();
-
 
   useEffect(() => {
     navigation.setOptions({
@@ -119,7 +130,7 @@ export const History = () => {
           fill="purple"
           height={40}
           width={40}
-          onPress={() => setShowCalendar((prevState) => !prevState)}
+          onPress={() => navigation.navigate('filter')}
         />
       </XStack>
     })
@@ -175,7 +186,7 @@ export const History = () => {
               paddingHorizontal="$4"
               elevate
               bordered
-              borderRadius="$8"
+              borderRadius="$6"
               onPress={() => {
                 setActiveFilter({
                   ...x,
@@ -191,21 +202,21 @@ export const History = () => {
 
       </XStack>
       <YStack marginVertical="$2" marginHorizontal="$2">
-      <Card onPress={() => navigation.navigate('Account', {
-        screen: 'accountEntry',
-        params: {
-          screen: 'recurringTransaction'
-        }
-      })}>
-        <Card.Header>
-          <XStack justifyContent="space-between" alignItems="center">
-          <H5>
-            See recurring transactions
-          </H5>
-          <ChevronRight color={colors.text}/>
-          </XStack>
-        </Card.Header>
-      </Card>
+        <Card onPress={() => navigation.navigate('Account', {
+          screen: 'accountEntry',
+          params: {
+            screen: 'recurringTransaction'
+          }
+        })}>
+          <Card.Header>
+            <XStack justifyContent="space-between" alignItems="center">
+              <H5>
+                See recurring transactions
+              </H5>
+              <ChevronRight color={colors.text}/>
+            </XStack>
+          </Card.Header>
+        </Card>
       </YStack>
       {/* <FlatList*/}
       {/*  data={flatListData}*/}
@@ -217,6 +228,17 @@ export const History = () => {
       {/*    }}/>*/}
       {/*  }*/}
       {/*/>*/}
+      {(selectedCategory.length > 0 || selectedMonth.length > 0) && <YStack marginVertical="$2" marginHorizontal="$2">
+        <Card onPress={() => dispatch(resetFilters())}>
+          <Card.Header>
+            <XStack justifyContent="space-between" alignItems="center">
+              <H5>
+                Filters Applied! Tap to remove
+              </H5>
+            </XStack>
+          </Card.Header>
+        </Card>
+      </YStack>}
       <SectionList
         sections={sectionData}
         renderItem={({item}) => <RenderItem item={item} onPress={async () => {
@@ -259,105 +281,6 @@ export const History = () => {
         </YStack>
         }
       />
-
-      <Sheet
-        forceRemoveScrollEnabled={showCalendar}
-        modal
-        open={showCalendar}
-        onOpenChange={setShowCalendar}
-        snapPoints={snapPoints}
-        snapPointsMode="percent"
-        dismissOnSnapToBottom
-        zIndex={100_000}
-        animation="fast">
-        <Sheet.Overlay
-          animation="lazy"
-          enterStyle={{opacity: 0}}
-          exitStyle={{opacity: 0}}
-        />
-        <Sheet.Frame paddingVertical="$4">
-          <XStack justifyContent="center" alignItems="center">
-            <H3>
-              Filters
-            </H3>
-          </XStack>
-          <ScrollView contentContainerStyle={{
-            paddingBottom: 72
-          }}>
-            <YStack paddingLeft="$3">
-              <H5>
-                Categories
-              </H5>
-              <XStack justifyContent="space-evenly" alignItems="center" marginVertical="$2" flexWrap="wrap">
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{
-                    marginVertical: 16,
-                  }}
-                >
-                  {allCategories?.map((x) => (
-                    <Button
-                      key={x.categoryName}
-                      margin="$2"
-                      paddingHorizontal="$4"
-                      elevate
-                      bordered
-                      borderRadius="$8"
-
-                    >
-                      {x?.categoryName}
-                    </Button>
-                  ))}
-                </ScrollView>
-              </XStack>
-              <H5>
-                Month
-              </H5>
-              <XStack justifyContent="space-evenly" alignItems="center" marginVertical="$2" flexWrap="wrap">
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{
-
-                  marginVertical: 16,
-                }}>
-                  {filterDataForDashboard.map((x) => (
-                    <Button
-                      key={x.name}
-                      margin="$2"
-                      paddingHorizontal="$4"
-                      elevate
-                      bordered
-                      borderRadius="$6"
-                    >
-                      {x?.name}
-                    </Button>
-                  ))}
-                </ScrollView>
-              </XStack>
-            </YStack>
-          </ScrollView>
-          <XStack
-            marginVertical="$4"
-            marginHorizontal="$4"
-            justifyContent="space-between"
-          >
-            <Button
-              themeInverse
-              flex={0.4}
-              onPress={() => setShowCalendar((prevState) => !prevState)}
-            >
-              Done
-            </Button>
-
-            <Button
-              backgroundColor={theme.colors.background}
-              flex={0.4}
-              onPress={() => setShowCalendar((prevState) => !prevState)}
-            >
-              Clear
-            </Button>
-          </XStack>
-        </Sheet.Frame>
-      </Sheet>
     </>
   );
 }

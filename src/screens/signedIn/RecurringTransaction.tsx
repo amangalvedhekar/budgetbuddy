@@ -49,7 +49,6 @@ export const RecurringTransaction = () => {
           renderItem={({item}) =>(
             <Card
               key={item.id}
-              elevate
               borderRadius="$6"
               marginVertical="$2"
               onPress={() => {
