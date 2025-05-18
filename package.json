@@ -20,6 +20,7 @@
     "@react-navigation/native": "6.1.18",
     "@react-navigation/stack": "6.4.0",
     "@reduxjs/toolkit": "2.5.1",
+    "@sentry/react-native": "~6.10.0",
     "@tamagui/config": "^1.101.7",
     "aws-amplify": "^6.3.8",
     "drizzle-orm": "0.36.4",

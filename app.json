@@ -2,6 +2,14 @@
   "expo": {
     "plugins": [
       [
+        "@sentry/react-native/expo",
+        {
+          "organization": "budgetgenie",
+          "project": "react-native",
+          "url": "https://sentry.io/"
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#ffffff",

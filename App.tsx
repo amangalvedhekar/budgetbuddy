@@ -13,6 +13,7 @@ import {store} from "./src/store";
 import {StoreInitializer} from "./src/components/StoreInitializer";
 import {ToastCard} from "./src/components/Toast/components/Card";
 import React from "react";
+import * as Sentry from '@sentry/react-native';
 
 Amplify.configure({
   Auth: {
@@ -24,7 +25,7 @@ Amplify.configure({
     },
   }
 })
-export default function App() {
+function App() {
   const scheme = useColorScheme();
   const isLoadingComplete = useCachedResources();
 
@@ -50,3 +51,4 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+export default Sentry.wrap(App);
