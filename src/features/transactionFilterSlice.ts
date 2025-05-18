@@ -29,12 +29,12 @@ const transactionFilterSlice = createSlice({
       );
     },
     setSelectedMonth: (state, action) => {
-      const {isSelected, name} = action.payload;
+      const {isSelected, month} = action.payload;
       let newState;
       if (isSelected) {
-        newState = [...state.selectedMonth, name];
+        newState = [...state.selectedMonth, month];
       } else {
-        newState = state.selectedMonth.filter((x) => x != name);
+        newState = state.selectedMonth.filter((x) => x.name != month.name);
       }
       return(
         {

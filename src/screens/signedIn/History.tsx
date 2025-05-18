@@ -1,5 +1,5 @@
 import {SectionList} from "react-native";
-import {useNavigation, useRoute, useTheme,} from "@react-navigation/native";
+import {useNavigation, useTheme,} from "@react-navigation/native";
 import {Button, Card, H2, H3, H4, H5, Paragraph, ScrollView, Sheet, XStack, YStack,} from "tamagui";
 import * as Haptics from 'expo-haptics';
 import {ImpactFeedbackStyle} from 'expo-haptics';
@@ -7,8 +7,9 @@ import React, {useEffect, useState} from "react";
 
 import {ChevronRight, Filter} from "../../icons";
 import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {RootState} from "../../store";
+import {resetFilters} from "../../features/transactionFilterSlice";
 
 
 const getColorForTransaction = (transactionType: number) => {
@@ -80,15 +81,17 @@ export const History = () => {
   const [activeFilter, setActiveFilter] = useState(() => defaultCategory);
 
   const transactionListByYear = useSelector((state: RootState) => state.transactionList);
+  const dispatch = useDispatch();
   const {colors} = useTheme();
   const transactionListByMonth = transactionListByYear[currentYear] ?? {};
   const transactionType = useSelector((state: RootState) => state.transactionType);
   const {selectedMonth, selectedCategory} = useSelector((state: RootState) => state.transactionFilter);
-console.log(selectedCategory, 'category selcted')
+
   const filterForTransactionType = transactionType.map(type => ({
     ...type,
     isActive: false
   }));
+
   const allFilters = [defaultCategory, ...filterForTransactionType];
   // const flatListData = Object.values(transactionListByMonth).flatMap(transaction => transaction);
   const sectionData = Object
@@ -96,28 +99,29 @@ console.log(selectedCategory, 'category selcted')
     .reduce((acc, elm) => {
       const isElmPresent = acc.find(el => elm == el?.title);
       const filterPredicate = selectedCategory.length > 0
-        ? transaction => transaction.transactionTypeName == activeFilter.transactionName && selectedCategory.some(cate => cate == transaction.categoryType)
+        ? transaction => activeFilter.transactionName !== 'ALL'
+          ? transaction.transactionTypeName == activeFilter.transactionName && selectedCategory.some(cate => cate == transaction.categoryType)
+          : selectedCategory.some(cate => cate == transaction.categoryType)
         : transaction => transaction.transactionTypeName == activeFilter.transactionName
+
       if (!isElmPresent) {
         const elementToAdd = {
           title: elm,
-          data: activeFilter.transactionName == 'ALL' ?
+          data: activeFilter.transactionName == 'ALL' && selectedCategory.length == 0 ?
             transactionListByMonth[elm] :
             transactionListByMonth[elm]
               .filter(filterPredicate)
         };
         return acc.concat(elementToAdd);
-      } else {
-
       }
       return acc;
     }, [])
+    .filter(data => selectedMonth.length > 0 ? selectedMonth.some(month => month.id == data.title) : data)
     .slice(0, currentMonth)
     .reverse();
 
   const navigation = useNavigation();
   const theme = useTheme();
-
 
   useEffect(() => {
     navigation.setOptions({
@@ -224,6 +228,17 @@ console.log(selectedCategory, 'category selcted')
       {/*    }}/>*/}
       {/*  }*/}
       {/*/>*/}
+      {(selectedCategory.length > 0 || selectedMonth.length > 0) && <YStack marginVertical="$2" marginHorizontal="$2">
+        <Card onPress={() => dispatch(resetFilters())}>
+          <Card.Header>
+            <XStack justifyContent="space-between" alignItems="center">
+              <H5>
+                Filters Applied! Tap to remove
+              </H5>
+            </XStack>
+          </Card.Header>
+        </Card>
+      </YStack>}
       <SectionList
         sections={sectionData}
         renderItem={({item}) => <RenderItem item={item} onPress={async () => {

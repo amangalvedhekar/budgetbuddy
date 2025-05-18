@@ -54,7 +54,7 @@ export const Filter = () => {
           selectedMonth.length > 0 ?
             selectedMonth.map((month) => (
               <XStack
-                key={month}
+                key={month.name}
                 borderWidth={1}
                 borderColor={colors.text}
                 marginHorizontal="$2"
@@ -65,7 +65,7 @@ export const Filter = () => {
                 borderRadius="$4"
               >
                 <H5>
-                  {month}
+                  {month.name}
                 </H5>
               </XStack>
             )) :
@@ -166,9 +166,9 @@ export const Filter = () => {
                       {x.name}
                     </H5>
                     <Checkbox
-                      checked={selectedMonth.some(cat => cat == x.name)}
+                      checked={selectedMonth.some(cat => cat.name == x.name)}
                       onCheckedChange={(e: boolean) => {
-                        dispatch(setSelectedMonth({isSelected:e, name: x.name}))
+                        dispatch(setSelectedMonth({isSelected:e, month: x,}))
                       }}
                       size="$6"
                     >
