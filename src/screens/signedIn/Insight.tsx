@@ -36,6 +36,9 @@ export const Insight = () => {
   const [coordinatesForExpense, setCoordinatesForExpense] = useState([]);
   const scrollRef = useRef();
   const budgetedVsActualScrollRef = useRef();
+  const {width} = useWindowDimensions();
+  const {colors} = useTheme();
+
   const closerStackData = filterDataForDashboard.map(data => ({
     label: data.name,
     stacks: [
@@ -53,7 +56,6 @@ export const Insight = () => {
     const actualData = {
       value: (data?.id in actualTransactions) ? actualTransactions[data.id].reduce((acc, elm) => elm.transactionTypeName == 'Expense' ? acc + Number(elm.amount) : acc, 0) : 0,
       frontColor: '#3251c7',
-
       data
     };
     return [
@@ -61,9 +63,6 @@ export const Insight = () => {
       {...actualData}
     ]
   });
-
-  const {width} = useWindowDimensions();
-  const {colors} = useTheme();
 
 
   return (
