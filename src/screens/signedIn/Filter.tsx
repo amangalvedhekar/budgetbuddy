@@ -202,7 +202,7 @@ export const Filter = () => {
         <Button
           paddingHorizontal="$6"
           onPress={() =>{
-            dispatch(resetFilters())
+            dispatch(resetFilters());
           }}
         >
           Clear
