@@ -18,11 +18,14 @@ import {
 import {useDb} from "../../hooks";
 import {UserLists} from "../../../schema";
 import {eq} from "drizzle-orm";
+import {useDispatch} from "react-redux";
+import {removeUser} from "../../features/usersSlice";
 
 const AuthContext = createContext<AuthProviderProps | null>(null);
 
 const AuthProvider = ({children}: AuthContextType) => {
   const {db} = useDb();
+  const dispatch = useDispatch();
   const [ab, setAb] = useState<AuthUser | null | undefined>(undefined);
   useEffect(() => {
     (async () => {
@@ -65,7 +68,11 @@ const AuthProvider = ({children}: AuthContextType) => {
         userId: x?.userId,
         isUserOnboarded: false,
       };
-      const isUserAdded = await db.select().from(UserLists).where(eq(UserLists.userId, x?.userId));
+      const isUserAdded = await db
+        .select()
+        .from(UserLists)
+        .where(eq(UserLists.userId, x?.userId));
+
       if (Array.isArray(isUserAdded) && isUserAdded.length === 0) {
         await db.insert(UserLists).values(dataToAdd);
       }
@@ -80,9 +87,10 @@ const AuthProvider = ({children}: AuthContextType) => {
   const logout = useCallback(async () => {
     try {
       await signOut();
+      dispatch(removeUser())
       setAb(null);
     } catch (e) {
-      console.log(e, 'hmm cant loogut')
+      console.log(e, 'hmm cant logout')
     }
   }, []);
 
@@ -94,17 +102,19 @@ const AuthProvider = ({children}: AuthContextType) => {
     }
   }, []);
 
-  const passwordResetConfirmation = useCallback(async ({
-                                                         username,
-                                                         confirmationCode,
-                                                         newPassword
-                                                       }: ConfirmResetPasswordInput) => {
-    try {
-      await confirmResetPassword({username, confirmationCode, newPassword})
-    } catch (e) {
+  const passwordResetConfirmation = useCallback(
+    async (
+      {
+        username,
+        confirmationCode,
+        newPassword
+      }: ConfirmResetPasswordInput) => {
+      try {
+        await confirmResetPassword({username, confirmationCode, newPassword})
+      } catch (e) {
 
-    }
-  }, []);
+      }
+    }, []);
 
   return <AuthContext.Provider
     value={{

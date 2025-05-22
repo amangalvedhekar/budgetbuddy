@@ -46,6 +46,24 @@ export const Insight = () => {
       {value: budgetedExpense[data.id].reduce((acc, elm) => acc + Number(elm.value), 0), color: 'red'}
     ],
   }));
+
+  const budgetedAndExpectedIncome = filterDataForDashboard.flatMap(data => {
+    const budgetedData = {
+      value: budgetedExpense[data.id].reduce((acc, elm) => acc + Number(elm.value), 0),
+      label: data.name,
+      spacing: 2,
+      frontColor: 'red'
+    };
+    const expectIncome = {
+      value: expectedIncome[data.id].reduce((acc, elm) => acc + Number(elm.value), 0), frontColor: 'green',
+      data,
+    };
+    return [
+      {...budgetedData},
+      {...expectIncome}
+    ];
+  })
+
   const closerBarData = filterDataForDashboard.flatMap(data => {
     const budgetedData = {
       value: budgetedExpense[data.id].reduce((acc, elm) => acc + Number(elm.value), 0),
@@ -74,7 +92,7 @@ export const Insight = () => {
       </H4>
       <XStack alignItems="center" marginHorizontal="$4" marginVertical="$4">
         <H5>
-          Legend :
+          Legend:
         </H5>
         <XStack alignItems="center">
           <Circle size="$1" backgroundColor="red" marginHorizontal="$3"/>
@@ -97,7 +115,7 @@ export const Insight = () => {
         <BarChart
           noOfSections={4}
           isAnimated
-          stackData={closerStackData}
+          data={budgetedAndExpectedIncome}
           frontColor={colors.text}
           yAxisTextStyle={{
             color: colors.text
@@ -110,9 +128,19 @@ export const Insight = () => {
           xAxisThickness={0}
           yAxisLabelWidth={64}
           onPress={(_, idx) => {
-            scrollRef?.current?.scrollTo({x: coordinates[idx]})
+            scrollRef?.current?.scrollTo({x: coordinates[filterDataForDashboard[Math.floor(idx / 2)].id]})
             console.log('on press', idx);
           }}
+          autoCenterTooltip
+          renderTooltip={(item) => <Paragraph
+            color={item?.frontColor}
+            marginLeft="$2"
+            marginTop="$2"
+            paddingTop="$2"
+          >{new Intl.NumberFormat('en-CA', {
+            style: 'currency',
+            currency: 'CAD'
+          }).format(item.value)}</Paragraph>}
         />
       </XStack>
 
@@ -151,13 +179,13 @@ export const Insight = () => {
                 >
                   <YStack>
                     <H4 color="red">
-                      Expense - {new Intl.NumberFormat('en-CA', {
+                      Budgeted Expense - {new Intl.NumberFormat('en-CA', {
                       style: 'currency',
                       currency: 'CAD'
                     }).format(closerStackData[idx].stacks[1].value)}
                     </H4>
                     <H4 color="green">
-                      Income - {new Intl.NumberFormat('en-CA', {
+                      Expected Income - {new Intl.NumberFormat('en-CA', {
                       style: 'currency',
                       currency: 'CAD'
                     }).format(closerStackData[idx].stacks[0].value)}
@@ -170,7 +198,7 @@ export const Insight = () => {
         )}
       </ScrollView>
       <H4 marginHorizontal="$4" marginVertical="$2">
-        Budgeted VS Actual Expense
+        Budgeted Vs Actual Expense
       </H4>
       <XStack alignItems="center" marginHorizontal="$4" marginVertical="$4">
         <H5>

@@ -90,7 +90,13 @@ export function SignIn({route}: SignInProps) {
           />
           {formState.email.isInvalid ?
             <SizableText color="red" size="$5">Email entered is invalid</SizableText> : <></>}
-          <Paragraph size="$6" onPress={() => navigate('ForgotPassword')} textAlign="right">Forgot Password?</Paragraph>
+          <Paragraph
+            size="$6"
+            onPress={() => navigate('ForgotPassword')}
+            textAlign="right"
+          >
+            Forgot Password?
+          </Paragraph>
           <Input
             placeholder="Password"
             marginVertical="$3"
@@ -118,8 +124,13 @@ export function SignIn({route}: SignInProps) {
             {formState.isFormSubmitted ? <ActivityIndicator size="small" color="purple"/> : 'Sign In'}
           </Button>
           <Card.Footer>
-            <Paragraph size="$7" paddingVertical="$2" onPress={() => navigate('Register')}>New to BudgetGenie?
-              Register</Paragraph>
+            <Paragraph
+              size="$7"
+              paddingVertical="$2"
+              onPress={() => navigate('Register')}
+            >
+              New to BudgetGenie? Register
+            </Paragraph>
           </Card.Footer>
         </Card>
 

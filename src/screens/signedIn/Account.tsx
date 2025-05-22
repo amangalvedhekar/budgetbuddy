@@ -71,10 +71,8 @@ export const Account = () => {
     <ScrollView contentContainerStyle={{paddingBottom: 32}}>
       <YStack justifyContent="flex-start" flex={1} padding="$4">
         <Card
-          elevate
           padded
           borderRadius="$8"
-          animation="bouncy"
         >
           <Card.Header>
             <YStack alignItems="center">

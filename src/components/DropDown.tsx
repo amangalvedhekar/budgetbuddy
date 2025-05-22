@@ -19,7 +19,7 @@ export const DropDown = ({items, placeholder, val, setVal, keyName = 'name', emp
       size="$5"
       {...rest}
     >
-      <Select.Trigger size="$5" iconAfter={() => <ChevronDown color="purple" width={32}/>} marginVertical="$2">
+      <Select.Trigger size="$5" iconAfter={() => <ChevronDown color={colors.text} width={32}/>} marginVertical="$2">
         <Select.Value placeholder={placeholder}/>
       </Select.Trigger>
 
@@ -85,7 +85,7 @@ export const DropDown = ({items, placeholder, val, setVal, keyName = 'name', emp
                     >
                       <Select.ItemText size="$6">{typeof item == 'object' ? item[keyName] : item}</Select.ItemText>
                       <Select.ItemIndicator marginLeft="auto">
-                        <Check color="purple" height={32} width={32}/>
+                        <Check color={colors.text} height={32} width={32}/>
                       </Select.ItemIndicator>
                     </Select.Item>
                   )

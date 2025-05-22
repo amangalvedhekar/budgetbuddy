@@ -18,7 +18,7 @@ export const StoreInitializer = ({children}:{children: ReactNode}) => {
         try {
           await fetchTransactionType(dispatch);
           await fetchCategories(dispatch);
-          await addUser({dispatch, userId: ab?.userId ?? ''});
+          await addUser({dispatch, userId: ab?.userId ?? '', email: ab?.signInDetails?.loginId});
           await getTransactionMonthIndexed({userId: ab?.userId, dispatch})
           const monthList = Array
             .from({ length: 12 }, (v, i) => i);

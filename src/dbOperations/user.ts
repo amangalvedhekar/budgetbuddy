@@ -11,7 +11,7 @@ export const checkIfUserExists = async (userId: string) => {
     .where(eq(UserLists.userId, userId));
   return Array.isArray(isUserAdded) && isUserAdded.length > 0;
 }
-export const addUser = async({dispatch, userId}: { dispatch: AppDispatch, userId: string }) => {
+export const addUser = async({dispatch, userId, email}: { dispatch: AppDispatch, userId: string, email: string }) => {
   const isUserAdded = checkIfUserExists(userId);
   const dataToAdd = {
     userId,
@@ -20,5 +20,5 @@ export const addUser = async({dispatch, userId}: { dispatch: AppDispatch, userId
   if(!isUserAdded) {
     await db.insert(UserLists).values(dataToAdd);
   }
-  dispatch(setUser(dataToAdd));
+  dispatch(setUser({...dataToAdd, email}));
 };
