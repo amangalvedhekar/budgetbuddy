@@ -1,7 +1,7 @@
 import {db} from "../hooks";
 import {TransactionLists, TransactionTypes} from '../../schema'
 import {and, desc, eq} from "drizzle-orm";
-import {setTransactionList} from "../features/transactionListSlice";
+import {setTransactionList, updateTransactionData} from "../features/transactionListSlice";
 
 export interface InsertTransactionProps {
   transactionType: typeof TransactionLists.transactionType;
@@ -12,6 +12,11 @@ export interface InsertTransactionProps {
   addedBy: typeof TransactionLists.addedBy;
   id: typeof TransactionLists.id;
   isRecurringTransaction: typeof TransactionLists.isRecurringTransaction;
+}
+
+export interface UpdateTransactionProps {
+  dataToSave: InsertTransactionProps;
+
 }
 /*
 const transactionList = {
@@ -75,6 +80,17 @@ export const getTransactionForUser = async ({userId}: { userId: string }) => {
     console.log(e, 'hmm')
   }
 };
+
+export const updateTransaction = async ({dataToSave, dispatch}: UpdateTransactionProps) => {
+  try {
+    await db.update(TransactionLists).set(dataToSave).where(eq(
+      TransactionLists.id, dataToSave?.id
+    ));
+    dispatch(updateTransactionData(dataToSave));
+  } catch (e) {
+    throw e;
+  }
+}
 
 export const insertTransactionForUser = async (
   {transactionType, categoryType, createdDate, amount, addedBy, description,isRecurringTransaction, dispatch}: InsertTransactionProps) => {

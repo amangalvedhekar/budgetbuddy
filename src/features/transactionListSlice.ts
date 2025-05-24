@@ -17,16 +17,41 @@ const transactionListSlice = createSlice({
   name: 'transactionList',
   initialState: {} as TransactionListSliceProps,
   reducers: {
-    setTransactionList:(state, action) => {
+    setTransactionList: (state, action) => {
       return (
         {
           ...state,
           ...action.payload
         }
       );
+    },
+    updateTransactionData: (state, action) => {
+      const transactionDateSplit = action.payload.createdDate.split('-');
+      const transactionYear = transactionDateSplit[0];
+      const transactionMonth = Number(transactionDateSplit[1]) - 1;
+      const flattenedList = state[transactionYear][transactionMonth] ?? [];
+      const updatedData = flattenedList.map(list => {
+        if(list.id == action.payload.id) {
+
+          return ({
+            ...action.payload,
+            transactionTypeName: list.transactionTypeName
+          })
+        }
+        return  list;
+      });
+      return (
+        {
+          ...state,
+          [transactionYear]: {
+            ...state[transactionYear],
+          [transactionMonth]: updatedData
+      }
+        }
+      );
     }
   },
 });
 
-export const {setTransactionList} = transactionListSlice.actions
+export const {setTransactionList, updateTransactionData} = transactionListSlice.actions
 export default transactionListSlice.reducer;
