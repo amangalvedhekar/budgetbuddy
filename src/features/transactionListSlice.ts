@@ -49,9 +49,12 @@ const transactionListSlice = createSlice({
       }
         }
       );
+    },
+    resetTransactionData: (state, action) => {
+      return ({});
     }
   },
 });
 
-export const {setTransactionList, updateTransactionData} = transactionListSlice.actions
+export const {setTransactionList, updateTransactionData, resetTransactionData} = transactionListSlice.actions
 export default transactionListSlice.reducer;

@@ -1,103 +1,76 @@
-import {H5, H4,Label, RadioGroup, ScrollView, Separator, XStack, YStack} from "tamagui";
+import {H5, H4, Label, RadioGroup, ScrollView, Separator, XStack, YStack} from "tamagui";
+import {Fragment} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {setUser} from "../../features/usersSlice";
+import {useColorScheme} from "react-native";
+import {updateUser} from "../../dbOperations/user";
 
+const appearance = [
+  {
+    label: 'Use my device settings',
+    value: 'deviceSettings',
+  },
+  {
+    label: 'Dark',
+    value: 'dark',
+  },
+  {
+    label: 'Light',
+    value: 'light',
+  }
+];
 export const Settings = () => {
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const scheme = useColorScheme();
+  console.log(user, 'user is')
+  const handleChange = async (x) => {
+    if (x == 'deviceSettings') {
+      await updateUser({
+        userId: user.userId, dispatch, data: {
+          appearance: scheme,
+          appearanceSettings: x,
+        }
+      });
+    } else {
+      await updateUser({
+        userId: user.userId, dispatch, data: {
+          appearanceSettings: x,
+          appearance: x,
+        }
+      });
+    }
+
+  }
   return (
-    <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
-      <H4 marginHorizontal="$5" marginVertical="$4">
-        Currency
-      </H4>
-      <H5 marginHorizontal="$5">
-        Which currency should be used for display? Currently, currency conversion is not supported, but it will be available soon.
-      </H5>
-      <RadioGroup>
-        <YStack>
-          <XStack alignItems="center" justifyContent="space-between" marginHorizontal="$5">
-            <Label size="$6">
-              CAD - (CA$)
-            </Label>
-            <RadioGroup.Item value={"1"} size="$6">
-              <RadioGroup.Indicator />
-            </RadioGroup.Item>
-          </XStack>
-          <Separator />
-          <XStack alignItems="center" justifyContent="space-between" marginHorizontal="$5">
-            <Label size="$6">
-              USD - (US$)
-            </Label>
-            <RadioGroup.Item value={"2"} size="$6">
-              <RadioGroup.Indicator />
-            </RadioGroup.Item>
-          </XStack>
-          <Separator />
-        </YStack>
-      </RadioGroup>
+    <ScrollView contentContainerStyle={{paddingBottom: 50}}>
+
       <H4 marginHorizontal="$5" marginVertical="$4">
         Appearance
       </H4>
       <H5 marginHorizontal="$5">
         Choose a theme to view the app in, or continue with your device settings!
       </H5>
-      <RadioGroup>
+      <RadioGroup onValueChange={handleChange} defaultValue={user.appearanceSettings}>
         <YStack>
-        <XStack alignItems="center" justifyContent="space-between" marginHorizontal="$5">
-          <Label size="$6">
-            Use my device settings
-          </Label>
-          <RadioGroup.Item value={"1"} size="$6">
-            <RadioGroup.Indicator />
-          </RadioGroup.Item>
-        </XStack>
-          <Separator />
-          <XStack alignItems="center" justifyContent="space-between" marginHorizontal="$5">
-            <Label size="$6">
-              Dark
-            </Label>
-            <RadioGroup.Item value={"2"} size="$6">
-              <RadioGroup.Indicator />
-            </RadioGroup.Item>
-          </XStack>
-          <Separator />
-          <XStack alignItems="center" justifyContent="space-between" marginHorizontal="$5">
-            <Label size="$6">
-              Light
-            </Label>
-            <RadioGroup.Item value={"3"} size="$6">
-              <RadioGroup.Indicator />
-            </RadioGroup.Item>
-          </XStack>
+          {appearance.map((item, idx) => (
+            <Fragment key={item.value}>
+              <XStack alignItems="center" justifyContent="space-between" marginHorizontal="$5">
+                <Label size="$6">
+                  {item.label}
+                </Label>
+                <RadioGroup.Item value={item.value} size="$6">
+                  <RadioGroup.Indicator/>
+                </RadioGroup.Item>
+              </XStack>
+              {idx !== appearance.length - 1 && <Separator/>}
+            </Fragment>
+          ))}
+
         </YStack>
       </RadioGroup>
 
-      <Separator minBlockSize="$2" />
 
-      <H4 marginHorizontal="$5" marginVertical="$4">
-        Haptics
-      </H4>
-      <H5 marginHorizontal="$5">
-        Haptics are feedback in form of vibrations! They make interactions more realistic.
-      </H5>
-      <RadioGroup>
-        <YStack>
-          <XStack alignItems="center" justifyContent="space-between" marginHorizontal="$5">
-            <Label size="$6">
-              Use my device settings
-            </Label>
-            <RadioGroup.Item value={"1"} size="$6">
-              <RadioGroup.Indicator />
-            </RadioGroup.Item>
-          </XStack>
-          <Separator />
-          <XStack alignItems="center" justifyContent="space-between" marginHorizontal="$5">
-            <Label size="$6">
-              Turn off for BudgetGenie
-            </Label>
-            <RadioGroup.Item value={"2"} size="$6">
-              <RadioGroup.Indicator />
-            </RadioGroup.Item>
-          </XStack>
-          <Separator />
-        </YStack>
-      </RadioGroup>
     </ScrollView>
   );
 }

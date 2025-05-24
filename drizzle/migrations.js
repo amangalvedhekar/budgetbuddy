@@ -15,6 +15,7 @@ import m0010 from './0010_white_veda.sql';
 import m0011 from './0011_military_sersi.sql';
 import m0012 from './0012_sloppy_medusa.sql';
 import m0013 from './0013_cute_imperial_guard.sql';
+import m0014 from './0014_breezy_krista_starr.sql';
 
   export default {
     journal,
@@ -32,7 +33,8 @@ m0009,
 m0010,
 m0011,
 m0012,
-m0013
+m0013,
+m0014
     }
   }
   
