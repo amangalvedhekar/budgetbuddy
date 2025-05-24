@@ -6,11 +6,22 @@ import {Categories as CategoriesSchema, TransactionLists, TransactionTypes} from
 import {eq} from "drizzle-orm";
 import {DropDown} from "../../components/DropDown";
 import {DeviceEventEmitter} from "react-native";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../store";
+import {updateTransaction} from "../../dbOperations/transactionList";
 
 
 export const Details = () => {
+  const currentDate = new Date();
+  const currentYear = currentDate.getUTCFullYear();
+
+  const month = currentDate.getMonth() + 1;
+  const date = currentDate.getDate();
+  const year = currentDate.getFullYear();
+const dispatch = useDispatch();
+  const formattedModifiedMonth = month <= 9 ? `0${month}` : month;
+  const formattedModifiedDate = date <= 9 ? `0${date}` : date;
+  const updatedModifiedDate = `${year}-${formattedModifiedMonth}-${formattedModifiedDate}`;
   const {setOptions, canGoBack, goBack} = useNavigation();
   const {db} = useDb();
   const {params} = useRoute();
@@ -21,11 +32,11 @@ export const Details = () => {
   const categories = useSelector((state: RootState) => state.categories);
   const transactionType = useSelector((state: RootState) => state.transactionType);
   const transactionList = useSelector((state: RootState) => state.transactionList);
+  const transactionListByMonth = transactionList[currentYear] ?? {};
   const transactionData = Object
-    .values(transactionList)
+    .values(transactionListByMonth)
     .flatMap(transaction => transaction)
     .find(data => data.id == params?.entryId)
-
   const showSuccessToastForUpdate = () => {
     DeviceEventEmitter.emit("DISPLAY_TOAST", {
       message: `Transaction updated successfully`,
@@ -65,25 +76,25 @@ export const Details = () => {
       setOptions({headerTitle: abc[0].description});
     })();
   }, [params]));
-
   const saveChanges = async () => {
     const dataToSave = {
       ...transactionDetail,
       amount: Number(transactionDetail.amount),
-      categoryType: subCategory.name,
+      categoryType: subCategory.categoryName,
       transactionType: categoryType.id,
-      modifiedDate: `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
+      modifiedDate: updatedModifiedDate
     };
     try {
-
-      await db.update(TransactionLists).set(dataToSave).where(eq(
-        TransactionLists.id, params?.entryId
-      ));
+      await updateTransaction({
+        dataToSave,
+        dispatch,
+      })
       if (canGoBack()) {
         goBack();
       }
       showSuccessToastForUpdate();
     } catch (e) {
+      console.log(JSON.stringify(e), 'error')
       showFailureToastForUpdate();
     }
   }

@@ -20,7 +20,6 @@ export const BannerCard = ({icon, text, color, idx = 0, isOpen, ...rest}: Banner
     await impactAsync(ImpactFeedbackStyle.Medium);
     setShowDelete(false);
   }
-console.log(distanceFromTop, idx, 'before render');
   const swipeGesture = Gesture
     .Pan()
     .onStart((event) => {

@@ -122,7 +122,6 @@ export const Add = () => {
               createdDate: `${currentYear}-${formattedMonth}-${formattedDate}`
             })
           });
-        console.log(remainingMonthData, 'data')
         let showWarning = false;
         for (const monthData of remainingMonthData) {
           await insertTransactionForUser({
