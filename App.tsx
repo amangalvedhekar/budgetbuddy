@@ -1,5 +1,3 @@
-import {TamaguiProvider} from "tamagui";
-import {config} from "./tamagui.config";
 import {StatusBar} from "expo-status-bar";
 import {AuthProvider} from "./src/contexts/";
 import {useCachedResources} from "./src/hooks";
@@ -11,27 +9,25 @@ import {KeyboardProvider} from "react-native-keyboard-controller";
 import {store} from "./src/store";
 import {StoreInitializer} from "./src/components/StoreInitializer";
 import {ToastCard} from "./src/components/Toast/components/Card";
-import React, {useEffect, useState} from "react";
+import React from "react";
 import * as Sentry from '@sentry/react-native';
-import {setUser} from "@sentry/react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ThemeProvider} from "./src/components/ThemeProvider";
 
 
 const navigationIntegration = Sentry.reactNavigationIntegration({
   enableTimeToInitialDisplay: true,
 });
-// Sentry.init({
-//   // @ts-ignore
-//   dsn: `${process.env.EXPO_PUBLIC_SENTRY_DSN}`,
-//   debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
-//   tracesSampleRate: 1.0, // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing. Adjusting this value in production.
-//   integrations: [
-//     // Pass integration
-//     navigationIntegration,
-//   ],
-//   enableNativeFramesTracking: true, // Tracks slow and frozen frames in the application
-// });
+Sentry.init({
+  // @ts-ignore
+  dsn: `${process.env.EXPO_PUBLIC_SENTRY_DSN}`,
+  debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+  tracesSampleRate: 1.0, // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing. Adjusting this value in production.
+  integrations: [
+    // Pass integration
+    navigationIntegration,
+  ],
+  enableNativeFramesTracking: true, // Tracks slow and frozen frames in the application
+});
 Amplify.configure({
   Auth: {
     Cognito: {
@@ -42,7 +38,7 @@ Amplify.configure({
     },
   }
 })
-export default function App() {
+function App() {
   const {isLoadingComplete, scheme} = useCachedResources();
 
   if (!isLoadingComplete) {
@@ -70,4 +66,4 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
-// export default Sentry.wrap(App);
+export default Sentry.wrap(App);
