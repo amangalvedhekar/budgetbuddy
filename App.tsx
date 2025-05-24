@@ -1,11 +1,8 @@
-import {TamaguiProvider} from "tamagui";
-import {config} from "./tamagui.config";
-import {useColorScheme} from "react-native";
 import {StatusBar} from "expo-status-bar";
 import {AuthProvider} from "./src/contexts/";
 import {useCachedResources} from "./src/hooks";
 import {Amplify} from "aws-amplify";
-import {Provider} from "react-redux";
+import {Provider, useDispatch} from "react-redux";
 import {RootNavigation} from "./src/navigation/stacks";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import {KeyboardProvider} from "react-native-keyboard-controller";
@@ -14,6 +11,9 @@ import {StoreInitializer} from "./src/components/StoreInitializer";
 import {ToastCard} from "./src/components/Toast/components/Card";
 import React from "react";
 import * as Sentry from '@sentry/react-native';
+import {ThemeProvider} from "./src/components/ThemeProvider";
+
+
 const navigationIntegration = Sentry.reactNavigationIntegration({
   enableTimeToInitialDisplay: true,
 });
@@ -39,8 +39,7 @@ Amplify.configure({
   }
 })
 function App() {
-  const scheme = useColorScheme();
-  const isLoadingComplete = useCachedResources();
+  const {isLoadingComplete, scheme} = useCachedResources();
 
   if (!isLoadingComplete) {
     return <></>;
@@ -48,18 +47,21 @@ function App() {
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <Provider store={store}>
-
-      <KeyboardProvider>
         <AuthProvider>
-          <TamaguiProvider config={config} defaultTheme={scheme!}>
+          <StoreInitializer>
+          <ThemeProvider>
+            <KeyboardProvider>
             <ToastCard/>
-            <StoreInitializer>
+
+
             <RootNavigation scheme={scheme}/>
             <StatusBar style="auto"/>
-            </StoreInitializer>
-          </TamaguiProvider>
+
+
+            </KeyboardProvider>
+          </ThemeProvider>
+          </StoreInitializer>
         </AuthProvider>
-      </KeyboardProvider>
       </Provider>
     </GestureHandlerRootView>
   );

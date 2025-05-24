@@ -2,7 +2,7 @@ import {Avatar, Button, Card, H1, H4, H5, H6, ScrollView, Separator, XStack, YSt
 import {useAuth} from "../../hooks";
 import {useCallback, useEffect,} from "react";
 import {useNavigation, useRoute, useTheme} from "@react-navigation/native";
-import {ChevronRight, ChevronUp} from "../../icons";
+import {ChevronRight} from "../../icons";
 
 export const Account = () => {
   const {ab, logout} = useAuth();
@@ -26,7 +26,6 @@ export const Account = () => {
   const onRecurringTransactionPress = () => navigate('recurringTransactions');
 
   useEffect(() => {
-    console.log(params, 'are params coming here')
     if(params) {
       if(params.name && params.name!='') {
         navigate('addCategory', {
@@ -63,7 +62,7 @@ export const Account = () => {
     },
     {
       title: 'App Settings',
-      footerText: 'Currency, Appearance and Haptics settings',
+      footerText: 'Appearance settings',
       onPress: onAppSettingPress,
     }
   ];

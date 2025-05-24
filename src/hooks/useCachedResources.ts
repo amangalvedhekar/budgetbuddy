@@ -4,9 +4,11 @@ import {useDb} from "./useDb";
 import {BudgetedData, Categories, TransactionTypes} from "../../schema";
 import {isNotNull} from "drizzle-orm";
 import {transactionTypes,categories} from "../utils/";
+import {useColorScheme} from "react-native";
 
 export const useCachedResources = () => {
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  const scheme = useColorScheme();
   const {db} = useDb();
   useEffect(() => {
     (async () => {
@@ -32,5 +34,8 @@ console.error(e);
     })();
   }, []);
 
-  return isLoadingComplete;
+  return {
+    isLoadingComplete,
+    scheme,
+  };
 }

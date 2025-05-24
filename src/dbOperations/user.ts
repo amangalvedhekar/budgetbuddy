@@ -11,14 +11,45 @@ export const checkIfUserExists = async (userId: string) => {
     .where(eq(UserLists.userId, userId));
   return Array.isArray(isUserAdded) && isUserAdded.length > 0;
 }
-export const addUser = async({dispatch, userId, email}: { dispatch: AppDispatch, userId: string, email: string }) => {
+
+export const addUser = async ({dispatch, userId, email,appearance,appearanceSettings}: { dispatch: AppDispatch, userId: string, email: string }) => {
   const isUserAdded = checkIfUserExists(userId);
   const dataToAdd = {
     userId,
     isUserOnboarded: false,
   };
-  if(!isUserAdded) {
+  if (!isUserAdded) {
     await db.insert(UserLists).values(dataToAdd);
   }
-  dispatch(setUser({...dataToAdd, email}));
+  dispatch(setUser({...dataToAdd, email, appearance, appearanceSettings}));
 };
+
+export const updateUser = async ({userId, data, dispatch}) => {
+  try {
+    await db
+      .update(UserLists)
+      .set(data)
+      .where(eq(UserLists.userId, userId));
+    dispatch(setUser({...data}));
+  } catch (e) {
+    console.log(JSON.stringify(e), 'error')
+  }
+}
+
+export const getUser = async ({userId, dispatch}) => {
+  try {
+    const data = await db
+      .select({
+        appearance: UserLists.appearance,
+        appearanceSettings: UserLists.appearanceSettings,
+      })
+      .from(UserLists)
+      .where(eq(UserLists.userId, userId));
+
+    return data;
+    // dispatch();
+
+  } catch (e) {
+    console.log(JSON.stringify(e), 'error')
+  }
+}

@@ -13,13 +13,15 @@ import {ToastCard} from "../../components/Toast/components/Card";
 import React from "react";
 import {Filter} from "../../screens/signedIn/Filter";
 import {Cross} from "../../icons";
+import {useSelector} from "react-redux";
 
 const DefaultStack = createStackNavigator();
 export const RootNavigation = ({scheme}: any) => {
   const {ab} = useAuth();
+  const user = useSelector((state)=> state.user);
   return (
     <>
-      <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <NavigationContainer theme={user.appearance == 'dark' ? DarkTheme : DefaultTheme}>
         <DefaultStack.Navigator screenOptions={{headerShown: false}}>
           {
             ab != null ? <DefaultStack.Screen name="signedIn" component={SignedInScreens}/> :

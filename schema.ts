@@ -16,6 +16,8 @@ export const Categories = sqliteTable('Categories',{
 export const UserLists = sqliteTable('UserLists',{
   userId: text('userId').notNull().primaryKey(),
   isUserOnboarded: integer('isUserOnboarded', {mode: "boolean"}).default(false),
+  appearance: text('appearance'),
+  appearanceSettings: text('appearanceSettings'),
 });
 
 export const TransactionLists = sqliteTable('TransactionLists',{

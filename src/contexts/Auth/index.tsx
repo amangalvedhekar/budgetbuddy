@@ -20,6 +20,7 @@ import {UserLists} from "../../../schema";
 import {eq} from "drizzle-orm";
 import {useDispatch} from "react-redux";
 import {removeUser} from "../../features/usersSlice";
+import {resetTransactionData} from "../../features/transactionListSlice";
 
 const AuthContext = createContext<AuthProviderProps | null>(null);
 
@@ -86,7 +87,8 @@ const AuthProvider = ({children}: AuthContextType) => {
   const logout = useCallback(async () => {
     try {
       await signOut();
-      dispatch(removeUser())
+      dispatch(resetTransactionData());
+      dispatch(removeUser());
       setAb(null);
     } catch (e) {
       console.log(e, 'hmm cant logout')
@@ -126,7 +128,7 @@ const AuthProvider = ({children}: AuthContextType) => {
       passwordResetRequest
     }}
   >
-    {ab === undefined ? <></> : children}
+    {ab == undefined ? <></> : children}
   </AuthContext.Provider>;
 }
 
