@@ -1,7 +1,6 @@
 import {H5, H4, Label, RadioGroup, ScrollView, Separator, XStack, YStack} from "tamagui";
 import {Fragment} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {setUser} from "../../features/usersSlice";
 import {useColorScheme} from "react-native";
 import {updateUser} from "../../dbOperations/user";
 

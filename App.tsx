@@ -55,7 +55,7 @@ function App() {
 
 
             <RootNavigation scheme={scheme}/>
-            <StatusBar style="auto"/>
+            <StatusBar style={scheme == 'light' ? 'dark': 'light'}/>
 
 
             </KeyboardProvider>

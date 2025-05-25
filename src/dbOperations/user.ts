@@ -12,7 +12,7 @@ export const checkIfUserExists = async (userId: string) => {
   return Array.isArray(isUserAdded) && isUserAdded.length > 0;
 }
 
-export const addUser = async ({dispatch, userId, email,appearance,appearanceSettings}: { dispatch: AppDispatch, userId: string, email: string }) => {
+export const addUser = async ({dispatch, userId, email,appearance,appearanceSettings}: { dispatch: AppDispatch, userId: string, email: string, appearance: string,  appearanceSettings: string}) => {
   const isUserAdded = checkIfUserExists(userId);
   const dataToAdd = {
     userId,

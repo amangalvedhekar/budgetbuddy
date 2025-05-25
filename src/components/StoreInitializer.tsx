@@ -8,25 +8,29 @@ import {getBudgetedExpenseForMonth} from "../dbOperations/budgetedExpense";
 import {BudgetedData} from "../../schema";
 import {getExpectedIncomeForMonth} from "../dbOperations/expectedIncome";
 import {getTransactionMonthIndexed} from "../dbOperations/transactionList";
+import {useColorScheme} from "react-native";
 
 export const StoreInitializer = ({children}:{children: ReactNode}) => {
   const dispatch = useDispatch();
+  const scheme = useColorScheme();
   const {ab} = useAuth();
   useEffect(() => {
     (async () => {
+      console.log(scheme, 'scheme inside use effect of store initializer')
       if (ab != null && ab?.userId != '') {
         try {
           await fetchTransactionType(dispatch);
           await fetchCategories(dispatch);
           const data = await getUser({dispatch, userId: ab?.userId});
-          console.log(data, 'data for user', ab?.userId)
+          const appearanceSettings = data[0]?.appearanceSettings ?? 'deviceSettings';
+          const appearance = appearanceSettings == 'deviceSettings' ? scheme : (data[0]?.appearance ?? scheme);
           await addUser(
             {
               dispatch,
               userId: ab?.userId ?? '',
               email: ab?.signInDetails?.loginId ?? '',
-              appearance: data[0]?.appearance ?? 'light',
-              appearanceSettings: data[0]?.appearanceSettings ?? 'deviceSettings',
+              appearance,
+              appearanceSettings,
             }
           );
           await getTransactionMonthIndexed({userId: ab?.userId, dispatch})
@@ -51,6 +55,6 @@ export const StoreInitializer = ({children}:{children: ReactNode}) => {
       }
 
     })();
-  }, [dispatch, ab]);
+  }, [dispatch, ab, scheme]);
   return children;
 }
