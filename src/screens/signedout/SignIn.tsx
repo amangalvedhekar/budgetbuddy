@@ -13,7 +13,7 @@ const validationSchema = Joi.object({
   password: Joi.string().min(8).required().pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/),
 })
 
-export function SignIn({route}: SignInProps) {
+export function SignIn() {
   const {navigate} = useNavigation();
   const {logIn} = useAuth();
   const [formState, setFormState] = useState<FormState>({

@@ -28,6 +28,7 @@ const AuthProvider = ({children}: AuthContextType) => {
   const {db} = useDb();
   const dispatch = useDispatch();
   const [ab, setAb] = useState<AuthUser | null | undefined>(undefined);
+  console.log(ab, 'is')
   useEffect(() => {
     (async () => {
       try {
@@ -128,7 +129,7 @@ const AuthProvider = ({children}: AuthContextType) => {
       passwordResetRequest
     }}
   >
-    {ab == undefined ? <></> : children}
+    {ab === undefined ? <></> : children}
   </AuthContext.Provider>;
 }
 

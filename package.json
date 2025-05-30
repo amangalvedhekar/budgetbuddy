@@ -24,7 +24,7 @@
     "@tamagui/config": "^1.101.7",
     "aws-amplify": "^6.3.8",
     "drizzle-orm": "0.36.4",
-    "expo": "~52.0.46",
+    "expo": "52.0.19",
     "expo-dev-client": "~5.0.20",
     "expo-haptics": "~14.0.1",
     "expo-linear-gradient": "~14.0.1",

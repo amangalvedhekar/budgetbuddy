@@ -52,8 +52,6 @@ function App() {
           <ThemeProvider>
             <KeyboardProvider>
             <ToastCard/>
-
-
             <RootNavigation scheme={scheme}/>
             <StatusBar style={scheme == 'light' ? 'dark': 'light'}/>
 

@@ -1,9 +1,12 @@
-import {H5, H2, Card, YStack, H3, Paragraph, XStack} from "tamagui";
+import {H5, H2, Card, YStack, H3, Paragraph, XStack, Accordion, Square, ScrollView, Checkbox, H4} from "tamagui";
 import {useNavigation, useTheme} from "@react-navigation/native";
-import {ChevronRight} from "../../icons";
+import {Check, ChevronDown, ChevronRight} from "../../icons";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
 import {SectionList} from "react-native";
+import {categories} from "../../utils";
+import {setSelectedCategory} from "../../features/transactionFilterSlice";
+import React from "react";
 
 export const RecurringTransaction = () => {
   const {colors} = useTheme();
@@ -18,16 +21,16 @@ export const RecurringTransaction = () => {
     .filter(transaction => transaction.isRecurringTransaction == 'monthly');
 
   const sectionData = recurringTransaction
-    .reduce((acc:Array<any>, elm) => {
+    .reduce((acc: Array<any>, elm) => {
       const isElementPresent = acc?.findIndex(ac => ac?.title == elm.description);
       if (isElementPresent != -1) {
         const item = acc[isElementPresent];
         const newItem = {
           ...item,
-          data: item?.data ? [...item?.data, elm]: [elm],
+          data: item?.data ? [...item?.data, elm] : [elm],
         };
         acc[isElementPresent] = newItem;
-      }else {
+      } else {
         const item = {
           title: elm.description,
           data: [elm]
@@ -36,66 +39,64 @@ export const RecurringTransaction = () => {
       }
       return acc;
     }, []);
-  return (
-    <>
-      <YStack justifyContent="flex-start" flex={1} padding="$4">
 
-        <SectionList
-          sections={sectionData}
-          stickySectionHeadersEnabled={false}
-          renderSectionHeader={({section: {title, data}}) => (
-            <H2>{title} - {data.length} transactions</H2>
-          )}
-          renderItem={({item}) =>(
-            <Card
-              key={item.id}
-              borderRadius="$6"
-              marginVertical="$2"
-              onPress={() => {
-                navigation.navigate('historyEntryDetails', {entryId: item.id});
-              }}
-            >
-              <Card.Header>
-                <XStack justifyContent="space-between">
-                  <H5>
-                    {item.description}-{new Intl.NumberFormat('en-CA', {
-                    style: 'currency',
-                    currency: 'CAD'
-                  }).format(item.amount)}
-                  </H5>
-                  <ChevronRight
-                    color={colors.text}
-                  />
-                </XStack>
-              </Card.Header>
-              <Card.Footer paddingHorizontal="$3" paddingBottom="$2">
-                <XStack
-                  style={{
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    borderColor: colors.border
-                  }}>
-                  <Paragraph paddingHorizontal="$3" margin="$1">
-                    {item.categoryType}
-                  </Paragraph>
-                </XStack>
-                <XStack
-                  style={{
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    borderColor: colors.border,
-                    paddingHorizontal: 8,
-                    marginHorizontal: 8
-                  }}>
-                  <Paragraph paddingHorizontal="$3" margin="$1">
-                    {item.isRecurringTransaction}
-                  </Paragraph>
-                </XStack>
-              </Card.Footer>
-            </Card>
-          )}
-        />
+  return (
+    <ScrollView>
+      <YStack justifyContent="flex-start" flex={1} padding="$4">
+        {sectionData.map(transaction => (
+          <Accordion
+            overflow="hidden"
+            type="multiple"
+            marginVertical="$4"
+            key={transaction.title}
+          >
+            <Accordion.Item value="a1">
+              <Accordion.Trigger flexDirection="row" justifyContent="space-between">
+                {({
+                    open,
+                  }: {
+                  open: boolean
+                }) => (
+                  <>
+                    <H4>
+                      {transaction?.title} - {transaction?.data?.length} transactions
+                    </H4>
+                    <Square animation="quick" rotate={open ? '180deg' : '0deg'}>
+                      <ChevronDown color={colors.text}/>
+                    </Square>
+                  </>
+                )}
+              </Accordion.Trigger>
+              <Accordion.HeightAnimator animation="medium">
+                <Accordion.Content
+                  animation="medium"
+                  exitStyle={{opacity: 0}}
+                >
+                  {transaction?.data.map(trx => (
+                    <XStack
+                      justifyContent="space-between"
+                      marginVertical="$3"
+                      key={trx.id}
+                      onPress={() => {
+                        navigation.navigate('historyEntryDetails', {entryId: trx.id});
+                      }}
+                    >
+                      <H5>
+                        {trx?.description} - {new Intl.NumberFormat('en-CA', {
+                        style: 'currency',
+                        currency: 'CAD'
+                      }).format(trx.amount)}
+                      </H5>
+                      <ChevronRight color={colors.text}/>
+                    </XStack>
+                  ))}
+                </Accordion.Content>
+              </Accordion.HeightAnimator>
+            </Accordion.Item>
+          </Accordion>
+        ))}
+
       </YStack>
-    </>
+    </ScrollView>
   )
 }
