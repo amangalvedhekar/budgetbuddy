@@ -14,6 +14,7 @@ export const Home = () => {
   const currentMonth = currentDate.getMonth();
   const scrollViewRef = useRef<ScrollView>();
   const {colors} = useTheme();
+  const {width} = useWindowDimensions();
   const budgetedExpense = useSelector((state: RootState) => state.budgetedExpense);
   const expectedIncome = useSelector((state: RootState) => state.expectedIncome);
   const transactionLists = useSelector((state: RootState) => state.transactionList);
@@ -22,8 +23,8 @@ export const Home = () => {
 
   useScrollToTop(scrollViewRef);
 
-  const actualExpenseTransaction = currentMonth in actualTransactions ? actualTransactions[currentMonth].filter(trx => trx.transactionType == 1):[];
-  const actualIncomeTransaction = currentMonth in actualTransactions ? actualTransactions[currentMonth].filter(trx => trx.transactionType == 0):[];
+  const actualExpenseTransaction = currentMonth in actualTransactions ? actualTransactions[currentMonth].filter(trx => trx.transactionType == 1) : [];
+  const actualIncomeTransaction = currentMonth in actualTransactions ? actualTransactions[currentMonth].filter(trx => trx.transactionType == 0) : [];
   const actualIncomeTotal = actualIncomeTransaction
     .reduce((acc, elm) => acc + Number(elm.amount), 0);
   const actualExpenseTotal = actualExpenseTransaction
@@ -32,57 +33,63 @@ export const Home = () => {
     .reduce((acc, elm) => acc + Number(elm.value), 0);
   const expectedIncomeTotal = expectedIncome[currentMonth]
     .reduce((acc, elm) => acc + Number(elm.value), 0);
+  const maxAmount = [actualExpenseTotal, actualIncomeTotal, budgetedExpenseTotal, expectedIncomeTotal]
+    .reduce((acc, elm) => Math.max(acc, Number(elm)), 0)
   const formattedAmount = (value) => new Intl.NumberFormat('en-CA', {
     style: 'currency',
     currency: 'CAD'
   }).format(value);
-console.log(actualIncomeTransaction)
+
   const barData = [
     {
-      label: 'Income Expected',
+      label: 'Income',
       value: expectedIncomeTotal,
-      frontColor: 'green'
+      data: 'Expected Income',
+      frontColor: 'green',
+      spacing: 1,
     },
     {
-      label: 'Income Actual',
+      data: 'Actual Income',
       value: actualIncomeTotal,
       frontColor: 'green'
     },
 
     {
-      label: 'Expense Expected',
+      label: 'Expense',
+      data: 'Budgeted Expense',
       value: budgetedExpenseTotal,
-      frontColor: 'red'
+      frontColor: 'red',
+      spacing: 1,
     },
 
     {
-      label: 'Expense Actual',
+      data: 'Actual Expense',
       value: actualExpenseTotal,
-      frontColor: 'red'
+      frontColor: 'red',
     },
   ];
-const budgetSummarySubTitle = (expenseBudgeted, expenseActual) => {
-  if(expenseBudgeted > expenseActual) {
-    return {
-      color: 'green',
-      text: 'You are on track of your budget',
-      amountLeftToSpend: Number(expenseBudgeted) - Number(expenseActual)
-    };
-  } else if(expenseActual > expenseBudgeted) {
-    return {
-      color: 'red',
-      text: 'You went over budget',
-      amountLeftToSpend: Number(expenseBudgeted) - Number(expenseActual)
-    }
-  } else {
-    return {
-      color: 'yellow',
-      text: 'Not enough data',
-      amountLeftToSpend: 'N/A'
+  const budgetSummarySubTitle = (expenseBudgeted, expenseActual) => {
+    if (expenseBudgeted > expenseActual) {
+      return {
+        color: 'green',
+        text: 'You are on track of your budget',
+        amountLeftToSpend: Number(expenseBudgeted) - Number(expenseActual)
+      };
+    } else if (expenseActual > expenseBudgeted) {
+      return {
+        color: 'red',
+        text: 'You went over budget',
+        amountLeftToSpend: Number(expenseBudgeted) - Number(expenseActual)
+      }
+    } else {
+      return {
+        color: 'yellow',
+        text: 'Not enough data',
+        amountLeftToSpend: 'N/A'
+      }
     }
   }
-}
-const subtitle = budgetSummarySubTitle(budgetedExpenseTotal, actualExpenseTotal)
+  const subtitle = budgetSummarySubTitle(budgetedExpenseTotal, actualExpenseTotal)
   return (
     <>
       <ScrollView
@@ -94,40 +101,39 @@ const subtitle = budgetSummarySubTitle(budgetedExpenseTotal, actualExpenseTotal)
           borderRadius="$8"
         >
           <Card.Header>
-           <YStack>
-             <XStack marginVertical="$1">
-               <H4 opacity={0.6}>
-                 Budget Summary
-               </H4>
-             </XStack>
-            <XStack marginVertical="$1">
-              <H3>
-                {filterDataForDashboard[currentMonth].name} {currentYear}
-              </H3>
-            </XStack>
-             <XStack>
-               <H5 color={subtitle.color}>
-                 {subtitle.text}
-               </H5>
-             </XStack>
-             <XStack>
-               <H5 color={subtitle.color}>
-                 {formattedAmount(subtitle.amountLeftToSpend)} left to spend
-               </H5>
-             </XStack>
-           </YStack>
+            <YStack>
+              <XStack marginVertical="$1">
+                <H4 opacity={0.6}>
+                  Budget Summary
+                </H4>
+              </XStack>
+              <XStack marginVertical="$1">
+                <H3>
+                  {filterDataForDashboard[currentMonth].name} {currentYear}
+                </H3>
+              </XStack>
+              <XStack>
+                <H3 color={subtitle.color}>
+                  {subtitle.text}
+                </H3>
+              </XStack>
+              <XStack>
+                <H3 color={subtitle.color}>
+                  {formattedAmount(subtitle.amountLeftToSpend)} left to spend
+                </H3>
+              </XStack>
+            </YStack>
           </Card.Header>
-          <YStack marginHorizontal="$1">
+          <YStack marginHorizontal="$1" marginVertical="$2">
             <BarChart
-              labelWidth={96}
-              labelsExtraHeight={150}
-              height={350}
+              labelsExtraHeight={90}
               labelsDistanceFromXaxis={32}
               topLabelTextStyle={{color: colors.text}}
-              rotateLabel
               noOfSections={4}
+              maxValue={maxAmount + 9000}
               yAxisLabelWidth={72}
-              barWidth={64}
+              width={width - 40}
+              barWidth={56}
               barBorderRadius={8}
               frontColor={colors.text}
               yAxisTextStyle={{
@@ -139,11 +145,18 @@ const subtitle = budgetSummarySubTitle(budgetedExpenseTotal, actualExpenseTotal)
               data={barData}
               yAxisThickness={0}
               xAxisThickness={0}
-              autoCenterTooltip
-              renderTooltip={(item) => <Paragraph color={['Expense Expected','Expense Actual'].includes(item.label) ? 'red' : 'green'}>{new Intl.NumberFormat('en-CA', {
-                style: 'currency',
-                currency: 'CAD'
-              }).format(item.value)}</Paragraph>}
+              renderTooltip={(item) =>
+                <YStack>
+                  <Paragraph>
+                    {new Intl.NumberFormat('en-CA', {
+                      style: 'currency',
+                      currency: 'CAD'
+                    }).format(item.value)}</Paragraph>
+                  <H5>
+                    {item?.data}
+                  </H5>
+                </YStack>
+              }
             />
           </YStack>
           {/*<Card.Footer marginHorizontal="$1" marginBottom="$4">*/}

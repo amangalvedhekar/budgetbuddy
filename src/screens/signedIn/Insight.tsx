@@ -17,7 +17,7 @@ import {filterDataForDashboard} from "../../utils/filterDataForDashboard";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../store";
 import {BarChart} from "react-native-gifted-charts";
-import {useNavigation, useTheme} from "@react-navigation/native";
+import {useNavigation, useScrollToTop, useTheme} from "@react-navigation/native";
 import {StyleSheet} from "react-native";
 import {setSelectedCategory, setSelectedMonth} from "../../features/transactionFilterSlice";
 
@@ -35,10 +35,11 @@ export const Insight = () => {
   const {navigate} = useNavigation();
   const [coordinatesForExpense, setCoordinatesForExpense] = useState([]);
   const scrollRef = useRef();
+  const scrollViewRef = useRef<ScrollView>();
   const budgetedVsActualScrollRef = useRef();
   const {width} = useWindowDimensions();
   const {colors} = useTheme();
-
+  useScrollToTop(scrollViewRef);
   const closerStackData = filterDataForDashboard.map(data => ({
     label: data.name,
     stacks: [
@@ -51,7 +52,7 @@ export const Insight = () => {
     const budgetedData = {
       value: budgetedExpense[data.id].reduce((acc, elm) => acc + Number(elm.value), 0),
       label: data.name,
-      spacing: 2,
+      spacing: 1,
       frontColor: 'red'
     };
     const expectIncome = {
@@ -68,7 +69,7 @@ export const Insight = () => {
     const budgetedData = {
       value: budgetedExpense[data.id].reduce((acc, elm) => acc + Number(elm.value), 0),
       label: data.name,
-      spacing: 2,
+      spacing: 1,
 
     };
     const actualData = {
@@ -86,6 +87,7 @@ export const Insight = () => {
   return (
     <ScrollView
       contentContainerStyle={{paddingBottom: 72}}
+      ref={scrollViewRef}
     >
       <H4 marginHorizontal="$4" marginVertical="$2">
         Budgeted Expense & Expected Income
@@ -223,22 +225,19 @@ export const Insight = () => {
           rotateLabel
           isAnimated
           labelWidth={40}
-          barBorderRadius={8}
           noOfSections={4}
           spacing={24}
-          barWidth={48}
+          barWidth={32}
           xAxisThickness={0}
           yAxisThickness={0}
           yAxisTextStyle={{color: colors.text}}
           xAxisLabelTextStyle={{color: colors.text}}
-
           frontColor={colors.text}
           onPress={(a, idx) => {
             budgetedVsActualScrollRef?.current?.scrollTo({x: coordinatesForExpense[filterDataForDashboard[Math.floor(idx / 2)].id]})
           }}
           autoCenterTooltip
           renderTooltip={(item) => <Paragraph
-            color={item?.data ? 'purple' : colors.text}
             marginLeft="$2"
           >{new Intl.NumberFormat('en-CA', {
             style: 'currency',
