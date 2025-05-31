@@ -39,7 +39,15 @@ export const RecurringTransaction = () => {
       }
       return acc;
     }, []);
+const createdDate = (date) => {
+  const dateObject = new Date(date);
+  const modified = dateObject.setTime(dateObject.getTime() + 955 * 60 * 1000);
 
+  const formattedDate = new Intl.DateTimeFormat("en-CA", {
+    dateStyle: 'long',
+  }).format(modified);
+  return formattedDate;
+}
   return (
     <ScrollView>
       <YStack justifyContent="flex-start" flex={1} padding="$4">
@@ -48,6 +56,7 @@ export const RecurringTransaction = () => {
             overflow="hidden"
             type="multiple"
             marginVertical="$4"
+            borderRadius="$8"
             key={transaction.title}
           >
             <Accordion.Item value="a1">
@@ -73,10 +82,10 @@ export const RecurringTransaction = () => {
                   exitStyle={{opacity: 0}}
                 >
                   {transaction?.data.map(trx => (
+                    <YStack key={trx.id}>
                     <XStack
                       justifyContent="space-between"
                       marginVertical="$3"
-                      key={trx.id}
                       onPress={() => {
                         navigation.navigate('historyEntryDetails', {entryId: trx.id});
                       }}
@@ -89,6 +98,12 @@ export const RecurringTransaction = () => {
                       </H5>
                       <ChevronRight color={colors.text}/>
                     </XStack>
+                      <XStack>
+                        <H5>
+                          {createdDate(trx.createdDate)}
+                        </H5>
+                      </XStack>
+                    </YStack>
                   ))}
                 </Accordion.Content>
               </Accordion.HeightAnimator>
